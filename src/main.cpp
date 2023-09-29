@@ -19,32 +19,35 @@ int main() {
     fps_txt.setFillColor (sf::Color::Cyan);
     char fps_str[8] = "";
 
-    sf::RenderWindow window (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    window.setFramerateLimit (600);
+    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
+    sfwindow.setFramerateLimit (600);
 
-    double mousex = 0;
-    double mousey = 0;
+    Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
     sf::Clock fps_clk;
     sf::Clock clk;
     double dt = 0;
 
-    while (window.isOpen()) {
+    Window mainwin (400, 400, 800, 800);
+    mainwin.AddSubWidget (new Window (0, 0, 100, 100));
+
+
+    while (sfwindow.isOpen()) {
         sf::Event event;
 
-        while (window.pollEvent (event)) {
+        while (sfwindow.pollEvent (event)) {
             if (event.type == sf::Event::Closed)
-                window.close();
+                sfwindow.close();
             
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
-                    window.close();
+                    sfwindow.close();
             }
 
             if (event.type == sf::Event::MouseMoved) {
-                mousex = event.mouseMove.x;
-                mousey = event.mouseMove.y;
+                mousepos.x = event.mouseMove.x;
+                mousepos.y = event.mouseMove.y;
             }
 
             if (event.type == sf::Event::MouseButtonPressed)
@@ -64,9 +67,10 @@ int main() {
             frame_counter = 0;
         }
         
-        window.clear(sf::Color (128, 128, 128));
-        window.draw (fps_txt);
-        window.display();
+        sfwindow.clear(sf::Color::White);
+        mainwin.Render(sfwindow);
+        sfwindow.draw (fps_txt);
+        sfwindow.display();
     }
     return 0;
 }
