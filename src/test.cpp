@@ -13,12 +13,10 @@ int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
 
     RegionSet regset;
-    regset.AddRegion (Rect (Vec (200, 200), Vec (600, 600)));
-    regset.AddRegion (Rect (Vec (0, 400), Vec (600, 600)));
+    regset.AddRegion (Rect (Vec (0, 200), Vec (600, 600)));
 
     RegionSet regset2;
-    regset2.AddRegion (Rect (Vec (300, 200), Vec (400, 300)));
-    regset2.AddRegion (Rect (Vec (100, 100), Vec (350, 550)));
+    regset2.AddRegion (Rect (Vec (300, 300), Vec (500, 500)));
 
     RegionSet regset3;
     regset3.AddRegion (Rect (Vec (100, 100), Vec (350, 550)));
@@ -42,6 +40,8 @@ int main() {
                     regset -= regset2;
                 if (event.key.code == sf::Keyboard::W) 
                     regset -= regset3;
+                if (event.key.code == sf::Keyboard::E) 
+                    regset.MergeRegions();
             }
         }          
         

@@ -3,6 +3,7 @@
 
 #include "vec.h"
 #include "mylist.h"
+#include <algorithm>
 #include <cmath>
 
 class Rect {
@@ -19,9 +20,15 @@ class Rect {
     double GetHeight() const;
 
     Vec GetCenter() const;
+
+    bool Contains (const Rect& rect) const;
+
+    void Print() const;
 };
 
 bool Intersect (const Rect& rect1, const Rect& rect2);
+
+bool HaveCommonSide (const Rect& rect1, const Rect& rect2);
 
 class RegionSet {
     public:

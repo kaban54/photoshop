@@ -30,6 +30,18 @@ Vec Rect::GetCenter() const {
     return (vert1 + vert2) / 2;
 }
 
+bool Rect::Contains (const Rect& rect) const {
+    return (rect.vert1.x >= vert1.x &&
+            rect.vert2.x <= vert2.x &&
+            rect.vert1.y >= vert1.y &&
+            rect.vert2.y <= vert2.y);
+}
+
+void Rect::Print () const {
+    std::cout << " Rect((" << vert1.x << ", " << vert1.y << "), "
+                       "(" << vert2.x << ", " << vert2.y << ")) ";
+}
+
 bool Intersect (const Rect& rect1, const Rect& rect2) {
     return (rect1.vert1.x < rect2.vert2.x &&
             rect2.vert1.x < rect1.vert2.x &&
@@ -37,12 +49,47 @@ bool Intersect (const Rect& rect1, const Rect& rect2) {
             rect2.vert1.y < rect1.vert2.y);
 }
 
+bool HaveCommonSide (const Rect& rect1, const Rect& rect2) {
+    return ((rect1.vert1.x == rect2.vert1.x && rect1.vert2.x == rect2.vert2.x &&
+            (rect1.vert1.y == rect2.vert2.y || rect1.vert2.y == rect2.vert1.y)) ||
+            (rect1.vert1.y == rect2.vert1.y && rect1.vert2.y == rect2.vert2.y &&
+            (rect1.vert1.x == rect2.vert2.x || rect1.vert2.x == rect2.vert1.x)));
+}
 
 RegionSet::RegionSet():
     regions () {}
 
 void RegionSet::MergeRegions() {
-    //std::cout << ":)\n";
+    ListNode<Rect>* end_of_list = regions.EndOfList();
+    ListNode<Rect>* node1 = regions.GetHead();
+
+    while (node1 != end_of_list) {
+        ListNode<Rect>* node2 = node1 -> next;
+        while (node2 != end_of_list) {
+            Rect r1 = node1 -> val;
+            Rect r2 = node2 -> val;
+            if (r1.Contains(r2)) {
+                node2 = node2 -> next;
+                regions.Remove (node2 -> prev);
+                continue;
+            }
+            if (r2.Contains(r1)) {
+                node1 = node1 -> prev;
+                regions.Remove (node1 -> next);
+                break;
+            }
+            if (HaveCommonSide(r1, r2)) {
+                Vec v1 (std::min(r1.vert1.x, r2.vert1.x), std::min(r1.vert1.y, r2.vert1.y));
+                Vec v2 (std::max(r1.vert2.x, r2.vert2.x), std::max(r1.vert2.y, r2.vert2.y));
+                node1 -> val = Rect (v1, v2);
+                regions.Remove (node2);
+                node1 = end_of_list;
+                break;
+            }
+            node2 = node2 -> next;
+        }
+        node1 = node1 -> next;
+    }
 }
 
 void RegionSet::AddRegion (const Rect& region) {
@@ -91,9 +138,10 @@ void RegionSet::SubtractRegion (const Rect& region) {
                     if (!Intersect(reg, r2)) new_regions.AddRegion(reg);
                 }
             }
-            (*this) += new_regions;
             node = node -> next;
             regions.Remove (node -> prev);
+            (*this) += new_regions;
+            
         }
         else node = node -> next;
     }
