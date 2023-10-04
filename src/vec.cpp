@@ -1,5 +1,11 @@
 #include "vec.h"
 
+Vec::Vec():
+    x (0),
+    y (0),
+    z (0)
+    {}
+
 Vec::Vec (double x_, double y_, double z_): 
     x (x_),
     y (y_),

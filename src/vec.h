@@ -10,6 +10,8 @@ class Vec {
     double y;
     double z;
 
+    explicit Vec ();
+
     explicit Vec (double x_, double y_, double z_ = 0);
 
     void SetPos (double x_, double y_, double z_ = 0);

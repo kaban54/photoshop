@@ -5,16 +5,16 @@
 #include <SFML/Graphics.hpp>
 
 const char* FONT_FILENAME = "fonts/font.ttf";
+sf::Font GLOBAL_FONT;
 
 const int W = 2160;
 const int H = 1440;
 
 int main() {
-    sf::Font font;
-    font.loadFromFile (FONT_FILENAME);
+    GLOBAL_FONT.loadFromFile (FONT_FILENAME);
 
     int frame_counter = 0;
-    sf::Text fps_txt ("", font, 20);
+    sf::Text fps_txt ("", GLOBAL_FONT, 20);
     fps_txt.setPosition (0, 0);
     fps_txt.setFillColor (sf::Color::Cyan);
     char fps_str[8] = "";
@@ -30,7 +30,7 @@ int main() {
     double dt = 0;
 
     Window mainwin (400, 400, 800, 800);
-    mainwin.AddSubWidget (new Window (0, 0, 100, 100));
+    mainwin.AddSubWidget (new Window (100, 100, 200, 300));
 
 
     while (sfwindow.isOpen()) {
@@ -48,13 +48,16 @@ int main() {
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
+                mainwin.MouseMove (mousepos);
             }
 
-            if (event.type == sf::Event::MouseButtonPressed)
-                mouse_pressed = true;
+            if (event.type == sf::Event::MouseButtonPressed) {
+                mainwin.MousePress (mousepos, MOUSE_LEFT);
+            }
 
-            if (event.type == sf::Event::MouseButtonReleased)
-                mouse_pressed = false;
+            if (event.type == sf::Event::MouseButtonReleased) {
+                mainwin.MouseRelease (mousepos, MOUSE_RIGHT);
+            }
         }
 
         dt = clk.restart().asSeconds();
@@ -67,7 +70,7 @@ int main() {
             frame_counter = 0;
         }
         
-        sfwindow.clear(sf::Color::White);
+        sfwindow.clear(sf::Color (192, 192, 192));
         mainwin.Render(sfwindow);
         sfwindow.draw (fps_txt);
         sfwindow.display();
