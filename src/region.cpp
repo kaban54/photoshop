@@ -56,6 +56,7 @@ bool HaveCommonSide (const Rect& rect1, const Rect& rect2) {
             (rect1.vert1.x == rect2.vert2.x || rect1.vert2.x == rect2.vert1.x)));
 }
 
+
 RegionSet::RegionSet():
     regions () {}
 
