@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
+#include "rendertarget.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
@@ -13,25 +14,16 @@ const int H = 1440;
 int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
 
-    int frame_counter = 0;
-    sf::Text fps_txt ("", GLOBAL_FONT, 20);
-    fps_txt.setPosition (0, 0);
-    fps_txt.setFillColor (sf::Color::Cyan);
-    char fps_str[8] = "";
-
     sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    sfwindow.setFramerateLimit (600);
+    sfwindow.setFramerateLimit (300);
 
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    sf::Clock fps_clk;
-    sf::Clock clk;
-    double dt = 0;
-
-    Window mainwin (400, 400, 800, 800);
+    Window mainwin (0, 0, 800, 800);
     mainwin.AddSubWidget (new Window (100, 100, 200, 300));
 
+    RenderTarget rt (W, H);
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -44,7 +36,7 @@ int main() {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
             }
-
+/*
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
@@ -57,22 +49,13 @@ int main() {
 
             if (event.type == sf::Event::MouseButtonReleased) {
                 mainwin.MouseRelease (mousepos, MOUSE_RIGHT);
-            }
-        }
-
-        dt = clk.restart().asSeconds();
-
-        frame_counter++;
-        if (fps_clk.getElapsedTime().asSeconds() >= 1) {
-            sprintf (fps_str, "%d", frame_counter);
-            fps_txt.setString (fps_str);
-            fps_clk.restart();
-            frame_counter = 0;
+            }*/
         }
         
         sfwindow.clear(sf::Color (192, 192, 192));
-        mainwin.Render(sfwindow);
-        sfwindow.draw (fps_txt);
+        mainwin.Render(rt);
+        rt.Display(sfwindow);
+        //sfwindow.draw (fps_txt);
         sfwindow.display();
     }
     return 0;

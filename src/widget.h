@@ -6,10 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <SFML/Graphics.hpp>
+#include "rendertarget.h"
+#include "region.h"
+#include "color.h"
 
 const size_t BASE_WIDGETMAN_CAP = 4;
-const sf::Color WINDOW_BG_COLOR = sf::Color (128, 128, 128);
+const Color WINDOW_BG_COLOR = Color (128, 128, 128);
 
 enum MouseButtons {
     MOUSE_LEFT = 0,
@@ -23,6 +25,11 @@ enum ButtonState {
     BTN_DISABLED = 3,
 };
 
+
+class Renderable {
+    public:
+    virtual void Render (RenderTarget& screen) const = 0;
+};
 
 class Widget;
 
@@ -39,7 +46,7 @@ class WidgetManager {
     
     void AddWidget (Widget* widget);
 
-    void Render (sf::RenderWindow& sfwindow) const;
+    void Render (RenderTarget& screen) const;
 
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 
@@ -48,8 +55,10 @@ class WidgetManager {
     void MouseMove (const Vec& mousepos);
 };
 
-class Widget {
+class Widget : public Renderable {
+
     WidgetManager subwidgets;
+
     public:
     Vec pos;
     bool visible;
@@ -57,14 +66,11 @@ class Widget {
     explicit Widget();
 
     explicit Widget (int x, int y, size_t subw_cap = BASE_WIDGETMAN_CAP);
-
-    virtual void RenderThis (sf::RenderWindow& sfwindow) const = 0;    
-
-    void Render (sf::RenderWindow& sfwindow) const;
-
+    
     void AddSubWidget (Widget* wid);
 
     void Move (const Vec& vec);
+
 
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 
@@ -79,19 +85,24 @@ class Widget {
     virtual void MouseMoveAction (const Vec& mousepos) = 0;
 
     virtual bool MouseOnWidget (const Vec& mousepos) = 0;
+
 };
 
 
 class Window : public Widget {
     size_t width;
     size_t height;
+
+    RegionSet regset;
+
     public:
 
     explicit Window (size_t w, size_t h);
 
     explicit Window (int x, int y, size_t w, size_t h);
 
-    virtual void RenderThis (sf::RenderWindow& sfwindow) const override;
+    virtual void Render (RenderTarget& screen) const override;
+
 
     virtual void MousePressAction (MouseButtons mousebtn) override {};
 
@@ -100,6 +111,7 @@ class Window : public Widget {
     virtual void MouseMoveAction (const Vec& mousepos) override {};
 
     virtual bool MouseOnWidget (const Vec& mousepos) override;
+
 };
 
 

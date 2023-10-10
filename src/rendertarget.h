@@ -7,6 +7,8 @@
 #include "color.h"
 
 class RenderTarget {
+    unsigned int width;
+    unsigned int height;
     sf::RenderTexture screen;
 
     public:

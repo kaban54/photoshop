@@ -12,12 +12,6 @@ Widget::Widget (int x, int y, size_t subw_cap):
     subwidgets (subw_cap)
     {}
 
-void Widget::Render (sf::RenderWindow& sfwindow) const {
-    if (visible) {
-        RenderThis (sfwindow);
-        subwidgets.Render (sfwindow);
-    }
-}
 
 void Widget::AddSubWidget (Widget* wid) {
     wid -> Move (pos);
@@ -70,9 +64,9 @@ void WidgetManager::AddWidget (Widget *wid) {
     widgets[size++] = wid;
 }
 
-void WidgetManager::Render (sf::RenderWindow& sfwindow) const {
+void WidgetManager::Render (RenderTarget& screen) const {
     for (size_t i = 0; i < size; i++) {
-        widgets[i] -> Render (sfwindow);
+        widgets[i] -> Render (screen);
     }
 }
 
@@ -110,17 +104,15 @@ Window::Window (int x, int y, size_t w, size_t h):
     {}
 
 
-void Window::RenderThis (sf::RenderWindow& sfwindow) const {
-    sf::RectangleShape rect (sf::Vector2f(width, height));
-    rect.setPosition (pos.x, pos.y);
-    rect.setOutlineThickness (2);
-    rect.setFillColor (WINDOW_BG_COLOR);
-    rect.setOutlineColor (sf::Color::Black);
-    sfwindow.draw (rect);
+void Window::Render (RenderTarget& screen) const {
+    Rect rect (Vec(pos.x, pos.y), Vec(pos.x + width, pos.y + height));
 
-    rect.setFillColor (sf::Color::Black);
-    rect.setSize (sf::Vector2f(width, 20));
-    sfwindow.draw (rect);
+    screen.DrawRect (rect, Color(0, 0, 0), regset);
+
+    rect.vert1 += Vec (2, 20);
+    rect.vert2 -= Vec (2, 2);
+    
+    screen.DrawRect (rect, WINDOW_BG_COLOR, regset);
 }
 
 bool Window::MouseOnWidget (const Vec& mousepos) {
