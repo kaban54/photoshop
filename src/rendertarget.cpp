@@ -46,3 +46,24 @@ void RenderTarget::SetPixel (const Vec& point, const Color& col, const RegionSet
     screen.draw (pixel, 1, sf::Points);
     screen.display();
 }
+
+void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset) {
+    sf::Sprite sprite;
+    sprite.setTexture (*(texture.sftexture));
+    sprite.setPosition (pos.x, pos.y);
+    sprite.setScale (size.x / texture.sftexture -> getSize().x, size.y / texture.sftexture -> getSize().y);
+
+
+    ListNode<Rect>* end_of_list = regset.regions.EndOfList();
+    ListNode<Rect>* node = regset.regions.GetHead();
+
+    while (node != end_of_list) {
+        Rect region = node -> val;
+        sprite.setTextureRect (sf::IntRect(region.vert1.x - pos.x, region.vert1.y - pos.y,
+                                           region.GetWidth(), region.GetHeight()));
+        screen.draw (sprite);
+        screen.display();
+
+        node = node -> next;
+    }
+}

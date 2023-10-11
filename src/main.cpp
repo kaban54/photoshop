@@ -11,6 +11,8 @@ sf::Font GLOBAL_FONT;
 const int W = 2160;
 const int H = 1440;
 
+void LoadTestTextures (Texture test_textures[4]);
+
 int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
 
@@ -24,6 +26,19 @@ int main() {
     mainwin.AddSubWidget (new Window (100, 100, 200, 300));
 
     RenderTarget rt (W, H);
+
+    Texture test_textures[4];
+    sf::Texture sf_test_textures[4];
+    sf_test_textures[0].loadFromFile ("textures/btn40.png");
+    sf_test_textures[1].loadFromFile ("textures/btn41.png");
+    sf_test_textures[2].loadFromFile ("textures/btn42.png");
+
+    test_textures[0].sftexture = sf_test_textures + 0;
+    test_textures[1].sftexture = sf_test_textures + 1;
+    test_textures[2].sftexture = sf_test_textures + 2;
+    test_textures[3].sftexture = nullptr;
+
+    mainwin.AddSubWidget (new ImgButton (50, 50, 80, 80, test_textures));
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -52,7 +67,7 @@ int main() {
             }
         }
         
-        
+                
         sfwindow.clear(sf::Color (192, 192, 192));
         rt.ClearScreen (sf::Color (192, 192, 192));
         mainwin.Render(rt);

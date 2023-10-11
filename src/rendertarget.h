@@ -6,6 +6,11 @@
 #include "vec.h"
 #include "color.h"
 
+
+struct Texture {
+    sf::Texture* sftexture;
+};
+
 class RenderTarget {
     unsigned int width;
     unsigned int height;
@@ -25,6 +30,7 @@ class RenderTarget {
 
     void SetPixel (const Vec& point, const Color& col, const RegionSet& regset);
 
+    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset);
 };
 
 #endif

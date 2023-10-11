@@ -60,6 +60,7 @@ class Widget : public Renderable {
     public:
     Vec pos;
     bool visible;
+    RegionSet regset;
 
     explicit Widget();
 
@@ -92,7 +93,6 @@ class Widget : public Renderable {
 class Window : public Widget {
     size_t width;
     size_t height;
-    RegionSet regset;
 
     bool is_moving;
     Vec hold_pos;
@@ -125,13 +125,16 @@ class Button : public Widget {
         BTN_DISABLED = 3,
     };
 
+    public:
     size_t width;
     size_t height;
     ButtonState state;
 
     explicit Button (double x, double y, size_t w, size_t h);
 
+    virtual void MouseMoveAction (const Vec& mousepos) override;
 
+    virtual bool MouseOnWidget (const Vec& mousepos) override;
 
 };
 
@@ -150,6 +153,24 @@ class BtnMenu : public Widget {
     void AddButton (Button* btn);
 
     virtual void RenderThis (sf::RenderWindow& sfwindow) const;
+};
+
+
+class ImgButton : public Button {
+    Texture textures[4];
+
+    public:
+
+    explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_ = nullptr);
+
+    void SetTextures (const Texture* textures_);
+
+    virtual void Render (RenderTarget& screen) const override;
+
+
+    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override {};
+
+    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) override {};
 };
 
 

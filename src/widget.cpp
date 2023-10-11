@@ -4,14 +4,16 @@ Widget::Widget():
     pos (0, 0),
     visible (true),
     parent (nullptr),
-    subwidgets ()
+    subwidgets (),
+    regset ()
     {}
 
 Widget::Widget (int x, int y, size_t subw_cap):
     pos (x, y),
     visible (true),
     parent (nullptr),
-    subwidgets (subw_cap)
+    subwidgets (subw_cap),
+    regset ()
     {}
 
 
@@ -164,9 +166,53 @@ bool Window::MouseOnWidget (const Vec& mousepos) {
 Button::Button (double x, double y, size_t w, size_t h):
     Widget (x, y, 0),
     width (w),
-    height (h)
+    height (h),
+    state (BTN_NORMAL)
     {}
 
+
+bool Button::MouseOnWidget (const Vec& mousepos) {
+    return (mousepos.x >= pos.x && mousepos.x <= pos.x + width ) &&
+           (mousepos.y >= pos.y && mousepos.y <= pos.y + height);
+}
+
+void Button::MouseMoveAction (const Vec& mousepos) {
+    if (state == BTN_DISABLED) return;
+
+    if (MouseOnWidget (mousepos)) {
+        if (state == BTN_NORMAL) state = BTN_FOCUSED;
+    }
+    else {
+        if (state == BTN_FOCUSED) state = BTN_NORMAL;
+    }
+}
+
+
+ImgButton::ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_):
+    Button (x, y, w, h)
+    {
+        if (textures_ != nullptr) {
+            textures[0] = textures_[0];
+            textures[1] = textures_[1];
+            textures[2] = textures_[2];
+            textures[3] = textures_[3];
+        }
+        regset.AddRegion (Rect(Vec(x, y), Vec(x + w, y + h)));
+    }
+
+void ImgButton::SetTextures (const Texture* textures_) {
+    assert (textures != nullptr);
+
+    textures[0] = textures_[0];
+    textures[1] = textures_[1];
+    textures[2] = textures_[2];
+    textures[3] = textures_[3];
+}
+
+
+void ImgButton::Render (RenderTarget& screen) const {
+    screen.DrawTexture (textures[state], pos, Vec(width, height), regset);
+}
 
 
 
