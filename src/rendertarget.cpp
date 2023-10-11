@@ -15,6 +15,11 @@ void RenderTarget::Display (sf::RenderWindow& window) const {
     window.draw (sprite);
 }
 
+void RenderTarget::ClearScreen (const sf::Color& color) {
+    screen.clear (color);
+    screen.display();
+}
+
 void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& regset) {
     sf::RectangleShape rectshape (sf::Vector2f (rect.GetWidth(), rect.GetHeight()));
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));

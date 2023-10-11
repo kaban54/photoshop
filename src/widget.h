@@ -18,12 +18,7 @@ enum MouseButtons {
     MOUSE_RIGHT = 1
 };
 
-enum ButtonState {
-    BTN_NORMAL = 0,
-    BTN_PRESSED = 1,
-    BTN_FOCUSED = 2,
-    BTN_DISABLED = 3,
-};
+
 
 
 class Renderable {
@@ -48,6 +43,8 @@ class WidgetManager {
 
     void Render (RenderTarget& screen) const;
 
+    void Move (const Vec& vec);
+
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 
     void MouseRelease (const Vec& mousepos, MouseButtons mousebtn);
@@ -57,6 +54,7 @@ class WidgetManager {
 
 class Widget : public Renderable {
 
+    Widget* parent;
     WidgetManager subwidgets;
 
     public:
@@ -69,6 +67,8 @@ class Widget : public Renderable {
     
     void AddSubWidget (Widget* wid);
 
+    void RenderSubWidgets (RenderTarget& screen) const;
+
     void Move (const Vec& vec);
 
 
@@ -78,9 +78,9 @@ class Widget : public Renderable {
 
     void MouseMove (const Vec& mousepos);
 
-    virtual void MousePressAction (MouseButtons mousebtn) = 0;
+    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) = 0;
 
-    virtual void MouseReleaseAction (MouseButtons mousebtn) = 0;
+    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) = 0;
 
     virtual void MouseMoveAction (const Vec& mousepos) = 0;
 
@@ -92,8 +92,10 @@ class Widget : public Renderable {
 class Window : public Widget {
     size_t width;
     size_t height;
-
     RegionSet regset;
+
+    bool is_moving;
+    Vec hold_pos;
 
     public:
 
@@ -104,11 +106,11 @@ class Window : public Widget {
     virtual void Render (RenderTarget& screen) const override;
 
 
-    virtual void MousePressAction (MouseButtons mousebtn) override {};
+    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override;
 
-    virtual void MouseReleaseAction (MouseButtons mousebtn) override {};
+    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) override;
 
-    virtual void MouseMoveAction (const Vec& mousepos) override {};
+    virtual void MouseMoveAction (const Vec& mousepos) override;
 
     virtual bool MouseOnWidget (const Vec& mousepos) override;
 
@@ -116,6 +118,13 @@ class Window : public Widget {
 
 
 class Button : public Widget {
+    enum ButtonState {
+        BTN_NORMAL   = 0,
+        BTN_PRESSED  = 1,
+        BTN_FOCUSED  = 2,
+        BTN_DISABLED = 3,
+    };
+
     size_t width;
     size_t height;
     ButtonState state;

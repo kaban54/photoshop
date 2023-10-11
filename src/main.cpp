@@ -20,7 +20,7 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (0, 0, 800, 800);
+    Window mainwin (200, 300, 800, 800);
     mainwin.AddSubWidget (new Window (100, 100, 200, 300));
 
     RenderTarget rt (W, H);
@@ -36,7 +36,7 @@ int main() {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
             }
-/*
+
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
@@ -49,10 +49,12 @@ int main() {
 
             if (event.type == sf::Event::MouseButtonReleased) {
                 mainwin.MouseRelease (mousepos, MOUSE_RIGHT);
-            }*/
+            }
         }
         
+        
         sfwindow.clear(sf::Color (192, 192, 192));
+        rt.ClearScreen (sf::Color (192, 192, 192));
         mainwin.Render(rt);
         rt.Display(sfwindow);
         //sfwindow.draw (fps_txt);

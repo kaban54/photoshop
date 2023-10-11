@@ -17,6 +17,7 @@ class RenderTarget {
 
     void Display (sf::RenderWindow& window) const;
 
+    void ClearScreen (const sf::Color& color);
 
     void DrawRect (const Rect& rect, const Color& col, const RegionSet& regset);
 
