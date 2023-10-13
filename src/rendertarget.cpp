@@ -29,8 +29,8 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
     
-    rectshape.setOutlineThickness (2);
-    rectshape.setOutlineColor (sf::Color::Red);
+    // rectshape.setOutlineThickness (2);
+    // rectshape.setOutlineColor (sf::Color::Red);
 
     ListNode<Rect>* end_of_list = rects.regions.EndOfList();
     ListNode<Rect>* node = rects.regions.GetHead();

@@ -79,9 +79,9 @@ class Widget : public Renderable {
 
     void Move (const Vec& vec);
 
-    void UpdateRegSet (const Rect& movingwindow, Widget* no_update = nullptr);
+    void UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update = nullptr);
 
-    void Show() {UpdateRegSet(Rect(Vec(-1, -1), Vec(0, 0)));}
+    void Show();
 
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 

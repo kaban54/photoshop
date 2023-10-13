@@ -38,10 +38,10 @@ void Widget::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
-void Widget::UpdateRegSet (const Rect& movingwindow, Widget* no_update) {
+void Widget::UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update) {
     RegionSet newregs;
-    newregs.AddRegion (Rect(pos, pos + size));
-    newregs.SubtractRegion(movingwindow);
+    newregs.AddRegion (old_pos);
+    newregs.SubtractRegion (new_pos);
     newregs -= regset;
 
     Render (*rt, newregs);
@@ -50,9 +50,24 @@ void Widget::UpdateRegSet (const Rect& movingwindow, Widget* no_update) {
 
     for (size_t i = 0; i < subwidgets.GetSize(); i++) {
         Widget* wid = subwidgets[i];
-        newregs.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
-        if (wid != no_update) wid -> UpdateRegSet (movingwindow, no_update);
+        regset.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
+        if (wid != no_update) wid -> UpdateRegSet (old_pos, new_pos, no_update);
     }
+}
+
+void Widget::Show() {
+    RegionSet newregs;
+    newregs.AddRegion (Rect (pos, pos + size));
+    newregs -= regset;
+
+    for (size_t i = 0; i < subwidgets.GetSize(); i++) {
+        Widget* wid = subwidgets[i];
+        newregs.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
+        wid -> Show();
+    }
+
+    Render (*rt, newregs);
+    regset += newregs;
 }
 
 void Widget::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
@@ -177,11 +192,12 @@ void Window::MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) {
 void Window::MouseMoveAction (const Vec& mousepos) {
     if (is_moving) {
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
+            Vec old_pos = pos;
             Move (mousepos - hold_pos);
-            if (parent != nullptr) parent -> UpdateRegSet(Rect (pos, size), this);
+            if (parent != nullptr)
+                parent -> UpdateRegSet(Rect (old_pos, old_pos + size), Rect (pos, pos + size), this);
             Render(*rt, regset);
             RenderSubWidgets(*rt);
-
             hold_pos = mousepos;
         }
     }
