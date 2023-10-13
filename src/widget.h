@@ -23,7 +23,7 @@ enum MouseButtons {
 
 class Renderable {
     public:
-    virtual void Render (RenderTarget& screen) const = 0;
+    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const = 0;
 };
 
 class Widget;
@@ -41,6 +41,10 @@ class WidgetManager {
     
     void AddWidget (Widget* widget);
 
+    size_t GetSize() const;
+
+    Widget* operator[] (size_t index);
+
     void Render (RenderTarget& screen) const;
 
     void Move (const Vec& vec);
@@ -53,25 +57,31 @@ class WidgetManager {
 };
 
 class Widget : public Renderable {
-
-    Widget* parent;
     WidgetManager subwidgets;
-
+    
     public:
     Vec pos;
+    Vec size;
     bool visible;
     RegionSet regset;
+    Widget* parent;
+    RenderTarget* rt;
 
     explicit Widget();
 
-    explicit Widget (int x, int y, size_t subw_cap = BASE_WIDGETMAN_CAP);
+    explicit Widget (int x, int y, int w, int h, size_t subw_cap = BASE_WIDGETMAN_CAP);
     
+    void SetRenderTarget (RenderTarget *rt_);
+
     void AddSubWidget (Widget* wid);
 
     void RenderSubWidgets (RenderTarget& screen) const;
 
     void Move (const Vec& vec);
 
+    void UpdateRegSet (const Rect& movingwindow, Widget* no_update = nullptr);
+
+    void Show() {UpdateRegSet(Rect(Vec(-1, -1), Vec(0, 0)));}
 
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 
@@ -91,9 +101,6 @@ class Widget : public Renderable {
 
 
 class Window : public Widget {
-    size_t width;
-    size_t height;
-
     bool is_moving;
     Vec hold_pos;
 
@@ -103,8 +110,7 @@ class Window : public Widget {
 
     explicit Window (int x, int y, size_t w, size_t h);
 
-    virtual void Render (RenderTarget& screen) const override;
-
+    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const override;
 
     virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override;
 
@@ -165,7 +171,7 @@ class ImgButton : public Button {
 
     void SetTextures (const Texture* textures_);
 
-    virtual void Render (RenderTarget& screen) const override;
+    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const override;
 
 
     virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override {};
@@ -173,10 +179,46 @@ class ImgButton : public Button {
     virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) override {};
 };
 
+class TxtButton : public Button {
+    Text txt;
 
-class TextButton : public Button {
+    public:
+
+    explicit TxtButton (double x, double y, size_t w, size_t h, const Text& txt_);
+
+    void SetText (const Text& txt);
+
+    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const override;
+
+
+    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override {};
+
+    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) override {};
+};
+
+//----------------------------------------------------------------------------------------------
+
+
+
+
+class Tool {
+    Vec start_pos;
+    Vec last_pos;
+
+    virtual void PaintOnPress ();
+};
+
+
+class ToolManager {
 
 };
+
+class Canvas : public Widget {
+    bool drawing;
+
+};
+
+//-----------------------------------------------------------------------------------------------
 
 
 void *Recalloc (void *memptr, size_t num, size_t size, size_t old_num);

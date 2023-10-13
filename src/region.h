@@ -24,6 +24,8 @@ class Rect {
     bool Contains (const Rect& rect) const;
 
     void Print() const;
+
+    void Move(const Vec& vec);
 };
 
 bool Intersect (const Rect& rect1, const Rect& rect2);
@@ -45,6 +47,10 @@ class RegionSet {
     const RegionSet& operator+= (const RegionSet& regset2);
 
     const RegionSet& operator-= (const RegionSet& regset2);
+
+    void Move (const Vec& vec);
 };
+
+void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result);
 
 #endif

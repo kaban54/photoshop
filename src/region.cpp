@@ -42,6 +42,12 @@ void Rect::Print () const {
                        "(" << vert2.x << ", " << vert2.y << ")) ";
 }
 
+
+void Rect::Move (const Vec& vec) {
+    vert1 += vec;
+    vert2 += vec;
+}
+
 bool Intersect (const Rect& rect1, const Rect& rect2) {
     return (rect1.vert1.x < rect2.vert2.x &&
             rect2.vert1.x < rect1.vert2.x &&
@@ -169,4 +175,22 @@ const RegionSet& RegionSet::operator-= (const RegionSet& regset2) {
         node = node -> next;
     }
     return *this;
+}
+
+void RegionSet::Move (const Vec& vec) {
+    ListNode<Rect>* end_of_list = regions.EndOfList();
+    ListNode<Rect>* node = regions.GetHead();
+
+    while (node != end_of_list) {
+        node -> val.Move(vec);
+        node = node -> next;
+    }
+}
+
+void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result) {
+    RegionSet tmp;
+    tmp.regions.InsertElems (regset1.regions);
+    tmp -= regset2;
+    result.regions.InsertElems (regset1.regions);
+    result -= tmp;
 }

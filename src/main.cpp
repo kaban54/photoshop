@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
+#include <unistd.h>
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
@@ -23,10 +24,14 @@ int main() {
     bool mouse_pressed = false;
 
     Window mainwin (200, 300, 800, 800);
-    mainwin.AddSubWidget (new Window (100, 100, 200, 300));
+
 
     RenderTarget rt (W, H);
+    mainwin.SetRenderTarget (&rt);
 
+    mainwin.AddSubWidget (new Window (100, 100, 200, 300));
+
+/*
     Texture test_textures[4];
     sf::Texture sf_test_textures[4];
     sf_test_textures[0].loadFromFile ("textures/btn40.png");
@@ -39,6 +44,9 @@ int main() {
     test_textures[3].sftexture = nullptr;
 
     mainwin.AddSubWidget (new ImgButton (50, 50, 80, 80, test_textures));
+*/
+    std::cerr << "OK1!\n";
+    mainwin.Show();
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -63,17 +71,17 @@ int main() {
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
-                mainwin.MouseRelease (mousepos, MOUSE_RIGHT);
+                mainwin.MouseRelease (mousepos, MOUSE_LEFT);
             }
         }
         
                 
         sfwindow.clear(sf::Color (192, 192, 192));
-        rt.ClearScreen (sf::Color (192, 192, 192));
-        mainwin.Render(rt);
         rt.Display(sfwindow);
-        //sfwindow.draw (fps_txt);
         sfwindow.display();
+
+        //std::cerr << mainwin.regset.regions.GetSize() << "\n";
+        //sleep (1);
     }
     return 0;
 }

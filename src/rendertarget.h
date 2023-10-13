@@ -11,6 +11,10 @@ struct Texture {
     sf::Texture* sftexture;
 };
 
+struct Text {
+    sf::Text* sftxt;
+};
+
 class RenderTarget {
     unsigned int width;
     unsigned int height;
