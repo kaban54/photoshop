@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
 #include <unistd.h>
+#include "buttons.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
@@ -23,15 +24,16 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (200, 300, 800, 800);
+    Window mainwin (100, 100, 1500, 1000);
 
 
     RenderTarget rt (W, H);
     mainwin.SetRenderTarget (&rt);
 
-    mainwin.AddSubWidget (new Window (100, 100, 200, 300));
+    //mainwin.AddSubWidget (new Window (100, 100, 200, 300));
+    mainwin.AddSubWidget (new Window (400, 100, 200, 300));
 
-/*
+
     Texture test_textures[4];
     sf::Texture sf_test_textures[4];
     sf_test_textures[0].loadFromFile ("textures/btn40.png");
@@ -44,8 +46,7 @@ int main() {
     test_textures[3].sftexture = nullptr;
 
     mainwin.AddSubWidget (new ImgButton (50, 50, 80, 80, test_textures));
-*/
-    std::cerr << "OK1!\n";
+
     mainwin.Show();
 
     while (sfwindow.isOpen()) {
