@@ -6,8 +6,8 @@ SRCDIR = src/
 
 all: prog
 
-prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o
-	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o $(SFMLFLAGS)
+prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o
+	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o $(SFMLFLAGS)
 
 test: obj/test.o obj/mylist.o obj/region.o obj/vec.o src/mylist.h
 	$(CC) -o test obj/test.o obj/mylist.o obj/region.o obj/vec.o $(SFMLFLAGS)

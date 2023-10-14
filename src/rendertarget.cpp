@@ -21,14 +21,23 @@ void RenderTarget::ClearScreen (const sf::Color& color) {
 }
 
 void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& to_draw) {
+    sf::RectangleShape rectshape;
+    rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
+    rectshape.setPosition (rect.vert1.x, rect.vert1.y);
+    rectshape.setSize (sf::Vector2f(rect.GetWidth(), rect.GetHeight()));
+    screen.draw(rectshape);
+    screen.display();
+}
+
+/*
+void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& to_draw) {
+    sf::RectangleShape rectshape;
+    rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
+
     RegionSet tmp, rects;
     tmp.AddRegion (rect);
 
-    IntersectRegsets (tmp, to_draw, rects);
-
-    sf::RectangleShape rectshape;
-    rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
-    
+    IntersectRegsets (tmp, to_draw, rects);    
     // rectshape.setOutlineThickness (2);
     // rectshape.setOutlineColor (sf::Color::Red);
 
@@ -46,6 +55,7 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet
         node = node -> next;
     }
 }
+*/
 
 void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet& regset) {    
     sf::Color color (col.r, col.g, col.b, col.a);
@@ -69,22 +79,49 @@ void RenderTarget::SetPixel (const Vec& point, const Color& col, const RegionSet
 void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset) {
     sf::Sprite sprite;
     sprite.setTexture (*(texture.sftexture));
-    sprite.setPosition (pos.x, pos.y);
-    sprite.setScale (size.x / texture.sftexture -> getSize().x, size.y / texture.sftexture -> getSize().y);
 
+    double xscale = size.x / texture.sftexture -> getSize().x;
+    double yscale = size.y / texture.sftexture -> getSize().y;
+    sprite.setScale (xscale, yscale);
+    sprite.setPosition (pos.x, pos.y);
     screen.draw (sprite);
     screen.display();
+
+}
+
 /*
+void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset) {
+    sf::Sprite sprite;
+    sprite.setTexture (*(texture.sftexture));
+
+    double xscale = size.x / texture.sftexture -> getSize().x;
+    double yscale = size.y / texture.sftexture -> getSize().y;
+    sprite.setScale (xscale, yscale);
+
     ListNode<Rect>* end_of_list = regset.regions.EndOfList();
     ListNode<Rect>* node = regset.regions.GetHead();
 
     while (node != end_of_list) {
         Rect region = node -> val;
-        sprite.setTextureRect (sf::IntRect(region.vert1.x - pos.x, region.vert1.y - pos.y,
-                                           region.GetWidth(), region.GetHeight()));
+
+        double x = (region.vert1.x - pos.x) / xscale;
+        double y = (region.vert1.y - pos.y) / yscale;
+        double w = region.GetWidth()  / xscale;
+        double h = region.GetHeight() / yscale;
+
+        sprite.setPosition (region.vert1.x, region.vert1.y);
+        sprite.setTextureRect (sf::IntRect(x, y, w, h));
         screen.draw (sprite);
         screen.display();
 
         node = node -> next;
-    }*/
+    }
+}*/
+
+void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet& regset) {
+    sf::Text text = *(txt.sftxt);
+    text.setFillColor (sf::Color (col.r, col.r, col.b, col.a));
+    text.setPosition (pos.x, pos.y);
+    screen.draw (text);
+    screen.display();    
 }

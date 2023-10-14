@@ -18,12 +18,14 @@ enum MouseButtons {
     MOUSE_RIGHT = 1
 };
 
-
-
-
 class Renderable {
     public:
-    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const = 0;
+
+    bool visible;
+
+    Renderable(): visible(true) {}
+
+    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const = 0;
 };
 
 class Widget;
@@ -43,11 +45,13 @@ class WidgetManager {
 
     size_t GetSize() const;
 
-    Widget* operator[] (size_t index);
+    Widget* operator[] (size_t index) const;
 
-    void Render (RenderTarget& screen) const;
+    void Render (RenderTarget& rt) const;
 
     void Move (const Vec& vec);
+
+    void SetRenderTarget (RenderTarget *rt_);
 
     void MousePress (const Vec& mousepos, MouseButtons mousebtn);
 
@@ -57,12 +61,10 @@ class WidgetManager {
 };
 
 class Widget : public Renderable {
-    WidgetManager subwidgets;
-    
     public:
+    WidgetManager subwidgets;
     Vec pos;
     Vec size;
-    bool visible;
     RegionSet regset;
     Widget* parent;
     RenderTarget* rt;
@@ -75,25 +77,21 @@ class Widget : public Renderable {
 
     void AddSubWidget (Widget* wid);
 
-    void RenderSubWidgets (RenderTarget& screen) const;
+    void RenderSubWidgets (RenderTarget& rt) const;
 
-    void Move (const Vec& vec);
+    virtual void Move (const Vec& vec);
+
+    void SetRegions (const RegionSet& regs);
 
     void UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update = nullptr);
 
     void Show();
 
-    void MousePress (const Vec& mousepos, MouseButtons mousebtn);
+    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) = 0;
 
-    void MouseRelease (const Vec& mousepos, MouseButtons mousebtn);
+    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) = 0;
 
-    void MouseMove (const Vec& mousepos);
-
-    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) = 0;
-
-    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) = 0;
-
-    virtual void MouseMoveAction (const Vec& mousepos) = 0;
+    virtual void MouseMove (const Vec& mousepos) = 0;
 
     virtual bool MouseOnWidget (const Vec& mousepos) = 0;
 
@@ -110,24 +108,20 @@ class Window : public Widget {
 
     explicit Window (int x, int y, size_t w, size_t h);
 
-    virtual void Render (RenderTarget& screen, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
 
-    virtual void MousePressAction (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
 
-    virtual void MouseReleaseAction (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
 
-    virtual void MouseMoveAction (const Vec& mousepos) override;
+    virtual void MouseMove (const Vec& mousepos) override;
 
     virtual bool MouseOnWidget (const Vec& mousepos) override;
 
 };
 
 
-
-
 //----------------------------------------------------------------------------------------------
-
-
 
 
 class Tool {

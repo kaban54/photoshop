@@ -35,6 +35,8 @@ class RenderTarget {
     void SetPixel (const Vec& point, const Color& col, const RegionSet& regset);
 
     void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset);
+
+    void DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet& regset);
 };
 
 #endif
