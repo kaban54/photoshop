@@ -37,6 +37,13 @@ bool Rect::Contains (const Rect& rect) const {
             rect.vert2.y <= vert2.y);
 }
 
+bool Rect::Contains (const Vec& vec) const {
+    return (vec.x >= vert1.x &&
+            vec.x <= vert2.x &&
+            vec.y >= vert1.y &&
+            vec.y <= vert2.y);
+}
+
 void Rect::Print () const {
     std::cout << " Rect((" << vert1.x << ", " << vert1.y << "), "
                        "(" << vert2.x << ", " << vert2.y << ")) ";
@@ -190,6 +197,16 @@ void RegionSet::Move (const Vec& vec) {
         node -> val.Move(vec);
         node = node -> next;
     }
+}
+
+bool RegionSet::Contains (const Vec& vec) const {
+    ListNode<Rect>* node = regions.GetHead();
+    while (node != regions.EndOfList()){
+        if (node -> val.Contains(vec)) return true;
+        node = node -> next;
+    }
+    return false;
+    
 }
 
 void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result) {
