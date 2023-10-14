@@ -44,9 +44,11 @@ class RegionSet {
 
     void SubtractRegion (const Rect& region);
 
-    const RegionSet& operator+= (const RegionSet& regset2);
+    void operator+= (const RegionSet& regset2);
 
-    const RegionSet& operator-= (const RegionSet& regset2);
+    void operator-= (const RegionSet& regset2);
+
+    void operator^= (const RegionSet& regset2);
 
     void Move (const Vec& vec);
 };

@@ -155,7 +155,7 @@ void RegionSet::SubtractRegion (const Rect& region) {
     
 }
 
-const RegionSet& RegionSet::operator+= (const RegionSet& regset2) {
+void RegionSet::operator+= (const RegionSet& regset2) {
     ListNode<Rect>* end_of_list = regset2.regions.EndOfList();
     ListNode<Rect>* node = regset2.regions.GetHead();
 
@@ -163,10 +163,9 @@ const RegionSet& RegionSet::operator+= (const RegionSet& regset2) {
         AddRegion (node -> val);
         node = node -> next;
     }
-    return *this;
 }
 
-const RegionSet& RegionSet::operator-= (const RegionSet& regset2) {
+void RegionSet::operator-= (const RegionSet& regset2) {
     ListNode<Rect>* end_of_list = regset2.regions.EndOfList();
     ListNode<Rect>* node = regset2.regions.GetHead();
 
@@ -174,7 +173,13 @@ const RegionSet& RegionSet::operator-= (const RegionSet& regset2) {
         SubtractRegion (node -> val);
         node = node -> next;
     }
-    return *this;
+}
+
+void RegionSet::operator^= (const RegionSet& regset2) {
+    RegionSet tmp;
+    tmp += *this;
+    tmp -= regset2;
+    *this -= tmp;
 }
 
 void RegionSet::Move (const Vec& vec) {
