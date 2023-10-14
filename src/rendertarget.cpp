@@ -20,7 +20,7 @@ void RenderTarget::ClearScreen (const Color& col) {
     screen.display();
 }
 
-void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& to_draw) {
+void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_draw) {
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
     rectshape.setPosition (rect.vert1.x, rect.vert1.y);
@@ -30,7 +30,7 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet
 }
 
 /*
-void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& to_draw) {
+void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_draw) {
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
 
@@ -57,7 +57,7 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet
 }
 */
 
-void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet& regset) {    
+void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, RegionSet* regset) {    
     sf::Color color (col.r, col.g, col.b, col.a);
     sf::Vertex line[] = {
         sf::Vertex (sf::Vector2f (p1.x, p1.y), color),
@@ -67,7 +67,7 @@ void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, con
     screen.display();
 }
 
-void RenderTarget::SetPixel (const Vec& point, const Color& col, const RegionSet& regset) {
+void RenderTarget::SetPixel (const Vec& point, const Color& col, RegionSet* regset) {
     sf::Color color (col.r, col.g, col.b, col.a);
     sf::Vertex pixel[] = {
         sf::Vertex (sf::Vector2f(point.x, point.y), color)
@@ -76,7 +76,7 @@ void RenderTarget::SetPixel (const Vec& point, const Color& col, const RegionSet
     screen.display();
 }
 
-void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset) {
+void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* regset) {
     sf::Sprite sprite;
     sprite.setTexture (*(texture.sftexture));
 
@@ -90,7 +90,7 @@ void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Ve
 }
 
 /*
-void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset) {
+void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* regset) {
     sf::Sprite sprite;
     sprite.setTexture (*(texture.sftexture));
 
@@ -118,17 +118,26 @@ void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Ve
     }
 }*/
 
-void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet& regset) {
+void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, RegionSet* regset) {
     sf::Text text = *(txt.sftxt);
-    text.setFillColor (sf::Color (col.r, col.r, col.b, col.a));
+    text.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
     text.setPosition (pos.x, pos.y);
     screen.draw (text);
     screen.display();    
 }
 
-void RenderTarget::DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet& regset) {
+void RenderTarget::DrawRenderTarget (const RenderTarget& rt, const Vec& pos, RegionSet* regset) {
     sf::Sprite sprite;
     sprite.setTexture (rt.screen.getTexture());
     sprite.setPosition (pos.x, pos.y);
     screen.draw (sprite);
+}
+
+
+void RenderTarget::DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* regset) {
+    sf::CircleShape circle (radius);
+    circle.setPosition (pos.x, pos.y);
+    circle.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
+    screen.draw (circle);
+    screen.display();
 }

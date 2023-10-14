@@ -32,7 +32,7 @@ class ImgButton : public Button {
 
     void SetTextures (const Texture* textures_);
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {};
 
@@ -49,7 +49,7 @@ class TxtButton : public Button {
 
     void SetText (const Text& txt);
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {std::cout << "p\n";}
 
@@ -78,7 +78,7 @@ class BtnMenu : public Widget {
 
     virtual bool MouseOnWidget (const Vec& mousepos) const override;
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 };
 
 #endif

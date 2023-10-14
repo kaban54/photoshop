@@ -20,7 +20,7 @@ int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
 
     sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    sfwindow.setFramerateLimit (300);
+    //sfwindow.setFramerateLimit (300);
 
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
@@ -63,7 +63,7 @@ int main() {
                 
         sfwindow.clear(sf::Color (192, 192, 192));
         rt.ClearScreen (Color (192, 192, 192));
-        mainwin.Render (rt, RegionSet());
+        mainwin.Render (rt, nullptr);
         rt.Display(sfwindow);
         sfwindow.display();
 
@@ -105,5 +105,10 @@ void SetWidgets (Window& mainwin) {
     bm -> AddButton (new TxtButton (50, 300, 200, 80, txt));
     mainwin.AddSubWidget (bm);
 
-    mainwin.AddSubWidget (new Canvas (400, 400, 400, 400, nullptr));
+    static Brush brush (10);
+    static ToolManager tm;
+    tm.SetTool (&brush);
+    tm.SetColor (Color (255, 0, 128));
+
+    mainwin.AddSubWidget (new Canvas (400, 300, 400, 400, &tm));
 }

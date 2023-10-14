@@ -17,13 +17,13 @@ void Button::MouseMove (const Vec& mousepos) {
     if (MouseOnWidget (mousepos)) {
         if (state == BTN_NORMAL) {
             state = BTN_FOCUSED;
-            Render (*rt, regset);
+            Render (*rt, &regset);
         }
     }
     else {
         if (state == BTN_FOCUSED) {
             state = BTN_NORMAL;
-            Render (*rt, regset);
+            Render (*rt, &regset);
         }
     }
 }
@@ -48,7 +48,7 @@ void ImgButton::SetTextures (const Texture* textures_) {
     textures[3] = textures_[3];
 }
 
-void ImgButton::Render (RenderTarget& rt, const RegionSet& to_draw) const {
+void ImgButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawTexture (textures[state], pos, size, to_draw);
 }
 
@@ -62,7 +62,7 @@ void TxtButton::SetText (const Text& txt_) {
     txt = txt_;    
 }
 
-void TxtButton::Render (RenderTarget& rt, const RegionSet& to_draw) const {
+void TxtButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRect (Rect (pos, pos + size), Color (0, 50 * (state + 1), 0), to_draw);
     rt.DrawText (txt, pos + Vec (10, 10), Color (0, 0, 0), to_draw);
 }
@@ -108,13 +108,13 @@ void BtnMenu::MouseMove (const Vec& mousepos) {
     if (MouseOnWidget (mousepos)) {
         if (show_btn -> state == BTN_NORMAL) {
             show_btn -> state = BTN_PRESSED;
-            Render (*rt, regset);
+            Render (*rt, &regset);
         }
     }
     else {
         if (show_btn -> state == BTN_PRESSED) {
             show_btn -> state = BTN_NORMAL;
-            Render (*rt, regset);
+            Render (*rt, &regset);
         }
     }
     if (show_btn -> state == BTN_PRESSED) {
@@ -132,7 +132,7 @@ bool BtnMenu::MouseOnWidget (const Vec& mousepos) const {
     return false;
 }
 
-void BtnMenu::Render (RenderTarget& rt, const RegionSet& to_draw) const {
+void BtnMenu::Render (RenderTarget& rt, RegionSet* to_draw) const {
     show_btn -> Render (rt, to_draw);
     if (show_btn -> state == BTN_PRESSED) {
         for (size_t i = 0; i < subwidgets.GetSize(); i++) {

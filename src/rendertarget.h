@@ -28,17 +28,19 @@ class RenderTarget {
 
     void ClearScreen (const Color& col);
 
-    void DrawRect (const Rect& rect, const Color& col, const RegionSet& regset);
+    void DrawRect (const Rect& rect, const Color& col, RegionSet* regset = nullptr);
 
-    void DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet& regset);
+    void DrawLine (const Vec& p1, const Vec& p2, const Color& col, RegionSet* regset = nullptr);
 
-    void SetPixel (const Vec& point, const Color& col, const RegionSet& regset);
+    void SetPixel (const Vec& point, const Color& col, RegionSet* regset = nullptr);
 
-    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset);
+    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* regset = nullptr);
 
-    void DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet& regset);
+    void DrawText (const Text& txt, const Vec& pos, const Color& col, RegionSet* regset = nullptr);
 
-    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet& regset);
+    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, RegionSet* regset = nullptr);
+
+    void DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* regset = nullptr);
 };
 
 #endif

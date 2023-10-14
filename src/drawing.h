@@ -6,10 +6,11 @@
 
 
 class Tool {
+    public:
     Vec start_pos;
     Vec last_pos;
 
-    public:
+    explicit Tool() {};
 
     virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
 
@@ -58,7 +59,23 @@ class Canvas : public Widget {
 
     virtual bool MouseOnWidget (const Vec& mousepos) const override;
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+};
+
+class Brush : public Tool {
+    unsigned int radius;
+
+    public:
+
+    explicit Brush (unsigned int r);
+
+    void SetRadius (unsigned int r);
+
+    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
 

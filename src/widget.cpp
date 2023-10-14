@@ -136,7 +136,7 @@ Widget* WidgetManager::operator[] (size_t index) const {
 
 void WidgetManager::Render (RenderTarget& rt) const {
     for (size_t i = 0; i < size; i++) {
-        widgets[i] -> Render (rt, widgets[i] -> regset);
+        widgets[i] -> Render (rt, &(widgets[i] -> regset));
         //widgets[i] -> RenderSubWidgets(rt);
     }
 }
@@ -185,7 +185,7 @@ Window::Window (int x, int y, size_t w, size_t h):
     {}
 
 
-void Window::Render (RenderTarget& rt, const RegionSet& to_draw) const {
+void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     Rect rect (pos, pos + size);
     rt.DrawRect (rect, Color(0, 0, 0), to_draw);
     rect.vert1 += Vec (2, 20);

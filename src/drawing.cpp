@@ -1,6 +1,5 @@
 #include "drawing.h"
 
-
 ToolManager::ToolManager ():
     cur_tool (nullptr),
     col (Color(0, 0, 0))
@@ -42,17 +41,17 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
 
 void Canvas::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
     drawing = true;
-    tool_man -> PaintOnPress (&data, &tmp, mousepos);
+    tool_man -> PaintOnPress (&data, &tmp, mousepos - pos);
 }
 
 void Canvas::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
     drawing = false;
-    tool_man -> PaintOnRelease (&data, &tmp, mousepos);
+    tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos);
 }
 
 void Canvas::MouseMove (const Vec& mousepos) {
     if (drawing)
-        tool_man -> PaintOnMove (&data, &tmp, mousepos);
+        tool_man -> PaintOnMove (&data, &tmp, mousepos - pos);
 }
 
 bool Canvas::MouseOnWidget (const Vec& mousepos) const {
@@ -60,7 +59,32 @@ bool Canvas::MouseOnWidget (const Vec& mousepos) const {
            (mousepos.y >= pos.y && mousepos.y <= pos.y + size.y);
 }
 
-void Canvas::Render (RenderTarget& rt, const RegionSet& to_draw) const {
+void Canvas::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRenderTarget(data, pos, to_draw);
     rt.DrawRenderTarget(tmp, pos, to_draw);
+}
+
+
+Brush::Brush (unsigned int r):
+    radius (r)
+    {}
+
+void Brush::SetRadius (unsigned int r) {
+    radius = r;
+}
+
+void Brush::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    start_pos = pos;
+    last_pos = pos;
+    perm -> DrawCircle (pos, radius, col);
+}
+
+void Brush::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    perm -> DrawCircle (pos, radius, col);
+}
+
+void Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    perm -> DrawCircle (pos, radius, col);
 }

@@ -25,7 +25,7 @@ class Renderable {
 
     Renderable(): visible(true) {}
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const = 0;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const = 0;
 };
 
 class Widget;
@@ -108,7 +108,7 @@ class Window : public Widget {
 
     explicit Window (int x, int y, size_t w, size_t h);
 
-    virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
 
