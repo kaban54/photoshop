@@ -111,6 +111,25 @@ void RectTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& po
 }
 
 
+void LineTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    start_pos = pos;
+    last_pos = pos;
+    tmp -> DrawRect (Rect(pos, pos), col);
+}
+
+void LineTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    perm -> DrawLine (start_pos, pos, col);
+}
+
+void LineTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    tmp -> DrawLine (start_pos, pos, col);
+}
+
+
 ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_):
     TxtButton (x, y, w, h, textures_, txt_),
     tool_man (tm),
@@ -125,7 +144,6 @@ void ToolBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
 void ToolBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
     state = BTN_NORMAL;
 }
-
 
 ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col):
     ImgButton (x, y, w, h, textures_),

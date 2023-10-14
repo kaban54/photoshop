@@ -91,6 +91,18 @@ class RectTool : public Tool {
     virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
+class LineTool : public Tool {
+    public:
+
+    explicit LineTool() {}
+
+    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+};
+
 
 class ToolBtn : public TxtButton {
     ToolManager* tool_man;
