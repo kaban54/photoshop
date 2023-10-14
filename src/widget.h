@@ -93,7 +93,7 @@ class Widget : public Renderable {
 
     virtual void MouseMove (const Vec& mousepos) = 0;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) = 0;
+    virtual bool MouseOnWidget (const Vec& mousepos) const = 0;
 
 };
 
@@ -116,32 +116,9 @@ class Window : public Widget {
 
     virtual void MouseMove (const Vec& mousepos) override;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) override;
+    virtual bool MouseOnWidget (const Vec& mousepos) const override;
 
 };
-
-
-//----------------------------------------------------------------------------------------------
-
-
-class Tool {
-    Vec start_pos;
-    Vec last_pos;
-
-    virtual void PaintOnPress ();
-};
-
-
-class ToolManager {
-
-};
-
-class Canvas : public Widget {
-    bool drawing;
-
-};
-
-//-----------------------------------------------------------------------------------------------
 
 
 void *Recalloc (void *memptr, size_t num, size_t size, size_t old_num);

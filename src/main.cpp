@@ -6,6 +6,7 @@
 #include "rendertarget.h"
 #include <unistd.h>
 #include "buttons.h"
+#include "drawing.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
@@ -61,7 +62,7 @@ int main() {
         
                 
         sfwindow.clear(sf::Color (192, 192, 192));
-        rt.ClearScreen (sf::Color (192, 192, 192));
+        rt.ClearScreen (Color (192, 192, 192));
         mainwin.Render (rt, RegionSet());
         rt.Display(sfwindow);
         sfwindow.display();
@@ -103,4 +104,6 @@ void SetWidgets (Window& mainwin) {
     bm -> AddButton (new TxtButton (50, 300, 200, 80, txt));
     bm -> AddButton (new TxtButton (50, 300, 200, 80, txt));
     mainwin.AddSubWidget (bm);
+
+    mainwin.AddSubWidget (new Canvas (400, 400, 400, 400, nullptr));
 }

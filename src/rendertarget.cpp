@@ -15,14 +15,14 @@ void RenderTarget::Display (sf::RenderWindow& window) const {
     window.draw (sprite);
 }
 
-void RenderTarget::ClearScreen (const sf::Color& color) {
-    screen.clear (color);
+void RenderTarget::ClearScreen (const Color& col) {
+    screen.clear (sf::Color(col.r, col.g, col.b, col.a));
     screen.display();
 }
 
 void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet& to_draw) {
     sf::RectangleShape rectshape;
-    rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
+    rectshape.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
     rectshape.setPosition (rect.vert1.x, rect.vert1.y);
     rectshape.setSize (sf::Vector2f(rect.GetWidth(), rect.GetHeight()));
     screen.draw(rectshape);
@@ -124,4 +124,11 @@ void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, 
     text.setPosition (pos.x, pos.y);
     screen.draw (text);
     screen.display();    
+}
+
+void RenderTarget::DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet& regset) {
+    sf::Sprite sprite;
+    sprite.setTexture (rt.screen.getTexture());
+    sprite.setPosition (pos.x, pos.y);
+    screen.draw (sprite);
 }

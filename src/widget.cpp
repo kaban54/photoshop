@@ -232,7 +232,7 @@ void Window::MouseMove (const Vec& mousepos) {
     subwidgets.MouseMove (mousepos);
 }
 
-bool Window::MouseOnWidget (const Vec& mousepos) {
+bool Window::MouseOnWidget (const Vec& mousepos) const {
     return (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x ) &&
            (mousepos.y >= pos.y && mousepos.y <= pos.y + size.y);
 }

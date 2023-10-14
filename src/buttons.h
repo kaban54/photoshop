@@ -18,7 +18,7 @@ class Button : public Widget {
 
     virtual void MouseMove (const Vec& mousepos) override;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) override;
+    virtual bool MouseOnWidget (const Vec& mousepos) const override;
 
 };
 
@@ -76,7 +76,7 @@ class BtnMenu : public Widget {
 
     virtual void MouseMove (const Vec& mousepos) override;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) override;
+    virtual bool MouseOnWidget (const Vec& mousepos) const override;
 
     virtual void Render (RenderTarget& rt, const RegionSet& to_draw) const override;
 };

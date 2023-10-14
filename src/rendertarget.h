@@ -26,7 +26,7 @@ class RenderTarget {
 
     void Display (sf::RenderWindow& window) const;
 
-    void ClearScreen (const sf::Color& color);
+    void ClearScreen (const Color& col);
 
     void DrawRect (const Rect& rect, const Color& col, const RegionSet& regset);
 
@@ -37,6 +37,8 @@ class RenderTarget {
     void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet& regset);
 
     void DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet& regset);
+
+    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet& regset);
 };
 
 #endif

@@ -6,7 +6,7 @@ Button::Button (double x, double y, size_t w, size_t h):
     {}
 
 
-bool Button::MouseOnWidget (const Vec& mousepos) {
+bool Button::MouseOnWidget (const Vec& mousepos) const {
     return (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x ) &&
            (mousepos.y >= pos.y && mousepos.y <= pos.y + size.y);
 }
@@ -122,7 +122,7 @@ void BtnMenu::MouseMove (const Vec& mousepos) {
     }
 }
 
-bool BtnMenu::MouseOnWidget (const Vec& mousepos) {
+bool BtnMenu::MouseOnWidget (const Vec& mousepos) const {
     if (show_btn -> MouseOnWidget(mousepos)) return true;
     if (show_btn -> state != BTN_PRESSED) return false;
 
