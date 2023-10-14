@@ -85,15 +85,17 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 
 void SetWidgets (Window& mainwin) {
 
-    static sf::Text  cols_txt ("colors", GLOBAL_FONT, 30);
-    static sf::Text tools_txt ("tools" , GLOBAL_FONT, 30);
-    static sf::Text brush_txt ("brush" , GLOBAL_FONT, 30);
-    static sf::Text  rect_txt ("rect"  , GLOBAL_FONT, 30);
-    static sf::Text  line_txt ("line"  , GLOBAL_FONT, 30);
+    static sf::Text    cols_txt ("colors" , GLOBAL_FONT, 30);
+    static sf::Text   tools_txt ("tools"  , GLOBAL_FONT, 30);
+    static sf::Text   brush_txt ("brush"  , GLOBAL_FONT, 30);
+    static sf::Text    rect_txt ("rect"   , GLOBAL_FONT, 30);
+    static sf::Text    line_txt ("line"   , GLOBAL_FONT, 30);
+    static sf::Text ellipse_txt ("ellipse", GLOBAL_FONT, 30);
 
     static Brush brush (25);
     static RectTool recttool;
     static LineTool linetool;
+    static EllipseTool elltool;
     static ToolManager tm;
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
@@ -109,9 +111,10 @@ void SetWidgets (Window& mainwin) {
     LoadTxtBtnTextures(textures);
 
     BtnChooseMenu* bm = new BtnChooseMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&brush_txt), &tm, &brush));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& rect_txt), &tm, &recttool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& line_txt), &tm, &linetool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&  brush_txt), &tm, &brush));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&   rect_txt), &tm, &recttool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&   line_txt), &tm, &linetool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&ellipse_txt), &tm, &elltool));
     mainwin.AddSubWidget (bm);
 
     bm = new BtnChooseMenu (new TxtButton (210, 25, 200, 80, textures, Text(&cols_txt)));

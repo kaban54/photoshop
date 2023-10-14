@@ -141,3 +141,12 @@ void RenderTarget::DrawCircle (const Vec& pos, double radius, const Color& col, 
     screen.draw (circle);
     screen.display();
 }
+
+void RenderTarget::DrawEllipse (const Rect& rect, const Color& col, RegionSet* to_draw) {
+    sf::CircleShape ellipse (rect.GetWidth() / 2);
+    ellipse.setPosition (rect.vert1.x, rect.vert1.y);
+    ellipse.setScale (1, rect.GetHeight() / rect.GetWidth());
+    ellipse.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
+    screen.draw (ellipse);
+    screen.display();
+}

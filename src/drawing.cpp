@@ -114,7 +114,7 @@ void RectTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& po
 void LineTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     start_pos = pos;
     last_pos = pos;
-    tmp -> DrawRect (Rect(pos, pos), col);
+    tmp -> DrawLine (pos, pos, col);
 }
 
 void LineTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
@@ -127,6 +127,25 @@ void LineTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& po
     last_pos = pos;
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     tmp -> DrawLine (start_pos, pos, col);
+}
+
+
+void EllipseTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    start_pos = pos;
+    last_pos = pos;
+    tmp -> DrawEllipse (Rect(pos, pos), col);
+}
+
+void EllipseTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    perm -> DrawEllipse (Rect(start_pos, pos), col);
+}
+
+void EllipseTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    tmp -> DrawEllipse (Rect(start_pos, pos), col);
 }
 
 
