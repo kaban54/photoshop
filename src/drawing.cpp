@@ -14,16 +14,16 @@ void ToolManager::SetColor (const Color& col_) {
     col = col_;
 }
 
-void ToolManager::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos) {
-    cur_tool -> PaintOnPress (perm, tmp, pos, col);
+bool ToolManager::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn) {
+    return cur_tool -> PaintOnPress (perm, tmp, pos, btn, col);
 }
 
-void ToolManager::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos) {
-    cur_tool -> PaintOnRelease (perm, tmp, pos, col);
+bool ToolManager::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn) {
+    return cur_tool -> PaintOnRelease (perm, tmp, pos, btn, col);
 }
 
-void ToolManager::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos) {
-    cur_tool -> PaintOnMove (perm, tmp, pos, col);
+bool ToolManager::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos) {
+    return cur_tool -> PaintOnMove (perm, tmp, pos, col);
 }
 
 
@@ -39,21 +39,19 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
         tmp.ClearScreen(Color(0, 0, 0, 0));
     }
 
-void Canvas::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
-    drawing = true;
-    tool_man -> PaintOnPress (&data, &tmp, mousepos - pos);
+void Canvas::MousePress (const Vec& mousepos, MouseButton mousebtn) {
+    drawing = tool_man -> PaintOnPress (&data, &tmp, mousepos - pos, mousebtn);
 }
 
-void Canvas::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+void Canvas::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     if (drawing) {
-        drawing = false;
-        tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos);
+        drawing = tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos, mousebtn);
     }
 }
 
 void Canvas::MouseMove (const Vec& mousepos) {
     if (drawing)
-        tool_man -> PaintOnMove (&data, &tmp, mousepos - pos);
+        drawing = tool_man -> PaintOnMove (&data, &tmp, mousepos - pos);
 }
 
 bool Canvas::MouseOnWidget (const Vec& mousepos) const {
@@ -75,77 +73,114 @@ void Brush::SetRadius (unsigned int r) {
     radius = r;
 }
 
-void Brush::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool Brush::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     start_pos = pos;
     last_pos = pos;
     perm -> DrawCircle (pos, radius, col);
+    return true;
 }
 
-void Brush::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool Brush::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     last_pos = pos;
     perm -> DrawCircle (pos, radius, col);
+    return false;
 }
 
-void Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     last_pos = pos;
     perm -> DrawCircle (pos, radius, col);
+    return true;
 }
 
 
-void RectTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool RectTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     start_pos = pos;
-    last_pos = pos;
     tmp -> DrawRect (Rect(pos, pos), col);
+    return true;
 }
 
-void RectTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool RectTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     perm -> DrawRect (Rect(start_pos, pos), col);
+    return false;
 }
 
-void RectTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool RectTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     tmp -> DrawRect (Rect(start_pos, pos), col);
+    return true;
 }
 
 
-void LineTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool LineTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     start_pos = pos;
-    last_pos = pos;
     tmp -> DrawLine (pos, pos, col);
+    return true;
 }
 
-void LineTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool LineTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     perm -> DrawLine (start_pos, pos, col);
+    return false;
 }
 
-void LineTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool LineTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     tmp -> DrawLine (start_pos, pos, col);
+    return true;
 }
 
 
-void EllipseTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+bool EllipseTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     start_pos = pos;
-    last_pos = pos;
     tmp -> DrawEllipse (Rect(pos, pos), col);
+    return true;
 }
 
-void EllipseTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool EllipseTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     perm -> DrawEllipse (Rect(start_pos, pos), col);
+    return false;
 }
 
-void EllipseTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
-    last_pos = pos;
+bool EllipseTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
     tmp -> DrawEllipse (Rect(start_pos, pos), col);
+    return true;
+}
+
+
+PolyLine::PolyLine () {
+    start_pos = Vec(-1, -1);
+}
+
+bool PolyLine::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
+    if (start_pos.x == -1 && start_pos.y == -1) {
+        start_pos = pos;
+        tmp -> DrawLine (pos, pos, col);
+        return true;
+    }
+    else {
+        perm -> DrawLine (start_pos, pos, col);
+        if (btn == MOUSE_RIGHT) {
+            start_pos = Vec (-1, -1);
+            return false;
+        }
+        else {
+            start_pos = pos;
+            return true;
+        }
+    }
+}
+
+bool PolyLine::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) {
+    return true;
+}
+
+bool PolyLine::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    tmp -> DrawLine (start_pos, pos, col);
+    return true;
 }
 
 
@@ -155,12 +190,12 @@ ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* texture
     tool (tool_)
     {}
 
-void ToolBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void ToolBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     tool_man -> SetTool (tool);
     state = BTN_PRESSED;
 }
 
-void ToolBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+void ToolBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     state = BTN_NORMAL;
 }
 
@@ -170,12 +205,12 @@ ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, const Texture* textu
     color (col)
     {}
 
-void ColorBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void ColorBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     tool_man -> SetColor (color);
     state = BTN_PRESSED;
 }
 
-void ColorBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+void ColorBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     state = BTN_NORMAL;
 }
 

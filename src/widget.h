@@ -13,10 +13,33 @@
 const size_t BASE_WIDGETMAN_CAP = 4;
 const Color WINDOW_BG_COLOR = Color (128, 128, 128);
 
-enum MouseButtons {
+
+enum MouseButton {
     MOUSE_LEFT = 0,
-    MOUSE_RIGHT = 1
+    MOUSE_RIGHT = 1,
+
+    NUM_OF_MBUTONS
 };
+/*
+struct Mouse {
+    enum MouseButtonState {
+        MBTN_UP       = 0,
+        MBTN_PRESSED  = 1,
+        MBTN_DOWN     = 2,
+        MBTN_RELEASED = 3,
+    };
+
+    Vec pos;
+    MouseButtonState btns[NUM_OF_MBUTONS];
+
+    Mouse () {}
+
+    void Press (const Vec& pos_, MouseButton btn);
+
+    void Release (const Vec& pos_, MouseButton btn);
+
+    void Move (const Vec& pos_);
+};*/
 
 class Renderable {
     public:
@@ -53,9 +76,9 @@ class WidgetManager {
 
     void SetRenderTarget (RenderTarget *rt_);
 
-    void MousePress (const Vec& mousepos, MouseButtons mousebtn);
+    void MousePress (const Vec& mousepos, MouseButton mousebtn);
 
-    void MouseRelease (const Vec& mousepos, MouseButtons mousebtn);
+    void MouseRelease (const Vec& mousepos, MouseButton mousebtn);
 
     void MouseMove (const Vec& mousepos);
 };
@@ -87,9 +110,9 @@ class Widget : public Renderable {
 
     void Show();
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) = 0;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) = 0;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) = 0;
 
     virtual void MouseMove (const Vec& mousepos) = 0;
 
@@ -110,9 +133,9 @@ class Window : public Widget {
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseMove (const Vec& mousepos) override;
 

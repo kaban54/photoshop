@@ -12,11 +12,11 @@ class Tool {
 
     explicit Tool() {};
 
-    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) = 0;
 
-    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) = 0;
 
-    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
 
 };
 
@@ -33,11 +33,11 @@ class ToolManager {
 
     void SetColor (const Color& col_);
 
-    void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos);
+    bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn);
 
-    void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos);
-    
-    void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos);
+    bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn);
+
+    bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos);
 };
 
 
@@ -51,9 +51,9 @@ class Canvas : public Widget {
 
     explicit Canvas (int x, int y, int w, int h, ToolManager* tm);
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseMove (const Vec& mousepos) override;
 
@@ -72,11 +72,11 @@ class Brush : public Tool {
 
     void SetRadius (unsigned int r);
 
-    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
 class RectTool : public Tool {
@@ -84,11 +84,11 @@ class RectTool : public Tool {
 
     explicit RectTool() {}
 
-    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
 class LineTool : public Tool {
@@ -96,11 +96,11 @@ class LineTool : public Tool {
 
     explicit LineTool() {}
 
-    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
 class EllipseTool : public Tool {
@@ -108,11 +108,23 @@ class EllipseTool : public Tool {
 
     explicit EllipseTool() {}
 
-    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
 
-    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+};
+
+class PolyLine : public Tool {
+    public:
+
+    explicit PolyLine();
+
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+
+    virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
 
@@ -124,9 +136,9 @@ class ToolBtn : public TxtButton {
 
     ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_);
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
 };
 
@@ -138,9 +150,9 @@ class ColorBtn : public ImgButton {
 
     ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col);
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 };

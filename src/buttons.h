@@ -34,9 +34,9 @@ class ImgButton : public Button {
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {};
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override {};
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override {};
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override {};
 };
 
 
@@ -51,9 +51,9 @@ class TxtButton : public ImgButton {
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {}
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override {}
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override {}
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override {}
 };
 
 
@@ -70,9 +70,9 @@ class BtnChooseMenu : public Widget {
 
     virtual void Move (const Vec& vec) override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseMove (const Vec& mousepos) override;
 

@@ -1,5 +1,24 @@
 #include "widget.h"
 
+/*
+void Mouse::Press (const Vec& pos_, MouseButton btn) {
+    btns[btn] = MBTN_PRESSED;
+    pos = pos_;
+}
+
+void Mouse::Release (const Vec& pos_, MouseButton btn) {
+    btns[btn] = MBTN_RELEASED;
+    pos = pos_;
+}
+
+void Mouse::Move (const Vec& pos_) {
+    for (int i = 0; i < NUM_OF_MBUTONS; i++) {
+        if (btns[i] == MBTN_PRESSED ) btns[i] = MBTN_DOWN;
+        if (btns[i] == MBTN_RELEASED) btns[i] = MBTN_UP;
+    }
+    pos = pos_;
+}*/
+
 Widget::Widget():
     pos (0, 0),
     size (0, 0),
@@ -153,14 +172,14 @@ void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
     }
 }
 
-void WidgetManager::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void WidgetManager::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     for (size_t i = 0; i < size; i++) {
         if (widgets[i] -> MouseOnWidget (mousepos))
             widgets[i] -> MousePress (mousepos, mousebtn);
     }
 }
 
-void WidgetManager::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+void WidgetManager::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     for (size_t i = 0; i < size; i++) {
         widgets[i] -> MouseRelease (mousepos, mousebtn);
     }
@@ -195,7 +214,7 @@ void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     subwidgets.Render(rt);
 }
 
-void Window::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void Window::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x &&
         mousepos.y >= pos.y && mousepos.y <= pos.y + 30 && mousebtn == MOUSE_LEFT) {
             is_moving = true;
@@ -206,7 +225,7 @@ void Window::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
     subwidgets.MousePress (mousepos, mousebtn);
 }
 
-void Window::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     if (mousebtn == MOUSE_LEFT) {
         is_moving = false;
         hold_pos = Vec (0, 0);

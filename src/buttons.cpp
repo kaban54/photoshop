@@ -92,7 +92,7 @@ void BtnChooseMenu::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
-void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (show_btn -> state != BTN_PRESSED) return;
     if (mousebtn == MOUSE_LEFT && MouseOnWidget(mousepos) && !show_btn -> MouseOnWidget(mousepos)) {
         for (size_t i = 0; i < subwidgets.GetSize(); i++) {
@@ -104,7 +104,7 @@ void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
     }
 }
 
-void BtnChooseMenu::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {}
+void BtnChooseMenu::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {}
 
 void BtnChooseMenu::MouseMove (const Vec& mousepos) {
     if (show_btn -> state == BTN_DISABLED) return;
