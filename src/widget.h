@@ -65,7 +65,7 @@ class WidgetManager {
 
     size_t GetSize() const;
 
-    void Render (RenderTarget& rt, RegionSet* to_draw) const;
+    void Render (RenderTarget& rt) const;
 
     void Move (const Vec& vec);
 

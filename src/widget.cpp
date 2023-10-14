@@ -64,7 +64,7 @@ void Widget::SubtractRegset (const RegionSet& regions) {
     subwidgets.SubtractRegset(regions);
 }
 
-
+/*
 void Widget::SetRegions (const RegionSet& regs) {
     regset.regions.Clear();
     RegionSet tmp;
@@ -85,7 +85,7 @@ void Widget::SetRegions (const RegionSet& regs) {
         regset.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
     }
 }
-
+*/
 
 /*
 void Widget::UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update) {
@@ -128,7 +128,7 @@ void Widget::Show() {
 
     if (parent != nullptr) {        
         parent -> subwidgets.MoveToTail(this);
-
+        parent -> Show();
     }
 
 }
@@ -168,10 +168,11 @@ size_t WidgetManager::GetSize() const {
     widgets.GetSize();
 }
 
-void WidgetManager::Render (RenderTarget& rt, RegionSet *to_draw) const {
+void WidgetManager::Render (RenderTarget& rt) const {
     ListNode<Widget*>* node = widgets.GetHead();
     while (node != widgets.EndOfList()) {
-        node -> val -> Render(rt, to_draw);
+        node -> val -> Render(rt, &(node -> val -> regset));
+        node -> val -> RenderSubWidgets (rt);
         node = node -> next;
     }
 }
@@ -224,11 +225,12 @@ void WidgetManager::MouseMove (const Vec& mousepos) {
     }
 }
 
-void WidgetManager::Remove (Widget* wid) {
+void WidgetManager::MoveToTail (Widget* wid) {
     ListNode<Widget*>* node = widgets.GetHead();
     while (node != widgets.EndOfList()) {
         if (node -> val == wid) {
             widgets.Remove(node);
+            widgets.InsertTail(wid);
             break;
         }
         node = node -> next;

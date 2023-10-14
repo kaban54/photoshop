@@ -1,14 +1,13 @@
 #include "buttons.h"
 
 Button::Button (double x, double y, size_t w, size_t h):
-    Widget (x, y, w, h, 0),
+    Widget (x, y, w, h),
     state (BTN_NORMAL)
     {}
 
 
 bool Button::MouseOnWidget (const Vec& mousepos) const {
-    return (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x ) &&
-           (mousepos.y >= pos.y && mousepos.y <= pos.y + size.y);
+    return Rect(pos, pos + size).Contains(mousepos);
 }
 
 void Button::MouseMove (const Vec& mousepos) {
@@ -94,13 +93,24 @@ void BtnChooseMenu::Move (const Vec& vec) {
 
 void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (show_btn -> state != BTN_PRESSED) return;
+
     if (mousebtn == MOUSE_LEFT && MouseOnWidget(mousepos) && !show_btn -> MouseOnWidget(mousepos)) {
+        
+        ListNode<Widget*>* node = subwidgets.widgets.GetHead();
+        while (node != subwidgets.widgets.EndOfList()) {
+            if (node -> val -> MouseOnWidget(mousepos)) node -> val -> MousePress(mousepos, mousebtn);
+            node = node -> next;
+        }
+
+        
         for (size_t i = 0; i < subwidgets.GetSize(); i++) {
             if (subwidgets[i] -> MouseOnWidget(mousepos)) {
                 subwidgets[i] -> MousePress(mousepos, mousebtn);
             }
             else subwidgets[i] -> MouseRelease(mousepos, mousebtn);
         }
+
+
     }
 }
 
