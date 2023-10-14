@@ -14,6 +14,8 @@ sf::Font GLOBAL_FONT;
 const int W = 2160;
 const int H = 1440;
 
+void LoadTxtBtnTextures (Texture textures[4]);
+
 void SetWidgets (Window& mainwin);
 
 int main() {
@@ -25,7 +27,7 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (400, 400, 1600, 800);
+    Window mainwin (400, 400, 1920, 1080);
 
     RenderTarget rt (W, H);
     SetWidgets (mainwin);
@@ -73,42 +75,46 @@ int main() {
     return 0;
 }
 
+void LoadTxtBtnTextures (Texture textures[4]) {
+    static sf::Texture sftextures[4];
+    sftextures[0].loadFromFile ("textures/e0.png");
+    sftextures[1].loadFromFile ("textures/e1.png");
+    sftextures[2].loadFromFile ("textures/e2.png");
+    textures[0].sftexture = sftextures + 0;
+    textures[1].sftexture = sftextures + 1;
+    textures[2].sftexture = sftextures + 2;
+    textures[3].sftexture = nullptr;
+}
+
 void SetWidgets (Window& mainwin) {
-    Window* win = new Window (100, 100, 200, 300);
-    win -> AddSubWidget (new Window (50, 50, 100, 100));
-    mainwin.AddSubWidget (win);
-    mainwin.AddSubWidget (new Window (600, 50, 100, 100));
 
-    // Texture test_textures[4];
-    // sf::Texture sf_test_textures[4];
-    // sf_test_textures[0].loadFromFile ("textures/btn40.png");
-    // sf_test_textures[1].loadFromFile ("textures/btn41.png");
-    // sf_test_textures[2].loadFromFile ("textures/btn42.png");
+    static sf::Text tools_txt;
+    tools_txt.setFont(GLOBAL_FONT);
+    tools_txt.setString("tools");
+    tools_txt.setCharacterSize (30);
+    static sf::Text brush_txt;
+    brush_txt.setFont(GLOBAL_FONT);
+    brush_txt.setString("brush");
+    brush_txt.setCharacterSize (30);
 
-    // test_textures[0].sftexture = sf_test_textures + 0;
-    // test_textures[1].sftexture = sf_test_textures + 1;
-    // test_textures[2].sftexture = sf_test_textures + 2;
-    // test_textures[3].sftexture = nullptr;
-
-    //mainwin.AddSubWidget (new ImgButton (50, 50, 80, 80, test_textures));
-
-    static sf::Text sftxt;
-    sftxt.setFont(GLOBAL_FONT);
-    sftxt.setString("test");
-    sftxt.setCharacterSize (30);
-
-    Text txt;
-    txt.sftxt = &sftxt;
-
-    BtnMenu* bm = new BtnMenu (new TxtButton (50, 300, 200, 80, txt));
-    bm -> AddButton (new TxtButton (50, 300, 200, 80, txt));
-    bm -> AddButton (new TxtButton (50, 300, 200, 80, txt));
-    mainwin.AddSubWidget (bm);
-
-    static Brush brush (10);
+    static Brush brush (25);
     static ToolManager tm;
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    mainwin.AddSubWidget (new Canvas (400, 300, 400, 400, &tm));
+    Texture textures[4];
+    LoadTxtBtnTextures(textures);
+
+    BtnMenu* bm = new BtnMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&brush_txt), &tm, &brush));
+    //bm -> AddButton (new TxtButton (0, 0, 200, 80, txt));
+    mainwin.AddSubWidget (bm);
+
+
+    Window* win = new Window (200, 200, 610, 630);
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    mainwin.AddSubWidget (win);
+    win = new Window (1000, 100, 610, 630);
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    mainwin.AddSubWidget (win);
 }

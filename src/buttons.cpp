@@ -53,8 +53,8 @@ void ImgButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
 }
 
 
-TxtButton::TxtButton (double x, double y, size_t w, size_t h, const Text& txt_):
-    Button (x, y, w, h),
+TxtButton::TxtButton (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_):
+    ImgButton (x, y, w, h, textures_),
     txt (txt_)
     {}
 
@@ -63,8 +63,8 @@ void TxtButton::SetText (const Text& txt_) {
 }
 
 void TxtButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
-    rt.DrawRect (Rect (pos, pos + size), Color (0, 50 * (state + 1), 0), to_draw);
-    rt.DrawText (txt, pos + Vec (10, 10), Color (0, 0, 0), to_draw);
+    rt.DrawTexture (textures[state], pos, size, to_draw);
+    rt.DrawText (txt, pos + Vec (40, 18), Color (0, 0, 0), to_draw);
 }
 
 

@@ -88,3 +88,15 @@ void Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, 
     last_pos = pos;
     perm -> DrawCircle (pos, radius, col);
 }
+
+
+ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_):
+    TxtButton (x, y, w, h, textures_, txt_),
+    tool_man (tm),
+    tool (tool_)
+    {}
+
+void ToolBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+    tool_man -> SetTool (tool);
+    state = BTN_PRESSED;
+}

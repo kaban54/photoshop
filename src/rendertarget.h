@@ -9,10 +9,18 @@
 
 struct Texture {
     sf::Texture* sftexture;
+
+    explicit Texture () {}
+
+    explicit Texture (sf::Texture* sftexture_): sftexture (sftexture_) {}
 };
 
 struct Text {
     sf::Text* sftxt;
+
+    explicit Text () {}
+
+    explicit Text (sf::Text* sftxt_): sftxt (sftxt_) {} 
 };
 
 class RenderTarget {

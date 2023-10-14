@@ -136,7 +136,7 @@ void RenderTarget::DrawRenderTarget (const RenderTarget& rt, const Vec& pos, Reg
 
 void RenderTarget::DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* regset) {
     sf::CircleShape circle (radius);
-    circle.setPosition (pos.x, pos.y);
+    circle.setPosition (pos.x - radius, pos.y - radius);
     circle.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
     screen.draw (circle);
     screen.display();

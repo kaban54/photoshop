@@ -24,11 +24,11 @@ class Button : public Widget {
 
 
 class ImgButton : public Button {
-    Texture textures[4];
-
     public:
 
-    explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_ = nullptr);
+    Texture textures[4];
+
+    explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_);
 
     void SetTextures (const Texture* textures_);
 
@@ -40,18 +40,18 @@ class ImgButton : public Button {
 };
 
 
-class TxtButton : public Button {
+class TxtButton : public ImgButton {
     Text txt;
 
     public:
 
-    explicit TxtButton (double x, double y, size_t w, size_t h, const Text& txt_);
+    explicit TxtButton (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_);
 
     void SetText (const Text& txt);
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {std::cout << "p\n";}
+    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override {}
 
     virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override {}
 };

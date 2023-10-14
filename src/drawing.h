@@ -62,6 +62,7 @@ class Canvas : public Widget {
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 };
 
+
 class Brush : public Tool {
     unsigned int radius;
 
@@ -78,5 +79,18 @@ class Brush : public Tool {
     virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
+
+
+class ToolBtn : public TxtButton {
+    ToolManager* tool_man;
+    Tool* tool;
+
+    public:
+
+    ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_);
+
+    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+
+};
 
 #endif
