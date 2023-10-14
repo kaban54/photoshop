@@ -79,6 +79,17 @@ class Brush : public Tool {
     virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
 };
 
+class RectTool : public Tool {
+    public:
+
+    explicit RectTool() {}
+
+    virtual void PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual void PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+};
 
 
 class ToolBtn : public TxtButton {
@@ -90,6 +101,8 @@ class ToolBtn : public TxtButton {
     ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_);
 
     virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+
+    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
 
 };
 

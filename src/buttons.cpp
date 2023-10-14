@@ -69,40 +69,44 @@ void TxtButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
 
 
 
-BtnMenu::BtnMenu (Button* show_btn_):
+BtnChooseMenu::BtnChooseMenu (Button* show_btn_):
     Widget (show_btn_ -> pos.x, show_btn_ -> pos.y, show_btn_ -> size.x, show_btn_ -> size.y),
     show_btn (show_btn_)
     {}
 
-BtnMenu::~BtnMenu() {
+BtnChooseMenu::~BtnChooseMenu() {
     delete (show_btn);
 }
 
-void BtnMenu::AddButton (Button* btn) {
+void BtnChooseMenu::AddButton (Button* btn) {
     btn -> pos = pos + Vec (0, size.y);
     btn -> size.x = size.x;
     size.y += btn -> size.y;
     subwidgets.AddWidget (btn);
 }
 
-void BtnMenu::Move (const Vec& vec) {
+void BtnChooseMenu::Move (const Vec& vec) {
     show_btn -> Move (vec);
     pos += vec;
     regset.Move(vec);
     subwidgets.Move(vec);
 }
 
-void BtnMenu::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
     if (show_btn -> state != BTN_PRESSED) return;
-    subwidgets.MousePress (mousepos, mousebtn);
+    if (mousebtn == MOUSE_LEFT && MouseOnWidget(mousepos) && !show_btn -> MouseOnWidget(mousepos)) {
+        for (size_t i = 0; i < subwidgets.GetSize(); i++) {
+            if (subwidgets[i] -> MouseOnWidget(mousepos)) {
+                subwidgets[i] -> MousePress(mousepos, mousebtn);
+            }
+            else subwidgets[i] -> MouseRelease(mousepos, mousebtn);
+        }
+    }
 }
 
-void BtnMenu::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
-    if (show_btn -> state != BTN_PRESSED) return;
-    subwidgets.MouseRelease (mousepos, mousebtn);
-}
+void BtnChooseMenu::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {}
 
-void BtnMenu::MouseMove (const Vec& mousepos) {
+void BtnChooseMenu::MouseMove (const Vec& mousepos) {
     if (show_btn -> state == BTN_DISABLED) return;
 
     if (MouseOnWidget (mousepos)) {
@@ -122,7 +126,7 @@ void BtnMenu::MouseMove (const Vec& mousepos) {
     }
 }
 
-bool BtnMenu::MouseOnWidget (const Vec& mousepos) const {
+bool BtnChooseMenu::MouseOnWidget (const Vec& mousepos) const {
     if (show_btn -> MouseOnWidget(mousepos)) return true;
     if (show_btn -> state != BTN_PRESSED) return false;
 
@@ -132,7 +136,7 @@ bool BtnMenu::MouseOnWidget (const Vec& mousepos) const {
     return false;
 }
 
-void BtnMenu::Render (RenderTarget& rt, RegionSet* to_draw) const {
+void BtnChooseMenu::Render (RenderTarget& rt, RegionSet* to_draw) const {
     show_btn -> Render (rt, to_draw);
     if (show_btn -> state == BTN_PRESSED) {
         for (size_t i = 0; i < subwidgets.GetSize(); i++) {

@@ -57,14 +57,14 @@ class TxtButton : public ImgButton {
 };
 
 
-class BtnMenu : public Widget {
+class BtnChooseMenu : public Widget {
     Button* show_btn;
 
     public:
 
-    BtnMenu(Button* show_btn_);
+    BtnChooseMenu(Button* show_btn_);
 
-    ~BtnMenu();
+    ~BtnChooseMenu();
 
     void AddButton (Button* btn);
 

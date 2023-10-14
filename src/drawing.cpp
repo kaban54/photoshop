@@ -45,8 +45,10 @@ void Canvas::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
 }
 
 void Canvas::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
-    drawing = false;
-    tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos);
+    if (drawing) {
+        drawing = false;
+        tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos);
+    }
 }
 
 void Canvas::MouseMove (const Vec& mousepos) {
@@ -90,6 +92,25 @@ void Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, 
 }
 
 
+void RectTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    start_pos = pos;
+    last_pos = pos;
+    tmp -> DrawRect (Rect(pos, pos), col);
+}
+
+void RectTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    perm -> DrawRect (Rect(start_pos, pos), col);
+}
+
+void RectTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
+    last_pos = pos;
+    tmp -> ClearScreen (Color (0, 0, 0, 0));
+    tmp -> DrawRect (Rect(start_pos, pos), col);
+}
+
+
 ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_):
     TxtButton (x, y, w, h, textures_, txt_),
     tool_man (tm),
@@ -99,4 +120,8 @@ ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* texture
 void ToolBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
     tool_man -> SetTool (tool);
     state = BTN_PRESSED;
+}
+
+void ToolBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+    state = BTN_NORMAL;
 }

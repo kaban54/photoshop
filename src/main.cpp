@@ -27,7 +27,7 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (400, 400, 1920, 1080);
+    Window mainwin (100, 100, 1920, 1080);
 
     RenderTarget rt (W, H);
     SetWidgets (mainwin);
@@ -68,9 +68,6 @@ int main() {
         mainwin.Render (rt, nullptr);
         rt.Display(sfwindow);
         sfwindow.display();
-
-        //std::cerr << mainwin.regset.regions.GetSize() << "\n";
-        //sleep (1);
     }
     return 0;
 }
@@ -96,8 +93,13 @@ void SetWidgets (Window& mainwin) {
     brush_txt.setFont(GLOBAL_FONT);
     brush_txt.setString("brush");
     brush_txt.setCharacterSize (30);
+    static sf::Text rect_txt;
+    rect_txt.setFont(GLOBAL_FONT);
+    rect_txt.setString("rect");
+    rect_txt.setCharacterSize (30);
 
     static Brush brush (25);
+    static RectTool recttool;
     static ToolManager tm;
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
@@ -105,9 +107,10 @@ void SetWidgets (Window& mainwin) {
     Texture textures[4];
     LoadTxtBtnTextures(textures);
 
-    BtnMenu* bm = new BtnMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
+    BtnChooseMenu* bm = new BtnChooseMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
     bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&brush_txt), &tm, &brush));
-    //bm -> AddButton (new TxtButton (0, 0, 200, 80, txt));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& rect_txt), &tm, &recttool));
+
     mainwin.AddSubWidget (bm);
 
 
