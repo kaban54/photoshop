@@ -85,6 +85,10 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 
 void SetWidgets (Window& mainwin) {
 
+    static sf::Text cols_txt;
+    cols_txt.setFont(GLOBAL_FONT);
+    cols_txt.setString("colors");
+    cols_txt.setCharacterSize (30);
     static sf::Text tools_txt;
     tools_txt.setFont(GLOBAL_FONT);
     tools_txt.setString("tools");
@@ -104,20 +108,30 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    Texture textures[4];
-    LoadTxtBtnTextures(textures);
-
-    BtnChooseMenu* bm = new BtnChooseMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&brush_txt), &tm, &brush));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& rect_txt), &tm, &recttool));
-
-    mainwin.AddSubWidget (bm);
-
-
     Window* win = new Window (200, 200, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
     mainwin.AddSubWidget (win);
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
     mainwin.AddSubWidget (win);
+
+    Texture textures[4];
+    LoadTxtBtnTextures(textures);
+
+    BtnChooseMenu* bm = new BtnChooseMenu (new TxtButton (5, 25, 200, 80, textures, Text(&tools_txt)));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&brush_txt), &tm, &brush));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& rect_txt), &tm, &recttool));
+    mainwin.AddSubWidget (bm);
+
+    bm = new BtnChooseMenu (new TxtButton (210, 25, 200, 80, textures, Text(&cols_txt)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 255)));
+    mainwin.AddSubWidget (bm);
+
 }

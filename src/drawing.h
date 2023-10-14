@@ -106,4 +106,19 @@ class ToolBtn : public TxtButton {
 
 };
 
+class ColorBtn : public ImgButton {
+    ToolManager* tool_man;
+    Color color;
+
+    public:
+
+    ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col);
+
+    virtual void MousePress (const Vec& mousepos, MouseButtons mousebtn) override;
+
+    virtual void MouseRelease (const Vec& mousepos, MouseButtons mousebtn) override;
+
+    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+};
+
 #endif

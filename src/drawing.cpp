@@ -125,3 +125,24 @@ void ToolBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
 void ToolBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
     state = BTN_NORMAL;
 }
+
+
+ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col):
+    ImgButton (x, y, w, h, textures_),
+    tool_man (tm),
+    color (col)
+    {}
+
+void ColorBtn::MousePress (const Vec& mousepos, MouseButtons mousebtn) {
+    tool_man -> SetColor (color);
+    state = BTN_PRESSED;
+}
+
+void ColorBtn::MouseRelease (const Vec& mousepos, MouseButtons mousebtn) {
+    state = BTN_NORMAL;
+}
+
+void ColorBtn::Render (RenderTarget& rt, RegionSet* to_draw) const {
+    rt.DrawTexture (textures[state], pos, size, to_draw);
+    rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color);
+}
