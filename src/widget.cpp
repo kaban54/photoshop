@@ -54,7 +54,7 @@ void Widget::RenderSubWidgets (RenderTarget& rt) const {
 
 void Widget::Move (const Vec& vec) {
     pos += vec;
-    //regset.Move(vec);
+    regset.Move(vec);
     subwidgets.Move(vec);
 }
 
@@ -264,6 +264,8 @@ void Window::MouseMove (const Vec& mousepos) {
             Move (mousepos - hold_pos);
             regset.regions.Clear();
             Show();
+            Render(*rt, &regset);
+            RenderSubWidgets(*rt);
             hold_pos = mousepos;
         }
     }
