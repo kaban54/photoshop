@@ -20,16 +20,6 @@ void RenderTarget::ClearScreen (const Color& col) {
     screen.display();
 }
 
-// void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_draw) {
-//     sf::RectangleShape rectshape;
-//     rectshape.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
-//     rectshape.setPosition (rect.vert1.x, rect.vert1.y);
-//     rectshape.setSize (sf::Vector2f(rect.GetWidth(), rect.GetHeight()));
-//     screen.draw(rectshape);
-//     screen.display();
-// }
-
-
 void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_draw) {
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
@@ -54,7 +44,6 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_d
     }
 }
 
-
 void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, RegionSet* regset) {    
     sf::Color color (col.r, col.g, col.b, col.a);
     sf::Vertex line[] = {
@@ -73,20 +62,6 @@ void RenderTarget::SetPixel (const Vec& point, const Color& col, RegionSet* regs
     screen.draw (pixel, 1, sf::Points);
     screen.display();
 }
-
-// void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* regset) {
-//     sf::Sprite sprite;
-//     sprite.setTexture (*(texture.sftexture));
-
-//     double xscale = size.x / texture.sftexture -> getSize().x;
-//     double yscale = size.y / texture.sftexture -> getSize().y;
-//     sprite.setScale (xscale, yscale);
-//     sprite.setPosition (pos.x, pos.y);
-//     screen.draw (sprite);
-//     screen.display();
-
-// }
-
 
 void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* regset) {
     sf::Sprite sprite;

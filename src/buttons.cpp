@@ -3,12 +3,9 @@
 Button::Button (double x, double y, size_t w, size_t h):
     Widget (x, y, w, h),
     state (BTN_NORMAL)
-    {}
-
-
-bool Button::MouseOnWidget (const Vec& mousepos) const {
-    return Rect(pos, pos + size).Contains(mousepos);
-}
+    {
+        GetMaxRegset(&regset);
+    }
 
 void Button::MouseMove (const Vec& mousepos) {
     if (state == BTN_DISABLED) return;
@@ -91,6 +88,14 @@ void BtnChooseMenu::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
+void BtnChooseMenu::GetMaxRegset (RegionSet* dst) const {
+    if (show_btn -> state != BTN_PRESSED) show_btn -> GetMaxRegset(dst);
+    else {
+        assert(dst != nullptr);
+        dst -> AddRegion (Rect(pos, pos + size));
+    }
+}
+
 void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (show_btn -> state != BTN_PRESSED) return;
 
@@ -113,13 +118,15 @@ void BtnChooseMenu::MouseMove (const Vec& mousepos) {
     if (MouseOnWidget (mousepos)) {
         if (show_btn -> state == BTN_NORMAL) {
             show_btn -> state = BTN_PRESSED;
-            Render (*rt, &regset);
+            show_btn -> Render(*rt, &regset);
+            Show();
         }
     }
     else {
         if (show_btn -> state == BTN_PRESSED) {
             show_btn -> state = BTN_NORMAL;
-            Render (*rt, &regset);
+            Show();
+            show_btn -> Render(*rt, &regset);
         }
     }
     if (show_btn -> state == BTN_PRESSED) {
@@ -137,8 +144,6 @@ bool BtnChooseMenu::MouseOnWidget (const Vec& mousepos) const {
 void BtnChooseMenu::Render (RenderTarget& rt, RegionSet* to_draw) const {
     show_btn -> Render (rt, to_draw);
     if (show_btn -> state == BTN_PRESSED) {
-        // for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-        //     subwidgets[i] -> Render (rt, to_draw);
-        // }
+        RenderSubWidgets(rt);
     }
 }

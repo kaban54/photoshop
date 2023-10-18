@@ -33,11 +33,8 @@ int main() {
     mainwin.SetRenderTarget (&rt);
 
     mainwin.Show();
-
     mainwin.Render(rt, &(mainwin.regset));
     mainwin.RenderSubWidgets(rt);
-
-    std::cerr << "ok2\n";
 
     while (sfwindow.isOpen()) {
         sf::Event event;

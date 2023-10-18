@@ -85,7 +85,7 @@ class WidgetManager {
 
     void MoveToTail (Widget* wid);
 
-    void UpdateRegset();
+    void UpdateRegset (const RegionSet& parent_regs);
 };
 
 class Widget : public Renderable {
@@ -115,7 +115,7 @@ class Widget : public Renderable {
 
     void Show();
 
-    virtual void GetMaxRegset(RegionSet* src) const;
+    virtual void GetMaxRegset (RegionSet* dst) const;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
 
@@ -123,8 +123,7 @@ class Widget : public Renderable {
 
     virtual void MouseMove (const Vec& mousepos) = 0;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) const = 0;
-
+    virtual bool MouseOnWidget (const Vec& mousepos) const;
 };
 
 
@@ -143,9 +142,6 @@ class Window : public Widget {
     virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseMove (const Vec& mousepos) override;
-
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
-
 };
 
 #endif

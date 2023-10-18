@@ -17,9 +17,6 @@ class Button : public Widget {
     explicit Button (double x, double y, size_t w, size_t h);
 
     virtual void MouseMove (const Vec& mousepos) override;
-
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
-
 };
 
 
@@ -33,10 +30,6 @@ class ImgButton : public Button {
     void SetTextures (const Texture* textures_);
 
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
-
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override {};
-
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override {};
 };
 
 
@@ -69,6 +62,8 @@ class BtnChooseMenu : public Widget {
     void AddButton (Button* btn);
 
     virtual void Move (const Vec& vec) override;
+
+    virtual void GetMaxRegset (RegionSet* dst) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
