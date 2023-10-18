@@ -65,7 +65,7 @@ void Widget::SubtractRegset (const RegionSet& regions) {
 }
 
 void Widget::Show() {
-    if (parent != nullptr) {        
+    if (parent != nullptr) {     
         parent -> subwidgets.MoveToTail(this);
         parent -> Show();
     }
@@ -82,7 +82,6 @@ void Widget::GetMaxRegset (RegionSet* src) const {
 }
 
 void Widget::UpdateRegset(const RegionSet& regs) {
-
     RegionSet to_draw;
     to_draw += regs;
 
@@ -95,14 +94,10 @@ void Widget::UpdateRegset(const RegionSet& regs) {
 
     RegionSet newregs;
     newregs += to_draw;
-
-    //newregs.Print();
-
     to_draw -= regset;
     Render(*rt, &to_draw);
     regset.regions.Clear();
     regset += newregs;
-
     subwidgets.UpdateRegset();
 }
 
@@ -187,7 +182,8 @@ bool WidgetManager::MouseOnWidgets (const Vec& mousepos) const {
 
 void WidgetManager::MouseMove (const Vec& mousepos) {
     ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* end_of_list = widgets.EndOfList();
+    while (node != end_of_list) {
         node -> val -> MouseMove(mousepos);
         node = node -> next;
     }
@@ -197,8 +193,12 @@ void WidgetManager::MoveToTail (Widget* wid) {
     ListNode<Widget*>* node = widgets.GetHead();
     while (node != widgets.EndOfList()) {
         if (node -> val == wid) {
-            widgets.Remove(node);
-            widgets.InsertTail(wid);
+            node -> next -> prev = node -> prev;
+            node -> prev -> next = node -> next;
+            node -> prev = widgets.GetTail();
+            node -> next = widgets.EndOfList();
+            node -> next -> prev = node;
+            node -> prev -> next = node;
             break;
         }
         node = node -> next;
@@ -261,19 +261,13 @@ void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
 void Window::MouseMove (const Vec& mousepos) {
     if (is_moving) {
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
-            
             Move (mousepos - hold_pos);
             regset.regions.Clear();
-            std::cerr << "oks1\n";
             Show();
-            std::cerr << regset.regions.GetSize() << "oks2\n";
-
             hold_pos = mousepos;
         }
     }
-    std::cout << "oks3\n";
     subwidgets.MouseMove (mousepos);
-    std::cout << "oks4\n";
 }
 
 bool Window::MouseOnWidget (const Vec& mousepos) const {

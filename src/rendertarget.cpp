@@ -36,11 +36,9 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_d
 
     RegionSet tmp, rects;
     tmp.AddRegion (rect);
-
     IntersectRegsets (tmp, *to_draw, rects);    
     // rectshape.setOutlineThickness (2);
     // rectshape.setOutlineColor (sf::Color::Red);
-
     ListNode<Rect>* end_of_list = rects.regions.EndOfList();
     ListNode<Rect>* node = rects.regions.GetHead();
 

@@ -111,8 +111,6 @@ class Widget : public Renderable {
 
     void SubtractRegset (const RegionSet& regions);
 
-    void SetRegions (const RegionSet& regs);
-
     void UpdateRegset (const RegionSet& regs);
 
     void Show();

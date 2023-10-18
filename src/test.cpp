@@ -16,7 +16,7 @@ int main() {
     regset.AddRegion (Rect (Vec (0, 200), Vec (600, 600)));
 
     RegionSet regset2;
-    regset2.AddRegion (Rect (Vec (300, 300), Vec (500, 500)));
+    regset2.AddRegion (Rect (Vec (0, 300), Vec (600, 500)));
 
     RegionSet regset3;
     regset3.AddRegion (Rect (Vec (100, 100), Vec (350, 550)));
