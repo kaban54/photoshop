@@ -55,6 +55,8 @@ class RegionSet {
     void Move (const Vec& vec);
 
     bool Contains (const Vec& vec) const;
+
+    void Print() const;
 };
 
 void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result);

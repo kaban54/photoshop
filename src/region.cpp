@@ -206,7 +206,17 @@ bool RegionSet::Contains (const Vec& vec) const {
         node = node -> next;
     }
     return false;
-    
+}
+
+void RegionSet::Print() const {
+    std::cout << "regset:\n";
+    ListNode<Rect>* node = regions.GetHead();
+    while (node != regions.EndOfList()){
+        std::cout << "\t";
+        node -> val.Print();
+        std::cout << "\n";
+        node = node -> next;
+    }
 }
 
 void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result) {

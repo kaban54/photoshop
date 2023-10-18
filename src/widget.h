@@ -59,7 +59,9 @@ class WidgetManager {
 
     MyList<Widget*> widgets;
     
-    explicit WidgetManager ();
+    explicit WidgetManager();
+
+    ~WidgetManager();
     
     void AddWidget (Widget* widget);
 
@@ -76,6 +78,8 @@ class WidgetManager {
     void MousePress (const Vec& mousepos, MouseButton mousebtn);
 
     void MouseRelease (const Vec& mousepos, MouseButton mousebtn);
+
+    bool MouseOnWidgets (const Vec& mousepos) const;
 
     void MouseMove (const Vec& mousepos);
 
@@ -112,6 +116,8 @@ class Widget : public Renderable {
     void UpdateRegset (const RegionSet& regs);
 
     void Show();
+
+    virtual void GetMaxRegset(RegionSet* src) const;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
 

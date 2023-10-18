@@ -99,18 +99,9 @@ void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
         ListNode<Widget*>* node = subwidgets.widgets.GetHead();
         while (node != subwidgets.widgets.EndOfList()) {
             if (node -> val -> MouseOnWidget(mousepos)) node -> val -> MousePress(mousepos, mousebtn);
+            else node -> val -> MouseRelease (mousepos, mousebtn);
             node = node -> next;
         }
-
-        
-        for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-            if (subwidgets[i] -> MouseOnWidget(mousepos)) {
-                subwidgets[i] -> MousePress(mousepos, mousebtn);
-            }
-            else subwidgets[i] -> MouseRelease(mousepos, mousebtn);
-        }
-
-
     }
 }
 
@@ -140,17 +131,14 @@ bool BtnChooseMenu::MouseOnWidget (const Vec& mousepos) const {
     if (show_btn -> MouseOnWidget(mousepos)) return true;
     if (show_btn -> state != BTN_PRESSED) return false;
 
-    for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-        if (subwidgets[i] -> MouseOnWidget(mousepos)) return true;
-    }
-    return false;
+    return subwidgets.MouseOnWidgets(mousepos);
 }
 
 void BtnChooseMenu::Render (RenderTarget& rt, RegionSet* to_draw) const {
     show_btn -> Render (rt, to_draw);
     if (show_btn -> state == BTN_PRESSED) {
-        for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-            subwidgets[i] -> Render (rt, to_draw);
-        }
+        // for (size_t i = 0; i < subwidgets.GetSize(); i++) {
+        //     subwidgets[i] -> Render (rt, to_draw);
+        // }
     }
 }
