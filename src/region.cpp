@@ -214,7 +214,9 @@ bool RegionSet::Contains (const Vec& vec) const {
 void RegionSet::Print() const {
     ListNode<Rect>* node = regions.GetHead();
     while (node != regions.EndOfList()){
+        std::cerr << "\t";
         node -> val.Print();
+        std::cerr << "\n";
         node = node -> next;
     }
 }

@@ -26,7 +26,7 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (100, 100, 900, 900);
+    Window mainwin (500, 500, 900, 900);
 
     RenderTarget rt (W, H);
     SetWidgets (mainwin);
@@ -83,10 +83,29 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 }
 
 void SetWidgets (Window& mainwin) {
-    mainwin.AddSubWidget (new Window (100, 300, 300, 300));
-    mainwin.AddSubWidget (new Window (500, 100, 300, 300));
+    mainwin.AddSubWidget (new Window (100, 140, 300, 300));
+    // mainwin.AddSubWidget (new Window (500, 100, 300, 300));
     
-    Window* win = new Window (100, 500, 400, 200);
-    win->AddSubWidget (new Window (100, 50, 200, 100));
-    mainwin.AddSubWidget(win);
+    // Window* win = new Window (100, 500, 400, 200);
+    // win->AddSubWidget (new Window (100, 50, 200, 100));
+    // mainwin.AddSubWidget(win);
+
+
+    static sf::Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
+    static sf::Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
+    static sf::Text     rect_txt ("rect"    , GLOBAL_FONT, 30);
+
+    static Brush brush (25);
+    static RectTool recttool;
+    static ToolManager tm;
+    tm.SetTool (&brush);
+    tm.SetColor (Color (255, 0, 128));
+
+    Texture textures[4];
+    LoadTxtBtnTextures(textures);
+
+    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, textures, Text(&tools_txt));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&   brush_txt), &tm, &brush));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&    rect_txt), &tm, &recttool));
+    mainwin.AddSubWidget (bm);
 }

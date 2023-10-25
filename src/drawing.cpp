@@ -41,6 +41,7 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
 
 void Canvas::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (MouseOnWidget(mousepos)) {
+        Show();
         drawing = tool_man -> PaintOnPress (&data, &tmp, mousepos - pos, mousebtn);
         Render (*rt, &regset);
     }
@@ -216,14 +217,18 @@ void ColorBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (MouseOnWidget(mousepos)) {
         tool_man -> SetColor (color);
         state = BTN_PRESSED;
+        Render (*rt, &regset);
     }
 }
 
 void ColorBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    if (state == BTN_PRESSED) state = BTN_NORMAL;
+    if (state == BTN_PRESSED) {
+        state = BTN_NORMAL;
+        Render (*rt, &regset);
+    }
 }
 
 void ColorBtn::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawTexture (textures[state], pos, size, to_draw);
-    rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color);
+    rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color, to_draw);
 }

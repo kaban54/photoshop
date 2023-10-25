@@ -107,7 +107,7 @@ class Widget : public Renderable {
 
     void RenderSubWidgets (RenderTarget& rt) const;
 
-    virtual void Move (const Vec& vec);
+    void Move (const Vec& vec);
 
     void SubtractRegset (const RegionSet& regions);
 

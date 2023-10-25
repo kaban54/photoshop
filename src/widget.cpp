@@ -1,24 +1,5 @@
 #include "widget.h"
 
-/*
-void Mouse::Press (const Vec& pos_, MouseButton btn) {
-    btns[btn] = MBTN_PRESSED;
-    pos = pos_;
-}
-
-void Mouse::Release (const Vec& pos_, MouseButton btn) {
-    btns[btn] = MBTN_RELEASED;
-    pos = pos_;
-}
-
-void Mouse::Move (const Vec& pos_) {
-    for (int i = 0; i < NUM_OF_MBUTONS; i++) {
-        if (btns[i] == MBTN_PRESSED ) btns[i] = MBTN_DOWN;
-        if (btns[i] == MBTN_RELEASED) btns[i] = MBTN_UP;
-    }
-    pos = pos_;
-}*/
-
 Widget::Widget():
     pos (0, 0),
     size (0, 0),
@@ -57,7 +38,6 @@ void Widget::Move (const Vec& vec) {
     regset.Move(vec);
     subwidgets.Move(vec);
 }
-
 
 void Widget::SubtractRegset (const RegionSet& regions) {
     regset -= regions;
@@ -210,7 +190,7 @@ void WidgetManager::MoveToTail (Widget* wid) {
     }
 }
 
-void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {
+void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {    
     ListNode<Widget*>* node = widgets.GetHead();
     while (node != widgets.EndOfList()) {
         RegionSet regs;
@@ -219,8 +199,9 @@ void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {
 
         ListNode<Widget*>* node2 = node -> next;
         while (node2 != widgets.EndOfList()) {
-            Rect to_sub (node2 -> val -> pos, node2 -> val -> pos + node2 -> val -> size);
-            regs.SubtractRegion(to_sub);
+            RegionSet to_sub;
+            node2 -> val -> GetMaxRegset(&to_sub);
+            regs -= to_sub;
             node2 = node2 -> next;
         }
 
@@ -233,9 +214,7 @@ void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {
 Window::Window (int x, int y, size_t w, size_t h):
     Widget (x, y, w, h),
     is_moving (false)
-    {
-        regset.AddRegion(Rect(pos, pos + size));
-    }
+    {}
 
 void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     Rect rect (pos, pos + size);

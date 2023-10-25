@@ -50,18 +50,13 @@ class TxtButton : public ImgButton {
 };
 
 
-class BtnChooseMenu : public Widget {
-    Button* show_btn;
-
+class BtnChooseMenu : public TxtButton {
+    Vec nextbtn_pos;
     public:
 
-    BtnChooseMenu(Button* show_btn_);
-
-    ~BtnChooseMenu();
+    explicit BtnChooseMenu(double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_);
 
     void AddButton (Button* btn);
-
-    virtual void Move (const Vec& vec) override;
 
     virtual void GetMaxRegset (RegionSet* dst) const override;
 
@@ -72,8 +67,6 @@ class BtnChooseMenu : public Widget {
     virtual void MouseMove (const Vec& mousepos) override;
 
     virtual bool MouseOnWidget (const Vec& mousepos) const override;
-
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 };
 
 #endif
