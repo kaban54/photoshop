@@ -23,6 +23,8 @@ class Rect {
 
     bool Contains (const Rect& rect) const;
 
+    bool Contains (const Vec& vec) const;
+
     void Print() const;
 
     void Move(const Vec& vec);
@@ -44,11 +46,17 @@ class RegionSet {
 
     void SubtractRegion (const Rect& region);
 
-    const RegionSet& operator+= (const RegionSet& regset2);
+    void operator+= (const RegionSet& regset2);
 
-    const RegionSet& operator-= (const RegionSet& regset2);
+    void operator-= (const RegionSet& regset2);
+
+    void operator^= (const RegionSet& regset2);
 
     void Move (const Vec& vec);
+
+    bool Contains (const Vec& vec) const;
+
+    void Print() const;
 };
 
 void IntersectRegsets (const RegionSet& regset1, const RegionSet& regset2, RegionSet& result);

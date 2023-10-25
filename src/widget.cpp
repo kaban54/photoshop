@@ -1,24 +1,5 @@
 #include "widget.h"
 
-/*
-void Mouse::Press (const Vec& pos_, MouseButton btn) {
-    btns[btn] = MBTN_PRESSED;
-    pos = pos_;
-}
-
-void Mouse::Release (const Vec& pos_, MouseButton btn) {
-    btns[btn] = MBTN_RELEASED;
-    pos = pos_;
-}
-
-void Mouse::Move (const Vec& pos_) {
-    for (int i = 0; i < NUM_OF_MBUTONS; i++) {
-        if (btns[i] == MBTN_PRESSED ) btns[i] = MBTN_DOWN;
-        if (btns[i] == MBTN_RELEASED) btns[i] = MBTN_UP;
-    }
-    pos = pos_;
-}*/
-
 Widget::Widget():
     pos (0, 0),
     size (0, 0),
@@ -27,11 +8,11 @@ Widget::Widget():
     regset ()
     {}
 
-Widget::Widget (int x, int y, int w, int h, size_t subw_cap):
+Widget::Widget (int x, int y, int w, int h):
     pos (x, y),
     size (w, h),
     parent (nullptr),
-    subwidgets (subw_cap),
+    subwidgets (),
     regset ()
     {}
 
@@ -44,6 +25,7 @@ void Widget::AddSubWidget (Widget* wid) {
     wid -> Move (pos);
     wid -> parent = this;
     wid -> SetRenderTarget (rt);
+    SubtractRegset(wid -> regset);
     subwidgets.AddWidget (wid);
 }
 
@@ -57,145 +39,176 @@ void Widget::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
-void Widget::SetRegions (const RegionSet& regs) {
+void Widget::SubtractRegset (const RegionSet& regions) {
+    regset -= regions;
+    subwidgets.SubtractRegset(regions);
+}
+
+void Widget::Show() {
+    if (parent != nullptr) {     
+        parent -> subwidgets.MoveToTail(this);
+        parent -> Show();
+    }
+    else {
+        RegionSet regs;
+        GetMaxRegset(&regs);
+        UpdateRegset(regs);
+    }
+}
+
+void Widget::GetMaxRegset (RegionSet* dst) const {
+    assert(dst != nullptr);
+    dst -> AddRegion (Rect(pos, pos + size));
+}
+
+bool Widget::MouseOnWidget (const Vec& mousepos) const {
+    return regset.Contains(mousepos);
+}
+
+void Widget::UpdateRegset(const RegionSet& regs) {
+    RegionSet to_draw;
+    to_draw += regs;
+
+    ListNode<Widget*>* node = subwidgets.widgets.GetHead();
+    while (node != subwidgets.widgets.EndOfList()) {
+        RegionSet child_max_regset;
+        node -> val -> GetMaxRegset(&child_max_regset);
+        to_draw -= child_max_regset;
+        node = node -> next;
+    }
+
+    RegionSet newregs;
+    newregs += to_draw;
+    to_draw -= regset;
+    if (to_draw.regions.GetSize() > 0) Render(*rt, &to_draw);
     regset.regions.Clear();
-    RegionSet tmp;
-    tmp.AddRegion (Rect (pos, pos + size));
-    IntersectRegsets (tmp, regs, regset);
-
-    for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-        Widget* wid = subwidgets[i];
-        RegionSet wid_regs;
-        tmp.regions.Clear();
-        tmp.AddRegion (Rect (wid -> pos, wid -> pos + wid -> size));
-        IntersectRegsets (tmp, regset, wid_regs);
-        for (size_t j = i + 1; j < subwidgets.GetSize(); j++) {
-            wid_regs.SubtractRegion(Rect (subwidgets[j] -> pos, subwidgets[j] -> pos + subwidgets[j] -> size));
-        }
-        wid -> SetRegions (wid_regs);
-
-        regset.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
-    }
-}
-/*
-void Widget::UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update) {
-    RegionSet newregs;
-    newregs.AddRegion (old_pos);
-    newregs.SubtractRegion (new_pos);
-    newregs -= regset;
-
-    Render (*rt, newregs);
-
-    regset.AddRegion (Rect (pos, pos + size));
-
-    for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-        Widget* wid = subwidgets[i];
-        regset.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
-        if (wid != no_update) wid -> UpdateRegSet (old_pos, new_pos, no_update);
-    }
-}
-
-void Widget::Show() {
-    RegionSet newregs;
-    newregs.AddRegion (Rect (pos, pos + size));
-    newregs -= regset;
-
-    for (size_t i = 0; i < subwidgets.GetSize(); i++) {
-        Widget* wid = subwidgets[i];
-        newregs.SubtractRegion (Rect (wid -> pos, wid -> pos + wid -> size));
-        wid -> Show();
-    }
-
-    Render (*rt, newregs);
     regset += newregs;
+    subwidgets.UpdateRegset(regs);
 }
-*/
-/*
-void Widget::Show() {
-    RegionSet tmp;
-    tmp.AddRegion (Rect(pos, pos + size));
-    SetRegions(tmp);
-    Render (*rt, regset);
-    RenderSubWidgets (*rt);
-}
-*/
 
-WidgetManager::WidgetManager (size_t cap):
-    size (0),
-    capacity (cap)
-    {
-        widgets = (Widget**) calloc (capacity, sizeof (widgets[0]));
-        assert (widgets != nullptr);
-    }
+
+WidgetManager::WidgetManager ():
+    widgets()
+    {}
 
 WidgetManager::~WidgetManager() {
-    for (size_t i = 0; i < size; i++) {
-        delete widgets[i];
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        delete (node -> val);
+        node = node -> next;
     }
-    free (widgets);
 }
 
 void WidgetManager::AddWidget (Widget *wid) {
-    if (size >= capacity) {
-        widgets = (Widget**) Recalloc (widgets, capacity * 2, sizeof (widgets[0]), capacity);
-        assert (widgets != nullptr);
-        capacity *= 2;
-    }
-    widgets[size++] = wid;
+    widgets.InsertTail(wid);
 }
 
 size_t WidgetManager::GetSize() const {
-    return size;
-}
-
-Widget* WidgetManager::operator[] (size_t index) const {
-    assert (index < size);
-    return widgets[index];
+    return widgets.GetSize();
 }
 
 void WidgetManager::Render (RenderTarget& rt) const {
-    for (size_t i = 0; i < size; i++) {
-        widgets[i] -> Render (rt, &(widgets[i] -> regset));
-        //widgets[i] -> RenderSubWidgets(rt);
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> Render(rt, &(node -> val -> regset));
+        node -> val -> RenderSubWidgets (rt);
+        node = node -> next;
     }
 }
 
 void WidgetManager::Move (const Vec& vec) {
-    for (size_t i = 0; i < size; i++) {
-        widgets[i] -> Move (vec);
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> Move(vec);
+        node = node -> next;
+    }
+}
+
+void WidgetManager::SubtractRegset (const RegionSet& regions) {
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> SubtractRegset(regions);
+        node = node -> next;
     }
 }
 
 void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
-    for (size_t i = 0; i < size; i++) {
-        widgets[i] -> SetRenderTarget(rt_);
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> SetRenderTarget(rt_);
+        node = node -> next;
     }
 }
 
 void WidgetManager::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    for (size_t i = 0; i < size; i++) {
-        if (widgets[i] -> MouseOnWidget (mousepos))
-            widgets[i] -> MousePress (mousepos, mousebtn);
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> MousePress(mousepos, mousebtn);
+        node = node -> next;
     }
 }
 
 void WidgetManager::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    for (size_t i = 0; i < size; i++) {
-        widgets[i] -> MouseRelease (mousepos, mousebtn);
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        node -> val -> MouseRelease(mousepos, mousebtn);
+        node = node -> next;
     }
+}
+
+bool WidgetManager::MouseOnWidgets (const Vec& mousepos) const {
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        if (node -> val -> MouseOnWidget (mousepos)) return true;
+        node = node -> next;
+    }
+    return false;
 }
 
 void WidgetManager::MouseMove (const Vec& mousepos) {
-    for (size_t i = 0; i < size; i++) {
-        widgets[i] -> MouseMove (mousepos);
+    ListNode<Widget*>* node = widgets.GetHead();
+    ListNode<Widget*>* end_of_list = widgets.EndOfList();
+    while (node != end_of_list) {
+        node -> val -> MouseMove(mousepos);
+        node = node -> next;
     }
 }
 
+void WidgetManager::MoveToTail (Widget* wid) {
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        if (node -> val == wid) {
+            node -> next -> prev = node -> prev;
+            node -> prev -> next = node -> next;
+            node -> prev = widgets.GetTail();
+            node -> next = widgets.EndOfList();
+            node -> next -> prev = node;
+            node -> prev -> next = node;
+            break;
+        }
+        node = node -> next;
+    }
+}
 
-Window::Window (size_t w, size_t h):
-    Widget (0, 0, w, h),
-    is_moving (false)
-    {}
+void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {    
+    ListNode<Widget*>* node = widgets.GetHead();
+    while (node != widgets.EndOfList()) {
+        RegionSet regs;
+        node -> val -> GetMaxRegset(&regs);
+        regs ^= parent_regs;
+
+        ListNode<Widget*>* node2 = node -> next;
+        while (node2 != widgets.EndOfList()) {
+            RegionSet to_sub;
+            node2 -> val -> GetMaxRegset(&to_sub);
+            regs -= to_sub;
+            node2 = node2 -> next;
+        }
+
+        node -> val -> UpdateRegset(regs);
+        node = node -> next;
+    }
+}
 
 
 Window::Window (int x, int y, size_t w, size_t h):
@@ -203,30 +216,27 @@ Window::Window (int x, int y, size_t w, size_t h):
     is_moving (false)
     {}
 
-
 void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     Rect rect (pos, pos + size);
     rt.DrawRect (rect, Color(0, 0, 0), to_draw);
     rect.vert1 += Vec (2, 20);
     rect.vert2 -= Vec (2, 2);
     rt.DrawRect (rect, WINDOW_BG_COLOR, to_draw);
-
-    subwidgets.Render(rt);
 }
 
 void Window::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    if (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x &&
-        mousepos.y >= pos.y && mousepos.y <= pos.y + 30 && mousebtn == MOUSE_LEFT) {
-            is_moving = true;
-            hold_pos = mousepos;
-        }
-    //if (MouseOnWidget(mousepos)) Show();
-
     subwidgets.MousePress (mousepos, mousebtn);
+    if (MouseOnWidget(mousepos)) {
+        if (Rect(pos, pos + Vec(size.x, 30)).Contains(mousepos) && mousebtn == MOUSE_LEFT) {
+                is_moving = true;
+                hold_pos = mousepos;
+            }
+        Show();
+    }
 }
 
 void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    if (mousebtn == MOUSE_LEFT) {
+    if (mousebtn == MOUSE_LEFT && is_moving) {
         is_moving = false;
         hold_pos = Vec (0, 0);
     }
@@ -236,32 +246,13 @@ void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
 void Window::MouseMove (const Vec& mousepos) {
     if (is_moving) {
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
-            /*
-            Vec old_pos = pos;
             Move (mousepos - hold_pos);
-            if (parent != nullptr)
-                parent -> UpdateRegSet(Rect (old_pos, old_pos + size), Rect (pos, pos + size), this);
-            Render(*rt, regset);
-            RenderSubWidgets(*rt);*/
-
-            Move (mousepos - hold_pos);
+            regset.regions.Clear();
+            Show();
+            Render(*rt, &regset);
+            RenderSubWidgets(*rt);
             hold_pos = mousepos;
         }
     }
     subwidgets.MouseMove (mousepos);
-}
-
-bool Window::MouseOnWidget (const Vec& mousepos) const {
-    return (mousepos.x >= pos.x && mousepos.x <= pos.x + size.x ) &&
-           (mousepos.y >= pos.y && mousepos.y <= pos.y + size.y);
-}
-
-
-void *Recalloc (void *memptr, size_t num, size_t size, size_t old_num) {
-    memptr = realloc (memptr, num * size);
-    if (memptr == nullptr) return nullptr;
-
-    if (num > old_num) memset ((void *) ((char *) memptr + old_num * size), 0, (num - old_num) * size);
-
-    return memptr;
 }

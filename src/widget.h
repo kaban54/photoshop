@@ -9,6 +9,7 @@
 #include "rendertarget.h"
 #include "region.h"
 #include "color.h"
+#include "mylist.h"
 
 const size_t BASE_WIDGETMAN_CAP = 4;
 const Color WINDOW_BG_COLOR = Color (128, 128, 128);
@@ -54,13 +55,11 @@ class Renderable {
 class Widget;
 
 class WidgetManager {
-    Widget** widgets;
-    size_t size;
-    size_t capacity;
-    
     public:
+
+    MyList<Widget*> widgets;
     
-    WidgetManager (size_t cap = BASE_WIDGETMAN_CAP);
+    explicit WidgetManager();
 
     ~WidgetManager();
     
@@ -68,11 +67,11 @@ class WidgetManager {
 
     size_t GetSize() const;
 
-    Widget* operator[] (size_t index) const;
-
     void Render (RenderTarget& rt) const;
 
     void Move (const Vec& vec);
+
+    void SubtractRegset (const RegionSet& regions);
 
     void SetRenderTarget (RenderTarget *rt_);
 
@@ -80,7 +79,13 @@ class WidgetManager {
 
     void MouseRelease (const Vec& mousepos, MouseButton mousebtn);
 
+    bool MouseOnWidgets (const Vec& mousepos) const;
+
     void MouseMove (const Vec& mousepos);
+
+    void MoveToTail (Widget* wid);
+
+    void UpdateRegset (const RegionSet& parent_regs);
 };
 
 class Widget : public Renderable {
@@ -94,7 +99,7 @@ class Widget : public Renderable {
 
     explicit Widget();
 
-    explicit Widget (int x, int y, int w, int h, size_t subw_cap = BASE_WIDGETMAN_CAP);
+    explicit Widget (int x, int y, int w, int h);
     
     void SetRenderTarget (RenderTarget *rt_);
 
@@ -102,13 +107,15 @@ class Widget : public Renderable {
 
     void RenderSubWidgets (RenderTarget& rt) const;
 
-    virtual void Move (const Vec& vec);
+    void Move (const Vec& vec);
 
-    void SetRegions (const RegionSet& regs);
+    void SubtractRegset (const RegionSet& regions);
 
-    void UpdateRegSet (const Rect& old_pos, const Rect& new_pos, Widget* no_update = nullptr);
+    void UpdateRegset (const RegionSet& regs);
 
     void Show();
+
+    virtual void GetMaxRegset (RegionSet* dst) const;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
 
@@ -116,8 +123,7 @@ class Widget : public Renderable {
 
     virtual void MouseMove (const Vec& mousepos) = 0;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) const = 0;
-
+    virtual bool MouseOnWidget (const Vec& mousepos) const;
 };
 
 
@@ -126,8 +132,6 @@ class Window : public Widget {
     Vec hold_pos;
 
     public:
-
-    explicit Window (size_t w, size_t h);
 
     explicit Window (int x, int y, size_t w, size_t h);
 
@@ -138,12 +142,6 @@ class Window : public Widget {
     virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseMove (const Vec& mousepos) override;
-
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
-
 };
-
-
-void *Recalloc (void *memptr, size_t num, size_t size, size_t old_num);
 
 #endif

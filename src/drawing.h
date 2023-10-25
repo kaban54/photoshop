@@ -57,8 +57,6 @@ class Canvas : public Widget {
 
     virtual void MouseMove (const Vec& mousepos) override;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
-
     virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 };
 
