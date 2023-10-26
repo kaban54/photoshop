@@ -101,20 +101,28 @@ void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Ve
 
 void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, RegionSet* regset) {
     sf::Text text = *(txt.sftxt);
+    text.setPosition (0, 0);
     sf::FloatRect bounds = text.getGlobalBounds();
     sf::RenderTexture sfrt;
-    sfrt.create(bounds.width, text.getCharacterSize());
+    sfrt.create(bounds.width, bounds.height);
     sfrt.clear (sf::Color::Transparent);
     text.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
-    text.setPosition (0, 0);
+    text.setPosition (-bounds.left, -bounds.top);
     sfrt.draw (text);
     sfrt.display();
 
     sf::Sprite sprite;
     sprite.setTexture (sfrt.getTexture());
 
-    ListNode<Rect>* end_of_list = regset -> regions.EndOfList();
-    ListNode<Rect>* node = regset -> regions.GetHead();
+    Rect txtrect (Vec(), Vec(bounds.width, bounds.height));
+    txtrect.Move (pos);
+
+    RegionSet newregset;
+    newregset.AddRegion (txtrect);
+    newregset ^= *regset;
+
+    ListNode<Rect>* end_of_list = newregset.regions.EndOfList();
+    ListNode<Rect>* node = newregset.regions.GetHead();
 
     while (node != end_of_list) {
         Rect region = node -> val;
