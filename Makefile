@@ -6,11 +6,15 @@ SRCDIR = src/
 
 all: prog
 
-prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o obj/drawing.o
-	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o obj/drawing.o $(SFMLFLAGS)
+prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o \
+	  obj/region.o obj/buttons.o obj/drawing.o
+	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o \
+			      obj/region.o obj/buttons.o obj/drawing.o $(SFMLFLAGS)
 
-regtest: obj/regtest.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o obj/drawing.o
-	$(CC) -o reg obj/regtest.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/region.o obj/buttons.o obj/drawing.o $(SFMLFLAGS)
+regtest: src/regtest.cpp src/vec.cpp src/widget.cpp src/rendertarget.cpp src/color.cpp \
+		 src/region.cpp src/buttons.cpp src/drawing.cpp
+	$(CC) -o reg src/regtest.cpp src/vec.cpp src/widget.cpp src/rendertarget.cpp src/color.cpp \
+				 src/region.cpp src/buttons.cpp src/drawing.cpp -DREGDEBUG $(SFMLFLAGS)
 
 test: obj/test.o obj/mylist.o obj/region.o obj/vec.o src/mylist.h
 	$(CC) -o test obj/test.o obj/mylist.o obj/region.o obj/vec.o $(SFMLFLAGS)

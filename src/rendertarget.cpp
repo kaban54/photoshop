@@ -33,9 +33,7 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, RegionSet* to_d
     else {
         RegionSet tmp, rects;
         tmp.AddRegion (rect);
-        IntersectRegsets (tmp, *to_draw, rects);    
-        // rectshape.setOutlineThickness (2);
-        // rectshape.setOutlineColor (sf::Color::Red);
+        IntersectRegsets (tmp, *to_draw, rects);
         ListNode<Rect>* end_of_list = rects.regions.EndOfList();
         ListNode<Rect>* node = rects.regions.GetHead();
 
@@ -165,7 +163,6 @@ void RenderTarget::DrawRenderTarget (const RenderTarget& rt, const Vec& pos, Reg
     }
 }
 
-
 void RenderTarget::DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* to_draw) {
     sf::CircleShape circle (radius);
     circle.setPosition (pos.x - radius, pos.y - radius);
@@ -181,4 +178,24 @@ void RenderTarget::DrawEllipse (const Rect& rect, const Color& col, RegionSet* t
     ellipse.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
     screen.draw (ellipse);
     screen.display();
+}
+
+void RenderTarget::DrawRegset (const RegionSet& regset, const Color& col) {
+    sf::RectangleShape rect;
+    const int outl_thikness = 5;
+    rect.setFillColor (sf::Color::Transparent);
+    rect.setOutlineThickness (outl_thikness);
+    rect.setOutlineColor (sf::Color(col.r, col.g, col.b, col.a));
+
+    ListNode<Rect>* end_of_list = regset.regions.EndOfList();
+    ListNode<Rect>* node = regset.regions.GetHead();
+    while (node != end_of_list) {
+        Rect region = node -> val;
+        rect.setSize (sf::Vector2f (region.GetWidth() - outl_thikness * 2, region.GetHeight() - outl_thikness * 2));
+        rect.setPosition (region.vert1.x + outl_thikness, region.vert1.y + outl_thikness);
+        screen.draw (rect);
+        screen.display();
+
+        node = node -> next;
+    }
 }

@@ -51,6 +51,8 @@ class RenderTarget {
     void DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* to_draw = nullptr);
 
     void DrawEllipse (const Rect& rect, const Color& col, RegionSet* to_draw = nullptr);
+
+    void DrawRegset (const RegionSet& regset, const Color& col);
 };
 
 #endif

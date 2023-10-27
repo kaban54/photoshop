@@ -64,6 +64,10 @@ void Canvas::MouseMove (const Vec& mousepos) {
 void Canvas::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRenderTarget(data, pos, to_draw);
     rt.DrawRenderTarget(tmp, pos, to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(rand() % 128 + 128, rand() % 128 + 128, 0));
+    #endif
 }
 
 
@@ -231,4 +235,8 @@ void ColorBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
 void ColorBtn::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawTexture (textures[state], pos, size, to_draw);
     rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color, to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+    #endif
 }
