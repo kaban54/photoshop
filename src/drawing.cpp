@@ -66,7 +66,7 @@ void Canvas::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRenderTarget(tmp, pos, to_draw);
 
     #ifdef REGDEBUG
-    rt.DrawRegset(*to_draw, Color(rand() % 128 + 128, rand() % 128 + 128, 0));
+    rt.DrawRegset(*to_draw, Color(0, 255, 255, 128));
     #endif
 }
 
@@ -237,6 +237,6 @@ void ColorBtn::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color, to_draw);
 
     #ifdef REGDEBUG
-    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+    rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));
     #endif
 }

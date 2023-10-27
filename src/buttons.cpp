@@ -65,7 +65,7 @@ void TxtButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawText (txt, pos + Vec (40, 18), Color (0, 0, 0), to_draw);
 
     #ifdef REGDEBUG
-    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+    rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));
     #endif
 }
 

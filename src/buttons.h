@@ -60,6 +60,8 @@ class BtnChooseMenu : public TxtButton {
 
     virtual void GetMaxRegset (RegionSet* dst) const override;
 
+    //virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 
     virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;

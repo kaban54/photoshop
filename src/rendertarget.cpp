@@ -182,7 +182,7 @@ void RenderTarget::DrawEllipse (const Rect& rect, const Color& col, RegionSet* t
 
 void RenderTarget::DrawRegset (const RegionSet& regset, const Color& col) {
     sf::RectangleShape rect;
-    const int outl_thikness = 5;
+    const int outl_thikness = 3;
     rect.setFillColor (sf::Color::Transparent);
     rect.setOutlineThickness (outl_thikness);
     rect.setOutlineColor (sf::Color(col.r, col.g, col.b, col.a));

@@ -131,4 +131,6 @@ void SetWidgets (Window& mainwin) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
     mainwin.AddSubWidget (win);
+
+    // mainwin.AddSubWidget (new TxtButton (700, 140, 200, 200, textures, Text(&tools_txt)));
 }

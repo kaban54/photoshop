@@ -85,6 +85,8 @@ void Widget::UpdateRegset(const RegionSet& regs) {
     if (to_draw.regions.GetSize() > 0) Render(*rt, &to_draw);
     #else
     Render (*rt, &newregs);
+    // rt -> DrawRegset (regset, Color (0, 0, 255, 128));
+    // rt -> DrawRegset (to_draw, Color (255, 0, 0, 128));
     #endif
 
     regset.regions.Clear();
@@ -230,7 +232,7 @@ void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawRect (rect, WINDOW_BG_COLOR, to_draw);
 
     #ifdef REGDEBUG
-    rt.DrawRegset(*to_draw, Color(rand() % 128 + 128, 0, 0));
+    rt.DrawRegset(*to_draw, Color(255, 0, 0, 128));
     #endif
 }
 

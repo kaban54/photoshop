@@ -85,7 +85,6 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 }
 
 void SetWidgets (Window& mainwin) {
-
     static sf::Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
     static sf::Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
     static sf::Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
@@ -131,4 +130,6 @@ void SetWidgets (Window& mainwin) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (100, 100, 100, 100, &tm));
     mainwin.AddSubWidget (win);
+
+    // mainwin.AddSubWidget (new TxtButton (700, 140, 200, 200, textures, Text(&tools_txt)));
 }
