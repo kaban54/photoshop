@@ -44,6 +44,10 @@ void ImgButton::SetTextures (const Texture* textures_) {
 
 void ImgButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawTexture (textures[state], pos, size, to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+    #endif
 }
 
 
@@ -59,6 +63,10 @@ void TxtButton::SetText (const Text& txt_) {
 void TxtButton::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rt.DrawTexture (textures[state], pos, size, to_draw);
     rt.DrawText (txt, pos + Vec (40, 18), Color (0, 0, 0), to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+    #endif
 }
 
 

@@ -114,7 +114,7 @@ void SetWidgets (Window& mainwin) {
     bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&polyline_txt), &tm, &polyline));
     mainwin.AddSubWidget (bm);
 
-    bm = new BtnChooseMenu (210, 25, 200, 80, textures, Text(&cols_txt));
+    bm = new BtnChooseMenu (205, 25, 200, 80, textures, Text(&cols_txt));
     bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 0)));
     bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 0)));
     bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 255)));

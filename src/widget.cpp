@@ -80,7 +80,13 @@ void Widget::UpdateRegset(const RegionSet& regs) {
     RegionSet newregs;
     newregs += to_draw;
     to_draw -= regset;
+    
+    #ifndef REGDEBUG
     if (to_draw.regions.GetSize() > 0) Render(*rt, &to_draw);
+    #else
+    Render (*rt, &newregs);
+    #endif
+
     regset.regions.Clear();
     regset += newregs;
     subwidgets.UpdateRegset(regs);
@@ -222,6 +228,10 @@ void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
     rect.vert1 += Vec (2, 20);
     rect.vert2 -= Vec (2, 2);
     rt.DrawRect (rect, WINDOW_BG_COLOR, to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(rand() % 128 + 128, 0, 0));
+    #endif
 }
 
 void Window::MousePress (const Vec& mousepos, MouseButton mousebtn) {
