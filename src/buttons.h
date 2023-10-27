@@ -29,7 +29,7 @@ class ImgButton : public Button {
 
     void SetTextures (const Texture* textures_);
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
 
 
@@ -42,7 +42,7 @@ class TxtButton : public ImgButton {
 
     void SetText (const Text& txt);
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override {}
 
@@ -51,7 +51,7 @@ class TxtButton : public ImgButton {
 
 
 class BtnChooseMenu : public TxtButton {
-    Vec nextbtn_pos;
+    double nextbtn_y;
     public:
 
     explicit BtnChooseMenu(double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_);

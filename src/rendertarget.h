@@ -36,21 +36,21 @@ class RenderTarget {
 
     void ClearScreen (const Color& col);
 
-    void DrawRect (const Rect& rect, const Color& col, RegionSet* to_draw = nullptr);
+    void DrawRect (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void DrawLine (const Vec& p1, const Vec& p2, const Color& col, RegionSet* to_draw = nullptr);
+    void DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void SetPixel (const Vec& point, const Color& col, RegionSet* to_draw = nullptr);
+    void SetPixel (const Vec& point, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, RegionSet* to_draw = nullptr);
+    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet* to_draw = nullptr);
 
-    void DrawText (const Text& txt, const Vec& pos, const Color& col, RegionSet* to_draw = nullptr);
+    void DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, RegionSet* to_draw = nullptr);
+    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet* to_draw = nullptr);
 
-    void DrawCircle (const Vec& pos, double radius, const Color& col, RegionSet* to_draw = nullptr);
+    void DrawCircle (const Vec& pos, double radius, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void DrawEllipse (const Rect& rect, const Color& col, RegionSet* to_draw = nullptr);
+    void DrawEllipse (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
 
     void DrawRegset (const RegionSet& regset, const Color& col);
 };

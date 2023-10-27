@@ -6,20 +6,31 @@
 #include <algorithm>
 #include <cmath>
 
-class Rect {
-    public:
-    Vec vert1;
-    Vec vert2;
+struct Rect {
+    double x;
+    double y;
+    double w;
+    double h;
 
     explicit Rect();
 
-    explicit Rect (const Vec& v1, const Vec& v2);
+    explicit Rect (double x_, double y_, double w_, double h_);
 
-    double GetWidth() const;
+    explicit Rect (const Vec& p1, const Vec& p2);
 
-    double GetHeight() const;
+    Vec GetPos() const {return Vec (x, y);}
 
-    Vec GetCenter() const;
+    Vec GetSize() const {return Vec (w, h);}
+
+    Vec GetCenter() const {return Vec (x + w / 2, y + h / 2);}
+
+    double Left() const {return x;}
+
+    double Right() const {return x + w;}
+
+    double Top() const {return y;}
+
+    double Bot() const {return y + h;}
 
     bool Contains (const Rect& rect) const;
 

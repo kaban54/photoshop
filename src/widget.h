@@ -21,26 +21,6 @@ enum MouseButton {
 
     NUM_OF_MBUTONS
 };
-/*
-struct Mouse {
-    enum MouseButtonState {
-        MBTN_UP       = 0,
-        MBTN_PRESSED  = 1,
-        MBTN_DOWN     = 2,
-        MBTN_RELEASED = 3,
-    };
-
-    Vec pos;
-    MouseButtonState btns[NUM_OF_MBUTONS];
-
-    Mouse () {}
-
-    void Press (const Vec& pos_, MouseButton btn);
-
-    void Release (const Vec& pos_, MouseButton btn);
-
-    void Move (const Vec& pos_);
-};*/
 
 class Renderable {
     public:
@@ -49,7 +29,7 @@ class Renderable {
 
     Renderable(): visible(true) {}
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const = 0;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const = 0;
 };
 
 class Widget;
@@ -89,18 +69,31 @@ class WidgetManager {
 };
 
 class Widget : public Renderable {
-    public:
+    Rect bounds;
     WidgetManager subwidgets;
-    Vec pos;
-    Vec size;
     RegionSet regset;
     Widget* parent;
     RenderTarget* rt;
+    public:
 
     explicit Widget();
 
     explicit Widget (int x, int y, int w, int h);
     
+    const Rect& GetBounds() const {return bounds;}
+
+    Vec GetPos() const {return bounds.GetPos();}
+
+    Vec GetSize() const {return bounds.GetSize();}
+
+    const RegionSet* GetRegset() const {return (&regset);}
+
+    RenderTarget* GetRendertarget() const {return rt;}
+    
+    WidgetManager* GetSubwidgets() {return &subwidgets;}
+
+    void SetBounds (const Rect& bounds_) {bounds = bounds_;}
+
     void SetRenderTarget (RenderTarget *rt_);
 
     void AddSubWidget (Widget* wid);
@@ -124,6 +117,8 @@ class Widget : public Renderable {
     virtual void MouseMove (const Vec& mousepos) = 0;
 
     virtual bool MouseOnWidget (const Vec& mousepos) const;
+
+    bool MouseOnSubwidgets(const Vec& mousepos) const;
 };
 
 
@@ -135,7 +130,7 @@ class Window : public Widget {
 
     explicit Window (int x, int y, size_t w, size_t h);
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
     virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
 

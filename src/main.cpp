@@ -34,7 +34,7 @@ int main() {
     mainwin.SetRenderTarget (&rt);
 
     mainwin.Show();
-    mainwin.Render(rt, &(mainwin.regset));
+    mainwin.Render(rt, mainwin.GetRegset());
     mainwin.RenderSubWidgets(rt);
 
     while (sfwindow.isOpen()) {

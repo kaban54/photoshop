@@ -1,16 +1,14 @@
 #include "widget.h"
 
 Widget::Widget():
-    pos (0, 0),
-    size (0, 0),
+    bounds (),
     parent (nullptr),
     subwidgets (),
     regset ()
     {}
 
 Widget::Widget (int x, int y, int w, int h):
-    pos (x, y),
-    size (w, h),
+    bounds (x, y, w, h),
     parent (nullptr),
     subwidgets (),
     regset ()
@@ -22,7 +20,7 @@ void Widget::SetRenderTarget (RenderTarget *rt_) {
 }
 
 void Widget::AddSubWidget (Widget* wid) {
-    wid -> Move (pos);
+    wid -> Move (GetPos());
     wid -> parent = this;
     wid -> SetRenderTarget (rt);
     SubtractRegset(wid -> regset);
@@ -34,7 +32,7 @@ void Widget::RenderSubWidgets (RenderTarget& rt) const {
 }
 
 void Widget::Move (const Vec& vec) {
-    pos += vec;
+    bounds.Move(vec);
     regset.Move(vec);
     subwidgets.Move(vec);
 }
@@ -58,11 +56,15 @@ void Widget::Show() {
 
 void Widget::GetMaxRegset (RegionSet* dst) const {
     assert(dst != nullptr);
-    dst -> AddRegion (Rect(pos, pos + size));
+    dst -> AddRegion (bounds);
 }
 
 bool Widget::MouseOnWidget (const Vec& mousepos) const {
     return regset.Contains(mousepos);
+}
+
+bool Widget::MouseOnSubwidgets(const Vec& mousepos) const {
+    return subwidgets.MouseOnWidgets(mousepos);
 }
 
 void Widget::UpdateRegset(const RegionSet& regs) {
@@ -101,7 +103,8 @@ WidgetManager::WidgetManager ():
 
 WidgetManager::~WidgetManager() {
     ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* end_of_list = widgets.EndOfList();
+    while (node != end_of_list) {
         delete (node -> val);
         node = node -> next;
     }
@@ -118,8 +121,9 @@ size_t WidgetManager::GetSize() const {
 void WidgetManager::Render (RenderTarget& rt) const {
     ListNode<Widget*>* node = widgets.GetHead();
     while (node != widgets.EndOfList()) {
-        node -> val -> Render(rt, &(node -> val -> regset));
-        node -> val -> RenderSubWidgets (rt);
+        Widget* wid = node -> val;
+        wid -> Render(rt, wid -> GetRegset());
+        wid -> RenderSubWidgets (rt);
         node = node -> next;
     }
 }
@@ -224,11 +228,13 @@ Window::Window (int x, int y, size_t w, size_t h):
     is_moving (false)
     {}
 
-void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
-    Rect rect (pos, pos + size);
+void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    Rect rect = GetBounds();
     rt.DrawRect (rect, Color(0, 0, 0), to_draw);
-    rect.vert1 += Vec (2, 20);
-    rect.vert2 -= Vec (2, 2);
+    rect.x += 2;
+    rect.y += 20;
+    rect.w -= 4;
+    rect.h -= 22;
     rt.DrawRect (rect, WINDOW_BG_COLOR, to_draw);
 
     #ifdef REGDEBUG
@@ -237,9 +243,9 @@ void Window::Render (RenderTarget& rt, RegionSet* to_draw) const {
 }
 
 void Window::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    subwidgets.MousePress (mousepos, mousebtn);
+    GetSubwidgets() -> MousePress (mousepos, mousebtn);
     if (MouseOnWidget(mousepos)) {
-        if (Rect(pos, pos + Vec(size.x, 30)).Contains(mousepos) && mousebtn == MOUSE_LEFT) {
+        if (Rect(GetPos().x, GetPos().y, GetSize().x, 30).Contains(mousepos) && mousebtn == MOUSE_LEFT) {
                 is_moving = true;
                 hold_pos = mousepos;
             }
@@ -252,19 +258,19 @@ void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
         is_moving = false;
         hold_pos = Vec (0, 0);
     }
-    subwidgets.MouseRelease (mousepos, mousebtn);
+    GetSubwidgets() -> MouseRelease (mousepos, mousebtn);
 }
 
 void Window::MouseMove (const Vec& mousepos) {
     if (is_moving) {
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
             Move (mousepos - hold_pos);
-            regset.regions.Clear();
+            //regset.regions.Clear();
             Show();
-            Render(*rt, &regset);
-            RenderSubWidgets(*rt);
+            Render(*GetRendertarget(), GetRegset());
+            RenderSubWidgets(*GetRendertarget());
             hold_pos = mousepos;
         }
     }
-    subwidgets.MouseMove (mousepos);
+    GetSubwidgets() -> MouseMove (mousepos);
 }

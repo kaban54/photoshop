@@ -57,7 +57,7 @@ class Canvas : public Widget {
 
     virtual void MouseMove (const Vec& mousepos) override;
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
 
 
@@ -152,7 +152,7 @@ class ColorBtn : public ImgButton {
 
     virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
 
-    virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
 
 #endif

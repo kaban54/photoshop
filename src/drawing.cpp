@@ -42,28 +42,28 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
 void Canvas::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (MouseOnWidget(mousepos)) {
         Show();
-        drawing = tool_man -> PaintOnPress (&data, &tmp, mousepos - pos, mousebtn);
-        Render (*rt, &regset);
+        drawing = tool_man -> PaintOnPress (&data, &tmp, mousepos - GetPos(), mousebtn);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
 void Canvas::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     if (drawing) {
-        drawing = tool_man -> PaintOnRelease (&data, &tmp, mousepos - pos, mousebtn);
-        Render (*rt, &regset);
+        drawing = tool_man -> PaintOnRelease (&data, &tmp, mousepos - GetPos(), mousebtn);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
 void Canvas::MouseMove (const Vec& mousepos) {
     if (drawing) {
-        drawing = tool_man -> PaintOnMove (&data, &tmp, mousepos - pos);
-        Render (*rt, &regset);
+        drawing = tool_man -> PaintOnMove (&data, &tmp, mousepos - GetPos());
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void Canvas::Render (RenderTarget& rt, RegionSet* to_draw) const {
-    rt.DrawRenderTarget(data, pos, to_draw);
-    rt.DrawRenderTarget(tmp, pos, to_draw);
+void Canvas::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawRenderTarget(data, GetPos(), to_draw);
+    rt.DrawRenderTarget(tmp , GetPos(), to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 255, 128));
@@ -200,14 +200,14 @@ void ToolBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (MouseOnWidget(mousepos) && state != BTN_PRESSED) {
         tool_man -> SetTool (tool);
         state = BTN_PRESSED;
-        Render (*rt, &regset);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
 void ToolBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     if (state == BTN_PRESSED) {
         state = BTN_NORMAL;
-        Render (*rt, &regset);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
@@ -221,20 +221,20 @@ void ColorBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
     if (MouseOnWidget(mousepos)) {
         tool_man -> SetColor (color);
         state = BTN_PRESSED;
-        Render (*rt, &regset);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
 void ColorBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
     if (state == BTN_PRESSED) {
         state = BTN_NORMAL;
-        Render (*rt, &regset);
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void ColorBtn::Render (RenderTarget& rt, RegionSet* to_draw) const {
-    rt.DrawTexture (textures[state], pos, size, to_draw);
-    rt.DrawRect (Rect (pos + size / 4, pos + size * 3 / 4), color, to_draw);
+void ColorBtn::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
+    rt.DrawRect (Rect (GetPos() + GetSize() / 4, GetPos() + GetSize() * 3 / 4), color, to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));
