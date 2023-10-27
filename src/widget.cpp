@@ -274,3 +274,28 @@ void Window::MouseMove (const Vec& mousepos) {
     }
     GetSubwidgets() -> MouseMove (mousepos);
 }
+
+
+Background::Background (double w_, double h_):
+    Widget (0, 0, w_, h_)
+    {}
+
+void Background::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawRect (GetBounds(), BG_COLOR, to_draw);
+
+    #ifdef REGDEBUG
+    rt.DrawRegset(*to_draw, Color(0, 0, 255, 128));
+    #endif
+}
+
+void Background::MousePress (const Vec& mousepos, MouseButton mousebtn) {
+    GetSubwidgets() -> MousePress (mousepos, mousebtn);
+}
+
+void Background::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
+    GetSubwidgets() -> MouseRelease (mousepos, mousebtn);
+}
+
+void Background::MouseMove (const Vec& mousepos) {
+    GetSubwidgets() -> MouseMove (mousepos);
+}

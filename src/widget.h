@@ -13,6 +13,7 @@
 
 const size_t BASE_WIDGETMAN_CAP = 4;
 const Color WINDOW_BG_COLOR = Color (128, 128, 128);
+const Color BG_COLOR = Color (192, 192, 192);
 
 
 enum MouseButton {
@@ -25,9 +26,7 @@ enum MouseButton {
 class Renderable {
     public:
 
-    bool visible;
-
-    Renderable(): visible(true) {}
+    Renderable() {}
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const = 0;
 };
@@ -129,6 +128,21 @@ class Window : public Widget {
     public:
 
     explicit Window (int x, int y, size_t w, size_t h);
+
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+
+    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+
+    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+
+    virtual void MouseMove (const Vec& mousepos) override;
+};
+
+
+class Background : public Widget {
+    public:
+
+    explicit Background (double w_, double h_);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 

@@ -27,15 +27,17 @@ int main() {
     Vec mousepos (0, 0);
     bool mouse_pressed = false;
 
-    Window mainwin (100, 100, 1920, 1080);
+    Background bg (W, H);
+    Window* mainwin = new Window (100, 100, 1920, 1080);
 
     RenderTarget rt (W, H);
-    SetWidgets (mainwin);
-    mainwin.SetRenderTarget (&rt);
+    SetWidgets (*mainwin);
+    bg.AddSubWidget(mainwin);
+    bg.SetRenderTarget (&rt);
 
-    mainwin.Show();
-    mainwin.Render(rt, &(mainwin.regset));
-    mainwin.RenderSubWidgets(rt);
+    bg.Show();
+    bg.Render(rt, bg.GetRegset());
+    bg.RenderSubWidgets(rt);
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -52,17 +54,17 @@ int main() {
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
-                mainwin.MouseMove (mousepos);
+                bg.MouseMove (mousepos);
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left ) mainwin.MousePress (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) mainwin.MousePress (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left ) bg.MousePress (mousepos, MOUSE_LEFT );
+                if (event.mouseButton.button == sf::Mouse::Right) bg.MousePress (mousepos, MOUSE_RIGHT);
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left ) mainwin.MouseRelease (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) mainwin.MouseRelease (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left ) bg.MouseRelease (mousepos, MOUSE_LEFT );
+                if (event.mouseButton.button == sf::Mouse::Right) bg.MouseRelease (mousepos, MOUSE_RIGHT);
             }
         }
         
@@ -85,6 +87,7 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 }
 
 void SetWidgets (Window& mainwin) {
+
     static sf::Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
     static sf::Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
     static sf::Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
@@ -125,11 +128,11 @@ void SetWidgets (Window& mainwin) {
     mainwin.AddSubWidget (bm);
 
     Window* win = new Window (200, 200, 610, 630);
-    win -> AddSubWidget (new Window (100, 100, 300, 300));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
     mainwin.AddSubWidget (win);
     win = new Window (1000, 100, 610, 630);
-    win -> AddSubWidget (new Canvas (100, 100, 100, 100, &tm));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
     mainwin.AddSubWidget (win);
 
-    // mainwin.AddSubWidget (new TxtButton (700, 140, 200, 200, textures, Text(&tools_txt)));
+    mainwin.AddSubWidget (new TxtButton (700, 140, 200, 200, textures, Text(&tools_txt)));
 }
