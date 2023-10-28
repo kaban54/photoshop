@@ -39,6 +39,9 @@ int main() {
     bg.Render(rt, bg.GetRegset());
     bg.RenderSubWidgets(rt);
 
+    EventManager event_man;
+    event_man.AddObject(&bg);
+
     while (sfwindow.isOpen()) {
         sf::Event event;
 
@@ -54,17 +57,17 @@ int main() {
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
-                bg.MouseMove (mousepos);
+                event_man.MouseMove (mousepos);
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left ) bg.MousePress (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) bg.MousePress (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left ) event_man.MousePress (mousepos, MOUSE_LEFT );
+                if (event.mouseButton.button == sf::Mouse::Right) event_man.MousePress (mousepos, MOUSE_RIGHT);
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left ) bg.MouseRelease (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) bg.MouseRelease (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left ) event_man.MouseRelease (mousepos, MOUSE_LEFT );
+                if (event.mouseButton.button == sf::Mouse::Right) event_man.MouseRelease (mousepos, MOUSE_RIGHT);
             }
         }
         

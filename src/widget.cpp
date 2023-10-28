@@ -102,15 +102,15 @@ WidgetManager::WidgetManager ():
     {}
 
 WidgetManager::~WidgetManager() {
-    ListNode<Widget*>* node = widgets.GetHead();
-    ListNode<Widget*>* end_of_list = widgets.EndOfList();
-    while (node != end_of_list) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         delete (node -> val);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
-void WidgetManager::AddWidget (Widget *wid) {
+inline void WidgetManager::AddWidget (Widget *wid) {
     widgets.InsertTail(wid);
 }
 
@@ -119,76 +119,84 @@ size_t WidgetManager::GetSize() const {
 }
 
 void WidgetManager::Render (RenderTarget& rt) const {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         Widget* wid = node -> val;
         wid -> Render(rt, wid -> GetRegset());
         wid -> RenderSubWidgets (rt);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::Move (const Vec& vec) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> Move(vec);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::SubtractRegset (const RegionSet& regions) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> SubtractRegset(regions);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> SetRenderTarget(rt_);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> MousePress(mousepos, mousebtn);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> MouseRelease(mousepos, mousebtn);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 bool WidgetManager::MouseOnWidgets (const Vec& mousepos) const {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         if (node -> val -> MouseOnWidget (mousepos)) return true;
-        node = node -> next;
+        widgets.Iterate(node);
     }
     return false;
 }
 
 void WidgetManager::MouseMove (const Vec& mousepos) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    ListNode<Widget*>* end_of_list = widgets.EndOfList();
-    while (node != end_of_list) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         node -> val -> MouseMove(mousepos);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::MoveToTail (Widget* wid) {
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         if (node -> val == wid) {
             node -> next -> prev = node -> prev;
             node -> prev -> next = node -> next;
@@ -198,27 +206,29 @@ void WidgetManager::MoveToTail (Widget* wid) {
             node -> prev -> next = node;
             break;
         }
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 
 void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {    
-    ListNode<Widget*>* node = widgets.GetHead();
-    while (node != widgets.EndOfList()) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
         RegionSet regs;
         node -> val -> GetMaxRegset(&regs);
         regs ^= parent_regs;
 
-        ListNode<Widget*>* node2 = node -> next;
-        while (node2 != widgets.EndOfList()) {
+        ListNode<Widget*>* node2 = node;
+        widgets.Iterate(node2);
+        while (node2 != nullptr) {
             RegionSet to_sub;
             node2 -> val -> GetMaxRegset(&to_sub);
             regs -= to_sub;
-            node2 = node2 -> next;
+            widgets.Iterate(node2);
         }
 
         node -> val -> UpdateRegset(regs);
-        node = node -> next;
+        widgets.Iterate(node);
     }
 }
 

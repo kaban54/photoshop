@@ -93,12 +93,12 @@ void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
 
     if (mousebtn == MOUSE_LEFT && MouseOnWidget(mousepos)) {
 
-        ListNode<Widget*>* node = GetSubwidgets() -> widgets.GetHead();
-        ListNode<Widget*>* end_of_list = GetSubwidgets() -> widgets.EndOfList();
-        while (node != end_of_list) {
+        ListNode<Widget*>* node = nullptr;
+        GetSubwidgets() -> widgets.Iterate(node);
+        while (node != nullptr) {
             if (node -> val -> MouseOnWidget(mousepos)) node -> val -> MousePress(mousepos, mousebtn);
             else node -> val -> MouseRelease (mousepos, mousebtn);
-            node = node -> next;
+            GetSubwidgets() -> widgets.Iterate(node);
         }
     }
 }
