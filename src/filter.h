@@ -2,6 +2,7 @@
 #define FILTER_H
 
 #include "rendertarget.h"
+#include "buttons.h"
 
 class Filter {
     public:
@@ -39,6 +40,22 @@ class FilterManager {
     void Activate() {active = true;}
 
     bool IsActive() {return active;}
+};
+
+
+struct FilterBtnArgs {
+    FilterManager* filter_man;
+    Filter* filter;
+};
+
+void filter_btn_action (void* filter_btn_args);
+
+class FilterBtn : public TxtButton {
+    FilterBtnArgs filter_btn_args;
+
+    public:
+
+    explicit FilterBtn (double x, double y, double w, double h, const Text& txt_, FilterManager* fm, Filter* filter_);
 };
 
 #endif

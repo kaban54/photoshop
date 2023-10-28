@@ -121,9 +121,12 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
+    static sf::Text filter_test_txt ("filter test", GLOBAL_FONT, 30);
     static TestFilter test_filter;
     static FilterManager fm;
     fm.SetFilter (&test_filter);
+
+    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, Text(&filter_test_txt), &fm, &test_filter));
 
 
     BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, Text(&tools_txt));
