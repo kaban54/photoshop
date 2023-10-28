@@ -11,6 +11,8 @@
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
 
+const char* EVENTLOG_FILENAME = "logs/eventlog";
+
 const int W = 2160;
 const int H = 1440;
 
@@ -20,9 +22,11 @@ void SetWidgets (Window& mainwin);
 
 int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
+    FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
+    EventLogger eventlogger (eventlogfile);
 
     sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    //sfwindow.setFramerateLimit (300);
+    sfwindow.setFramerateLimit (120);
 
     Vec mousepos (0, 0);
 
@@ -40,6 +44,7 @@ int main() {
 
     EventManager event_man;
     event_man.AddObject(&bg);
+    event_man.AddObject(&eventlogger);
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -78,6 +83,8 @@ int main() {
         rt.Display(sfwindow);
         sfwindow.display();
     }
+
+    fclose (eventlogfile);
     return 0;
 }
 

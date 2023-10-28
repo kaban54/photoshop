@@ -76,13 +76,16 @@ EventLogger::EventLogger (FILE* logfile_):
     }
 
 void EventLogger::MousePress (const MouseState& mstate) {
-
+    fprintf (logfile, "MOUSE_PRESS\t\t(%d, %d)\t\t%d\n", (int)mstate.pos.x, (int)mstate.pos.y, mstate.btn);
+    fflush (logfile);
 }
 
 void EventLogger::MouseRelease (const MouseState& mstate) {
-    
+    fprintf (logfile, "MOUSE_RELEASE\t(%d, %d)\t\t%d\n", (int)mstate.pos.x, (int)mstate.pos.y, mstate.btn);
+    fflush (logfile);
 }
 
 void EventLogger::MouseMove (const MouseState& mstate) {
-    
+    fprintf (logfile, "MOUSE_MOVE\t\t(%d, %d)\n", (int)mstate.pos.x, (int)mstate.pos.y);
+    fflush (logfile);
 }
