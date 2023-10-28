@@ -39,24 +39,24 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
         tmp.ClearScreen(Color(0, 0, 0, 0));
     }
 
-void Canvas::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    if (MouseOnWidget(mousepos)) {
+void Canvas::MousePress (const MouseState& mstate) {
+    if (MouseOnWidget(mstate.pos)) {
         Show();
-        drawing = tool_man -> PaintOnPress (&data, &tmp, mousepos - GetPos(), mousebtn);
+        drawing = tool_man -> PaintOnPress (&data, &tmp, mstate.pos - GetPos(), mstate.btn);
         Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void Canvas::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
+void Canvas::MouseRelease (const MouseState& mstate) {
     if (drawing) {
-        drawing = tool_man -> PaintOnRelease (&data, &tmp, mousepos - GetPos(), mousebtn);
+        drawing = tool_man -> PaintOnRelease (&data, &tmp, mstate.pos - GetPos(), mstate.btn);
         Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void Canvas::MouseMove (const Vec& mousepos) {
+void Canvas::MouseMove (const MouseState& mstate) {
     if (drawing) {
-        drawing = tool_man -> PaintOnMove (&data, &tmp, mousepos - GetPos());
+        drawing = tool_man -> PaintOnMove (&data, &tmp, mstate.pos - GetPos());
         Render (*GetRendertarget(), GetRegset());
     }
 }
@@ -196,15 +196,15 @@ ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* texture
     tool (tool_)
     {}
 
-void ToolBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    if (MouseOnWidget(mousepos) && state != BTN_PRESSED) {
+void ToolBtn::MousePress (const MouseState& mstate) {
+    if (MouseOnWidget(mstate.pos) && state != BTN_PRESSED) {
         tool_man -> SetTool (tool);
         state = BTN_PRESSED;
         Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void ToolBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
+void ToolBtn::MouseRelease (const MouseState& mstate) {
     if (state == BTN_PRESSED) {
         state = BTN_NORMAL;
         Render (*GetRendertarget(), GetRegset());
@@ -217,15 +217,15 @@ ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, const Texture* textu
     color (col)
     {}
 
-void ColorBtn::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    if (MouseOnWidget(mousepos)) {
+void ColorBtn::MousePress (const MouseState& mstate) {
+    if (MouseOnWidget(mstate.pos)) {
         tool_man -> SetColor (color);
         state = BTN_PRESSED;
         Render (*GetRendertarget(), GetRegset());
     }
 }
 
-void ColorBtn::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
+void ColorBtn::MouseRelease (const MouseState& mstate) {
     if (state == BTN_PRESSED) {
         state = BTN_NORMAL;
         Render (*GetRendertarget(), GetRegset());

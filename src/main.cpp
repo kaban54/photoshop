@@ -25,7 +25,6 @@ int main() {
     //sfwindow.setFramerateLimit (300);
 
     Vec mousepos (0, 0);
-    bool mouse_pressed = false;
 
     Background bg (W, H);
     Window* mainwin = new Window (100, 100, 1920, 1080);
@@ -57,17 +56,21 @@ int main() {
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
-                event_man.MouseMove (mousepos);
+                event_man.MouseMove (MouseState(mousepos));
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left ) event_man.MousePress (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) event_man.MousePress (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left )
+                    event_man.MousePress (MouseState(mousepos, MOUSE_LEFT ));
+                if (event.mouseButton.button == sf::Mouse::Right)
+                    event_man.MousePress (MouseState(mousepos, MOUSE_RIGHT));
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left ) event_man.MouseRelease (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) event_man.MouseRelease (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left )
+                    event_man.MouseRelease (MouseState(mousepos, MOUSE_LEFT ));
+                if (event.mouseButton.button == sf::Mouse::Right)
+                    event_man.MouseRelease (MouseState(mousepos, MOUSE_RIGHT));
             }
         }
         

@@ -48,13 +48,13 @@ class WidgetManager {
 
     void SetRenderTarget (RenderTarget *rt_);
 
-    void MousePress (const Vec& mousepos, MouseButton mousebtn);
+    void MousePress (const MouseState& mstate);
 
-    void MouseRelease (const Vec& mousepos, MouseButton mousebtn);
+    void MouseRelease (const MouseState& mstate);
 
     bool MouseOnWidgets (const Vec& mousepos) const;
 
-    void MouseMove (const Vec& mousepos);
+    void MouseMove (const MouseState& mstate);
 
     void MoveToTail (Widget* wid);
 
@@ -119,11 +119,11 @@ class Window : public Widget {
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
-    virtual void MouseMove (const Vec& mousepos) override;
+    virtual void MouseMove (const MouseState& mstate) override;
 };
 
 
@@ -134,11 +134,11 @@ class Background : public Widget {
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
-    virtual void MouseMove (const Vec& mousepos) override;
+    virtual void MouseMove (const MouseState& mstate) override;
 };
 
 #endif

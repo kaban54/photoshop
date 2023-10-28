@@ -4,7 +4,6 @@
 #include "buttons.h"
 
 
-
 class Tool {
     public:
     Vec start_pos;
@@ -51,11 +50,11 @@ class Canvas : public Widget {
 
     explicit Canvas (int x, int y, int w, int h, ToolManager* tm);
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
-    virtual void MouseMove (const Vec& mousepos) override;
+    virtual void MouseMove (const MouseState& mstate) override;
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
@@ -134,9 +133,9 @@ class ToolBtn : public TxtButton {
 
     ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_);
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
 };
 
@@ -148,9 +147,9 @@ class ColorBtn : public ImgButton {
 
     ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col);
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };

@@ -156,20 +156,20 @@ void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
     }
 }
 
-void WidgetManager::MousePress (const Vec& mousepos, MouseButton mousebtn) {
+void WidgetManager::MousePress (const MouseState& mstate) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val -> MousePress(mousepos, mousebtn);
+        node -> val -> MousePress(mstate);
         widgets.Iterate(node);
     }
 }
 
-void WidgetManager::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
+void WidgetManager::MouseRelease (const MouseState& mstate) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val -> MouseRelease(mousepos, mousebtn);
+        node -> val -> MouseRelease(mstate);
         widgets.Iterate(node);
     }
 }
@@ -184,11 +184,11 @@ bool WidgetManager::MouseOnWidgets (const Vec& mousepos) const {
     return false;
 }
 
-void WidgetManager::MouseMove (const Vec& mousepos) {
+void WidgetManager::MouseMove (const MouseState& mstate) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val -> MouseMove(mousepos);
+        node -> val -> MouseMove(mstate);
         widgets.Iterate(node);
     }
 }
@@ -252,27 +252,28 @@ void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     #endif
 }
 
-void Window::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    GetSubwidgets() -> MousePress (mousepos, mousebtn);
-    if (MouseOnWidget(mousepos)) {
-        if (Rect(GetPos().x, GetPos().y, GetSize().x, 30).Contains(mousepos) && mousebtn == MOUSE_LEFT) {
+void Window::MousePress (const MouseState& mstate) {
+    GetSubwidgets() -> MousePress (mstate);
+    if (MouseOnWidget(mstate.pos)) {
+        if (Rect(GetPos().x, GetPos().y, GetSize().x, 30).Contains(mstate.pos) && mstate.btn == MOUSE_LEFT) {
                 is_moving = true;
-                hold_pos = mousepos;
+                hold_pos = mstate.pos;
             }
         Show();
     }
 }
 
-void Window::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    if (mousebtn == MOUSE_LEFT && is_moving) {
+void Window::MouseRelease (const MouseState& mstate) {
+    if (mstate.btn == MOUSE_LEFT && is_moving) {
         is_moving = false;
         hold_pos = Vec (0, 0);
     }
-    GetSubwidgets() -> MouseRelease (mousepos, mousebtn);
+    GetSubwidgets() -> MouseRelease (mstate);
 }
 
-void Window::MouseMove (const Vec& mousepos) {
+void Window::MouseMove (const MouseState& mstate) {
     if (is_moving) {
+        Vec mousepos = mstate.pos;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
             Move (mousepos - hold_pos);
             //regset.regions.Clear();
@@ -282,7 +283,7 @@ void Window::MouseMove (const Vec& mousepos) {
             hold_pos = mousepos;
         }
     }
-    GetSubwidgets() -> MouseMove (mousepos);
+    GetSubwidgets() -> MouseMove (mstate);
 }
 
 
@@ -298,14 +299,14 @@ void Background::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     #endif
 }
 
-void Background::MousePress (const Vec& mousepos, MouseButton mousebtn) {
-    GetSubwidgets() -> MousePress (mousepos, mousebtn);
+void Background::MousePress (const MouseState& mstate) {
+    GetSubwidgets() -> MousePress (mstate);
 }
 
-void Background::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {
-    GetSubwidgets() -> MouseRelease (mousepos, mousebtn);
+void Background::MouseRelease (const MouseState& mstate) {
+    GetSubwidgets() -> MouseRelease (mstate);
 }
 
-void Background::MouseMove (const Vec& mousepos) {
-    GetSubwidgets() -> MouseMove (mousepos);
+void Background::MouseMove (const MouseState& mstate) {
+    GetSubwidgets() -> MouseMove (mstate);
 }

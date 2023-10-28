@@ -5,10 +5,10 @@ Button::Button (double x, double y, size_t w, size_t h):
     state (BTN_NORMAL)
     {}
 
-void Button::MouseMove (const Vec& mousepos) {
+void Button::MouseMove (const MouseState& mstate) {
     if (state == BTN_DISABLED) return;
 
-    if (MouseOnWidget (mousepos)) {
+    if (MouseOnWidget (mstate.pos)) {
         if (state == BTN_NORMAL) {
             state = BTN_FOCUSED;
             Render (*GetRendertarget(), GetRegset());
@@ -88,34 +88,34 @@ void BtnChooseMenu::GetMaxRegset (RegionSet* dst) const {
     else                      dst -> AddRegion (Rect(GetPos().x, GetPos().y, GetSize().x, nextbtn_y));
 }
 
-void BtnChooseMenu::MousePress (const Vec& mousepos, MouseButton mousebtn) {
+void BtnChooseMenu::MousePress (const MouseState& mstate) {
     if (state != BTN_PRESSED) return;
 
-    if (mousebtn == MOUSE_LEFT && MouseOnWidget(mousepos)) {
+    if (mstate.btn == MOUSE_LEFT && MouseOnWidget(mstate.pos)) {
 
         ListNode<Widget*>* node = nullptr;
         GetSubwidgets() -> widgets.Iterate(node);
         while (node != nullptr) {
-            if (node -> val -> MouseOnWidget(mousepos)) node -> val -> MousePress(mousepos, mousebtn);
-            else node -> val -> MouseRelease (mousepos, mousebtn);
+            if (node -> val -> MouseOnWidget(mstate.pos)) node -> val -> MousePress(mstate);
+            else node -> val -> MouseRelease (mstate);
             GetSubwidgets() -> widgets.Iterate(node);
         }
     }
 }
 
-void BtnChooseMenu::MouseRelease (const Vec& mousepos, MouseButton mousebtn) {}
+void BtnChooseMenu::MouseRelease (const MouseState& mstate) {}
 
-void BtnChooseMenu::MouseMove (const Vec& mousepos) {
+void BtnChooseMenu::MouseMove (const MouseState& mstate) {
     if (state == BTN_DISABLED) return;
 
-    if (MouseOnWidget (mousepos)) {
+    if (MouseOnWidget (mstate.pos)) {
         if (state == BTN_NORMAL) {
             state = BTN_PRESSED;
             Show();
             Render(*GetRendertarget(), GetRegset());
         }
         else {
-            GetSubwidgets() -> MouseMove(mousepos);
+            GetSubwidgets() -> MouseMove(mstate);
         }
     }
     else {

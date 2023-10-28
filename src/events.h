@@ -8,7 +8,8 @@
 #include <vector>
 
 enum MouseButton {
-    MOUSE_LEFT = 0,
+    MOUSE_NOBTN = -1,
+    MOUSE_LEFT  = 0,
     MOUSE_RIGHT = 1,
 
     NUM_OF_MBUTONS
@@ -22,6 +23,14 @@ enum Events {
     NUM_OF_EVENTS
 };
 
+struct MouseState {
+    Vec pos;
+    MouseButton btn;
+
+    explicit MouseState();
+
+    explicit MouseState (const Vec& pos_, MouseButton btn_ = MOUSE_NOBTN);
+};
 
 class EventProcessable {
     uint8_t priority;
@@ -34,11 +43,11 @@ class EventProcessable {
 
     uint8_t GetPriority() {return priority;}
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
+    virtual void MousePress (const MouseState& mstate) = 0;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) = 0;
+    virtual void MouseRelease (const MouseState& mstate) = 0;
 
-    virtual void MouseMove (const Vec& mousepos) = 0;
+    virtual void MouseMove (const MouseState& mstate) = 0;
 };
 
 
@@ -58,11 +67,26 @@ class EventManager : public EventProcessable {
 
     void ResetPriorities();
 
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) override;
+    virtual void MouseRelease (const MouseState& mstate) override;
 
-    virtual void MouseMove (const Vec& mousepos) override;
+    virtual void MouseMove (const MouseState& mstate) override;
+};
+
+
+class EventLogger : public EventProcessable {
+    FILE* logfile;
+
+    public:
+
+    explicit EventLogger (FILE* logfile_);
+
+    virtual void MousePress (const MouseState& mstate) override;
+
+    virtual void MouseRelease (const MouseState& mstate) override;
+
+    virtual void MouseMove (const MouseState& mstate) override;
 };
 
 #endif
