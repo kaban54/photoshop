@@ -23,7 +23,6 @@ void Widget::AddSubWidget (Widget* wid) {
     wid -> Move (GetPos());
     wid -> parent = this;
     wid -> SetRenderTarget (rt);
-    SubtractRegset(wid -> regset);
     subwidgets.AddWidget (wid);
 }
 
@@ -37,10 +36,10 @@ void Widget::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
-void Widget::SubtractRegset (const RegionSet& regions) {
-    regset -= regions;
-    subwidgets.SubtractRegset(regions);
-}
+// void Widget::SubtractRegset (const RegionSet& regions) {
+//     regset -= regions;
+//     subwidgets.SubtractRegset(regions);
+// }
 
 void Widget::Show() {
     if (parent != nullptr) {     
@@ -138,14 +137,14 @@ void WidgetManager::Move (const Vec& vec) {
     }
 }
 
-void WidgetManager::SubtractRegset (const RegionSet& regions) {
-    ListNode<Widget*>* node = nullptr;
-    widgets.Iterate(node);
-    while (node != nullptr) {
-        node -> val -> SubtractRegset(regions);
-        widgets.Iterate(node);
-    }
-}
+// void WidgetManager::SubtractRegset (const RegionSet& regions) {
+//     ListNode<Widget*>* node = nullptr;
+//     widgets.Iterate(node);
+//     while (node != nullptr) {
+//         node -> val -> SubtractRegset(regions);
+//         widgets.Iterate(node);
+//     }
+// }
 
 void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
     ListNode<Widget*>* node = nullptr;

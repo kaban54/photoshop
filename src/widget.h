@@ -44,7 +44,7 @@ class WidgetManager {
 
     void Move (const Vec& vec);
 
-    void SubtractRegset (const RegionSet& regions);
+    // void SubtractRegset (const RegionSet& regions);
 
     void SetRenderTarget (RenderTarget *rt_);
 
@@ -95,7 +95,7 @@ class Widget : public Renderable, public EventProcessable {
 
     void Move (const Vec& vec);
 
-    void SubtractRegset (const RegionSet& regions);
+    // void SubtractRegset (const RegionSet& regions);
 
     void UpdateRegset (const RegionSet& regs);
 

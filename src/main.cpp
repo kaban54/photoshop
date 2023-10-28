@@ -30,17 +30,14 @@ int main() {
 
     Vec mousepos (0, 0);
 
-    Background bg (W, H);
-    Window* mainwin = new Window (100, 100, 1920, 1080);
-
     RenderTarget rt (W, H);
+    Background bg (W, H);
+    bg.SetRenderTarget (&rt);
+    Window* mainwin = new Window (100, 100, 1920, 1080);
     SetWidgets (*mainwin);
     bg.AddSubWidget(mainwin);
-    bg.SetRenderTarget (&rt);
 
     bg.Show();
-    bg.Render(rt, bg.GetRegset());
-    bg.RenderSubWidgets(rt);
 
     EventManager event_man;
     event_man.AddObject(&bg);
