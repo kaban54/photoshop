@@ -121,6 +121,11 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
+    static TestFilter test_filter;
+    static FilterManager fm;
+    fm.SetFilter (&test_filter);
+
+
     BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, Text(&tools_txt));
     bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
     bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
@@ -141,9 +146,9 @@ void SetWidgets (Window& mainwin) {
     mainwin.AddSubWidget (bm);
 
     Window* win = new Window (200, 200, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
     win = new Window (1000, 100, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
 }

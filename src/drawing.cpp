@@ -32,10 +32,11 @@ bool ToolManager::Deactivate (RenderTarget* perm, RenderTarget *tmp) {
 
 
 
-Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
+Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm, FilterManager* fm):
     Widget (x, y, w, h), 
     drawing (false),
     tool_man (tm),
+    filter_man (fm),
     data (w, h),
     tmp (w, h)
     {
@@ -46,7 +47,8 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm):
 void Canvas::MousePress (const MouseState& mstate) {
     if (MouseOnWidget(mstate.pos)) {
         Show();
-        drawing = tool_man -> PaintOnPress (&data, &tmp, MouseState(mstate.pos - GetPos(), mstate.btn));
+        if (filter_man -> IsActive())filter_man -> Apply (data);
+        else drawing = tool_man -> PaintOnPress (&data, &tmp, MouseState(mstate.pos - GetPos(), mstate.btn));
         Render (*GetRendertarget(), GetRegset());
     }
 }

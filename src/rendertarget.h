@@ -46,8 +46,6 @@ class RenderTarget {
 
     void GetImg (Image& img) const;
 
-    void SetImg (const Image& img);
-
     void Display (sf::RenderWindow& window) const;
 
     void ClearScreen (const Color& col);

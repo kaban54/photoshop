@@ -2,7 +2,7 @@
 #define DRAWING_H
 
 #include "buttons.h"
-
+#include "filter.h"
 
 class Tool {
     public:
@@ -46,12 +46,13 @@ class ToolManager {
 class Canvas : public Widget {
     bool drawing;
     ToolManager* tool_man;
+    FilterManager* filter_man;
     RenderTarget data;
     RenderTarget tmp;
 
     public:
 
-    explicit Canvas (int x, int y, int w, int h, ToolManager* tm);
+    explicit Canvas (int x, int y, int w, int h, ToolManager* tm, FilterManager* fm);
 
     virtual void MousePress (const MouseState& mstate) override;
 

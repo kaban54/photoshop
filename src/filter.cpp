@@ -17,3 +17,15 @@ void TestFilter::Apply (RenderTarget &rt) const {
 
     rt.DrawImg(img, Vec(0, 0));
 }
+
+
+FilterManager::FilterManager ():
+    current (nullptr),
+    active (false)
+    {}
+
+void FilterManager::Apply(RenderTarget& rt) {
+    assert(current != nullptr);
+    current -> Apply (rt);
+    active = false;
+}
