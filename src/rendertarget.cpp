@@ -1,5 +1,9 @@
 #include "rendertarget.h"
 
+Color* Image::GetPixels() const {
+    return (Color*)sfimg.getPixelsPtr();
+}
+
 RenderTarget::RenderTarget (unsigned int w, unsigned int h):
     width (w),
     height (h),
@@ -7,6 +11,10 @@ RenderTarget::RenderTarget (unsigned int w, unsigned int h):
     {
         screen.create (w, h);
     }
+
+void RenderTarget::GetImg (Image& img) const {
+    img.sfimg = screen.getTexture().copyToImage();
+}
 
 void RenderTarget::Display (sf::RenderWindow& window) const {
     sf::Sprite sprite;
@@ -69,7 +77,7 @@ void RenderTarget::SetPixel (const Vec& point, const Color& col, const RegionSet
     screen.display();
 }
 
-void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet* regset) {
+void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet* to_draw) {
     sf::Sprite sprite;
     sprite.setTexture (*(texture.sftexture));
 
@@ -77,23 +85,30 @@ void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Ve
     double yscale = size.y / texture.sftexture -> getSize().y;
     sprite.setScale (xscale, yscale);
 
-    ListNode<Rect>* end_of_list = regset -> regions.EndOfList();
-    ListNode<Rect>* node = regset -> regions.GetHead();
-
-    while (node != end_of_list) {
-        Rect region = node -> val;
-
-        double x = (region.x - pos.x) / xscale;
-        double y = (region.y - pos.y) / yscale;
-        double w = region.w  / xscale;
-        double h = region.h / yscale;
-
-        sprite.setPosition (region.x, region.y);
-        sprite.setTextureRect (sf::IntRect(x, y, w, h));
+    if (to_draw == nullptr) {
+        sprite.setPosition (pos.x, pos.y);
         screen.draw (sprite);
         screen.display();
+    }
+    else {
+        ListNode<Rect>* end_of_list = to_draw -> regions.EndOfList();
+        ListNode<Rect>* node = to_draw -> regions.GetHead();
 
-        node = node -> next;
+        while (node != end_of_list) {
+            Rect region = node -> val;
+
+            double x = (region.x - pos.x) / xscale;
+            double y = (region.y - pos.y) / yscale;
+            double w = region.w  / xscale;
+            double h = region.h / yscale;
+
+            sprite.setPosition (region.x, region.y);
+            sprite.setTextureRect (sf::IntRect(x, y, w, h));
+            screen.draw (sprite);
+            screen.display();
+
+            node = node -> next;
+        }
     }
 }
 
@@ -177,6 +192,14 @@ void RenderTarget::DrawEllipse (const Rect& rect, const Color& col, const Region
     ellipse.setScale (1, rect.h / rect.w);
     ellipse.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
     screen.draw (ellipse);
+    screen.display();
+}
+
+void RenderTarget::DrawImg (const Image& img, const Vec& pos, const RegionSet* to_draw) {
+    sf::Texture sftexture;
+    sftexture.loadFromImage (img.sfimg);
+    Texture texture (&sftexture);
+    DrawTexture (texture, pos, Vec(img.GetWidth(), img.GetHeight()), to_draw);
     screen.display();
 }
 

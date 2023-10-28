@@ -7,7 +7,6 @@ Button::Button (double x, double y, double w, double h, BtnFunc* action_, void* 
     action_args (action_args_)
     {}
 
-
 void Button::MousePress (const MouseState& mstate) {
     if (state == BTN_DISABLED) return;
 
@@ -94,7 +93,6 @@ void TxtButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));
     #endif
 }
-
 
 
 BtnChooseMenu::BtnChooseMenu (double x, double y, double w, double h, const Text& txt_):

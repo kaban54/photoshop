@@ -8,6 +8,7 @@
 #include "buttons.h"
 #include "drawing.h"
 #include "window.h"
+#include "filter.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
@@ -44,6 +45,8 @@ int main() {
     event_man.AddObject(&bg);
     event_man.AddObject(&eventlogger);
 
+    TestFilter tf;
+
     while (sfwindow.isOpen()) {
         sf::Event event;
 
@@ -54,6 +57,8 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
+                if (event.key.code == sf::Keyboard::Q)
+                    tf.Apply(rt);
             }
 
             if (event.type == sf::Event::MouseMoved) {

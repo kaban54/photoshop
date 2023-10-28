@@ -7,10 +7,22 @@
 #include "color.h"
 
 
+struct Image {
+    sf::Image sfimg;
+
+    explicit Image() {}
+
+    unsigned int GetWidth() const {return sfimg.getSize().x;}
+
+    unsigned int GetHeight() const {return sfimg.getSize().y;}
+
+    Color* GetPixels() const;
+};
+
 struct Texture {
     sf::Texture* sftexture;
 
-    explicit Texture () {}
+    explicit Texture() {}
 
     explicit Texture (sf::Texture* sftexture_): sftexture (sftexture_) {}
 };
@@ -18,7 +30,7 @@ struct Texture {
 struct Text {
     sf::Text* sftxt;
 
-    explicit Text () {}
+    explicit Text() {}
 
     explicit Text (sf::Text* sftxt_): sftxt (sftxt_) {} 
 };
@@ -31,6 +43,10 @@ class RenderTarget {
     public:
 
     RenderTarget (unsigned int w, unsigned int h);
+
+    void GetImg (Image& img) const;
+
+    void SetImg (const Image& img);
 
     void Display (sf::RenderWindow& window) const;
 
@@ -51,6 +67,8 @@ class RenderTarget {
     void DrawCircle (const Vec& pos, double radius, const Color& col, const RegionSet* to_draw = nullptr);
 
     void DrawEllipse (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
+
+    void DrawImg (const Image& img, const Vec& pos, const RegionSet* to_draw = nullptr);
 
     void DrawRegset (const RegionSet& regset, const Color& col);
 };
