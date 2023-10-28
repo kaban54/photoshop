@@ -1,6 +1,6 @@
 #include "window.h"
 
-Window::Window (int x, int y, size_t w, size_t h):
+Window::Window (double x, double y, double w, double h):
     Widget (x, y, w, h),
     is_moving (false)
     {}
@@ -76,4 +76,19 @@ void Background::MouseRelease (const MouseState& mstate) {
 
 void Background::MouseMove (const MouseState& mstate) {
     GetSubwidgets() -> MouseMove (mstate);
+}
+
+
+ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* event_man_):
+    Window (x, y, w, h),
+    event_man (event_man_)
+    {
+        event_man -> AddObject (this);
+        SetPriority (1);
+        event_man -> SetMinPriorities (std::vector<Events>({MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE}), 1);
+    }
+
+ModalWindow::~ModalWindow() {
+    event_man -> ResetPriorities();
+    event_man -> RemoveObject (this);
 }

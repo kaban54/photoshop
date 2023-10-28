@@ -63,7 +63,7 @@ class EventManager : public EventProcessable {
 
     void RemoveObject (EventProcessable* obj);
 
-    void SetPriorities (const std::vector<Events>& events, uint8_t new_priority);
+    void SetMinPriorities (const std::vector<Events>& events, uint8_t new_priority);
 
     void ResetPriorities();
 

@@ -31,7 +31,7 @@ void EventManager::ResetPriorities() {
     memset (min_priorities, 0, NUM_OF_EVENTS);
 }
 
-void EventManager::SetPriorities (const std::vector<Events>& events, uint8_t new_priority) {
+void EventManager::SetMinPriorities (const std::vector<Events>& events, uint8_t new_priority) {
     for (size_t i = 0; i < events.size(); i++) {
         min_priorities[events[i]] = new_priority;
     }

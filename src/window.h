@@ -10,7 +10,7 @@ class Window : public Widget {
 
     public:
 
-    explicit Window (int x, int y, size_t w, size_t h);
+    explicit Window (double x, double y, double w, double h);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
@@ -34,6 +34,16 @@ class Background : public Widget {
     virtual void MouseRelease (const MouseState& mstate) override;
 
     virtual void MouseMove (const MouseState& mstate) override;
+};
+
+class ModalWindow : public Window {
+    EventManager* event_man;
+
+    public:
+
+    ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
+
+    ~ModalWindow();
 };
 
 #endif
