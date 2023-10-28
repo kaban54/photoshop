@@ -71,7 +71,7 @@ class Widget : public Renderable, public EventProcessable {
 
     explicit Widget();
 
-    explicit Widget (int x, int y, int w, int h);
+    explicit Widget (double x, double y, double w, double h);
     
     const Rect& GetBounds() const {return bounds;}
 

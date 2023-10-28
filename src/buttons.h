@@ -10,11 +10,20 @@ enum ButtonState {
     BTN_DISABLED = 3,
 };
 
+typedef void BtnFunc (void* args);
+
 class Button : public Widget {
+    BtnFunc* action;
+    void* action_args;
     public:
+
     ButtonState state;
 
-    explicit Button (double x, double y, size_t w, size_t h);
+    explicit Button (double x, double y, double w, double h, BtnFunc* action_, void* action_args_);
+
+    virtual void MousePress (const MouseState& mstate) override;
+
+    virtual void MouseRelease (const MouseState& mstate) override;
 
     virtual void MouseMove (const MouseState& mstate) override;
 
@@ -22,33 +31,28 @@ class Button : public Widget {
 };
 
 
-class ImgButton : public Button {
-    public:
+// class ImgButton : public Button {
+//     public:
 
-    Texture textures[4];
+//     Texture textures[4];
 
-    explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_);
+//     explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_);
 
-    void SetTextures (const Texture* textures_);
+//     void SetTextures (const Texture* textures_);
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-};
+//     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+// };
 
 
 class TxtButton : public Button {
     Text txt;
-
     public:
 
-    explicit TxtButton (double x, double y, size_t w, size_t h, const Text& txt_);
+    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, void* action_args_, const Text& txt_);
 
     void SetText (const Text& txt);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-
-    virtual void MousePress (const MouseState& mstate) override {}
-
-    virtual void MouseRelease (const MouseState& mstate) override {}
 };
 
 
@@ -56,7 +60,7 @@ class BtnChooseMenu : public TxtButton {
     double nextbtn_y;
     public:
 
-    explicit BtnChooseMenu(double x, double y, size_t w, size_t h, const Text& txt_);
+    explicit BtnChooseMenu(double x, double y, double w, double h, const Text& txt_);
 
     void AddButton (Button* btn);
 

@@ -231,51 +231,33 @@ bool PolyLine::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& c
 }
 
 
-ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Text& txt_, ToolManager* tm, Tool* tool_):
-    TxtButton (x, y, w, h, txt_),
-    tool_man (tm),
-    tool (tool_)
+void tool_btn_action (void* tool_btn_args) {
+    ToolManager* tool_man = ((ToolBtnArgs*)tool_btn_args) -> tool_man;
+    Tool*        tool     = ((ToolBtnArgs*)tool_btn_args) -> tool;
+    tool_man -> SetTool (tool);
+}
+
+ToolBtn::ToolBtn (double x, double y, double w, double h, const Text& txt_, ToolManager* tm, Tool* tool_):
+    TxtButton (x, y, w, h, tool_btn_action, &tool_btn_args, txt_),
+    tool_btn_args {tm, tool_}
     {}
 
-void ToolBtn::MousePress (const MouseState& mstate) {
-    if (MouseOnWidget(mstate.pos) && state != BTN_PRESSED) {
-        tool_man -> SetTool (tool);
-        state = BTN_PRESSED;
-        Render (*GetRendertarget(), GetRegset());
-    }
+
+
+void col_btn_action (void* col_btn_args) {
+    ToolManager* tool_man = ((ColorBtnArgs*)col_btn_args) -> tool_man;
+    Color        color    = ((ColorBtnArgs*)col_btn_args) -> col;
+    tool_man -> SetColor (color);
 }
 
-void ToolBtn::MouseRelease (const MouseState& mstate) {
-    if (state == BTN_PRESSED) {
-        state = BTN_NORMAL;
-        Render (*GetRendertarget(), GetRegset());
-    }
-}
-
-ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, ToolManager* tm, const Color& col):
-    Button (x, y, w, h),
-    tool_man (tm),
-    color (col)
+ColorBtn::ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col):
+    Button (x, y, w, h, col_btn_action, &col_btn_args),
+    col_btn_args {tm, col}
     {}
-
-void ColorBtn::MousePress (const MouseState& mstate) {
-    if (MouseOnWidget(mstate.pos)) {
-        tool_man -> SetColor (color);
-        state = BTN_PRESSED;
-        Render (*GetRendertarget(), GetRegset());
-    }
-}
-
-void ColorBtn::MouseRelease (const MouseState& mstate) {
-    if (state == BTN_PRESSED) {
-        state = BTN_NORMAL;
-        Render (*GetRendertarget(), GetRegset());
-    }
-}
 
 void ColorBtn::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     DrawButton (rt, GetBounds(), state, to_draw);
-    rt.DrawRect (Rect (GetPos() + GetSize() / 4, GetPos() + GetSize() * 3 / 4), color, to_draw);
+    rt.DrawRect (Rect (GetPos() + GetSize() / 4, GetPos() + GetSize() * 3 / 4), col_btn_args.col, to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));

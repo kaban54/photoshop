@@ -7,7 +7,7 @@ Widget::Widget():
     regset ()
     {}
 
-Widget::Widget (int x, int y, int w, int h):
+Widget::Widget (double x, double y, double w, double h):
     bounds (x, y, w, h),
     parent (nullptr),
     subwidgets (),

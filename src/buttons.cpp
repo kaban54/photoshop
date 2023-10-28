@@ -1,9 +1,31 @@
 #include "buttons.h"
 
-Button::Button (double x, double y, size_t w, size_t h):
+Button::Button (double x, double y, double w, double h, BtnFunc* action_, void* action_args_):
     Widget (x, y, w, h),
-    state (BTN_NORMAL)
+    state (BTN_NORMAL),
+    action (action_),
+    action_args (action_args_)
     {}
+
+
+void Button::MousePress (const MouseState& mstate) {
+    if (state == BTN_DISABLED) return;
+
+    if (MouseOnWidget (mstate.pos)) {
+        state = BTN_PRESSED;
+        action(action_args);
+        Render (*GetRendertarget(), GetRegset());
+    }
+}
+
+void Button::MouseRelease (const MouseState& mstate) {
+    if (state == BTN_PRESSED) {
+        if (MouseOnWidget(mstate.pos)) state = BTN_FOCUSED;
+        else                           state = BTN_NORMAL;
+
+        Render (*GetRendertarget(), GetRegset());
+    }
+}
 
 void Button::MouseMove (const MouseState& mstate) {
     if (state == BTN_DISABLED) return;
@@ -27,36 +49,36 @@ void Button::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 }
 
 
-ImgButton::ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_):
-    Button (x, y, w, h)
-    {
-        if (textures_ != nullptr) {
-            textures[0] = textures_[0];
-            textures[1] = textures_[1];
-            textures[2] = textures_[2];
-            textures[3] = textures_[3];
-        }
-    }
+// ImgButton::ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_):
+//     Button (x, y, w, h)
+//     {
+//         if (textures_ != nullptr) {
+//             textures[0] = textures_[0];
+//             textures[1] = textures_[1];
+//             textures[2] = textures_[2];
+//             textures[3] = textures_[3];
+//         }
+//     }
 
-void ImgButton::SetTextures (const Texture* textures_) {
-    assert (textures != nullptr);
-    textures[0] = textures_[0];
-    textures[1] = textures_[1];
-    textures[2] = textures_[2];
-    textures[3] = textures_[3];
-}
+// void ImgButton::SetTextures (const Texture* textures_) {
+//     assert (textures != nullptr);
+//     textures[0] = textures_[0];
+//     textures[1] = textures_[1];
+//     textures[2] = textures_[2];
+//     textures[3] = textures_[3];
+// }
 
-void ImgButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-    rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
+// void ImgButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+//     rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
 
-    #ifdef REGDEBUG
-    rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
-    #endif
-}
+//     #ifdef REGDEBUG
+//     rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
+//     #endif
+// }
 
 
-TxtButton::TxtButton (double x, double y, size_t w, size_t h, const Text& txt_):
-    Button (x, y, w, h),
+TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, void* action_args_, const Text& txt_):
+    Button (x, y, w, h, action_, action_args_),
     txt (txt_)
     {}
 
@@ -75,8 +97,8 @@ void TxtButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 
 
 
-BtnChooseMenu::BtnChooseMenu (double x, double y, size_t w, size_t h, const Text& txt_):
-    TxtButton (x, y, w, h, txt_),
+BtnChooseMenu::BtnChooseMenu (double x, double y, double w, double h, const Text& txt_):
+    TxtButton (x, y, w, h, nullptr, nullptr, txt_),
     nextbtn_y (h)
     {}
 

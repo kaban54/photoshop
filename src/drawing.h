@@ -138,31 +138,35 @@ class PolyLine : public Tool {
 };
 
 
-class ToolBtn : public TxtButton {
+struct ToolBtnArgs {
     ToolManager* tool_man;
     Tool* tool;
-
-    public:
-
-    ToolBtn (double x, double y, size_t w, size_t h, const Text& txt_, ToolManager* tm, Tool* tool_);
-
-    virtual void MousePress (const MouseState& mstate) override;
-
-    virtual void MouseRelease (const MouseState& mstate) override;
-
 };
 
-class ColorBtn : public Button {
-    ToolManager* tool_man;
-    Color color;
+void tool_btn_action (void* tool_btn_args);
+
+class ToolBtn : public TxtButton {
+    ToolBtnArgs tool_btn_args;
 
     public:
 
-    ColorBtn (double x, double y, size_t w, size_t h, ToolManager* tm, const Color& col);
+    ToolBtn (double x, double y, double w, double h, const Text& txt_, ToolManager* tm, Tool* tool_);
+};
 
-    virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void MouseRelease (const MouseState& mstate) override;
+struct ColorBtnArgs {
+    ToolManager* tool_man;
+    Color col;
+};
+
+void col_btn_action (void* col_btn_args);
+
+class ColorBtn : public Button {
+    ColorBtnArgs col_btn_args;
+
+    public:
+
+    ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
