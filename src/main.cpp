@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "buttons.h"
 #include "drawing.h"
+#include "window.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
