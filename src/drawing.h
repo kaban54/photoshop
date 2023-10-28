@@ -11,12 +11,13 @@ class Tool {
 
     explicit Tool() {};
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) = 0;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) = 0;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) = 0;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) = 0;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) = 0;
 
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) = 0;
 };
 
 
@@ -32,11 +33,13 @@ class ToolManager {
 
     void SetColor (const Color& col_);
 
-    bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn);
+    bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate);
 
-    bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn);
+    bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate);
 
     bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos);
+
+    bool Deactivate (RenderTarget* perm, RenderTarget *tmp);
 };
 
 
@@ -69,11 +72,13 @@ class Brush : public Tool {
 
     void SetRadius (unsigned int r);
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) override;
 };
 
 class RectTool : public Tool {
@@ -81,11 +86,13 @@ class RectTool : public Tool {
 
     explicit RectTool() {}
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) override;
 };
 
 class LineTool : public Tool {
@@ -93,11 +100,13 @@ class LineTool : public Tool {
 
     explicit LineTool() {}
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) override;
 };
 
 class EllipseTool : public Tool {
@@ -105,11 +114,13 @@ class EllipseTool : public Tool {
 
     explicit EllipseTool() {}
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) override;
 };
 
 class PolyLine : public Tool {
@@ -117,11 +128,13 @@ class PolyLine : public Tool {
 
     explicit PolyLine();
 
-    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
-    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, MouseButton btn, const Color& col) override;
+    virtual bool PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
     virtual bool PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) override;
+
+    virtual bool Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) override;
 };
 
 
