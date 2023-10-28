@@ -10,18 +10,12 @@
 #include "region.h"
 #include "color.h"
 #include "mylist.h"
+#include "events.h"
 
 const size_t BASE_WIDGETMAN_CAP = 4;
 const Color WINDOW_BG_COLOR = Color (128, 128, 128);
 const Color BG_COLOR = Color (192, 192, 192);
 
-
-enum MouseButton {
-    MOUSE_LEFT = 0,
-    MOUSE_RIGHT = 1,
-
-    NUM_OF_MBUTONS
-};
 
 class Renderable {
     public:
@@ -67,7 +61,7 @@ class WidgetManager {
     void UpdateRegset (const RegionSet& parent_regs);
 };
 
-class Widget : public Renderable {
+class Widget : public Renderable, public EventProcessable {
     Rect bounds;
     WidgetManager subwidgets;
     RegionSet regset;
@@ -108,12 +102,6 @@ class Widget : public Renderable {
     void Show();
 
     virtual void GetMaxRegset (RegionSet* dst) const;
-
-    virtual void MousePress (const Vec& mousepos, MouseButton mousebtn) = 0;
-
-    virtual void MouseRelease (const Vec& mousepos, MouseButton mousebtn) = 0;
-
-    virtual void MouseMove (const Vec& mousepos) = 0;
 
     virtual bool MouseOnWidget (const Vec& mousepos) const;
 

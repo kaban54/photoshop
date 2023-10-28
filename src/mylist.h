@@ -64,9 +64,13 @@ class MyList {
 
     void Remove (ListNode<T>* node);
 
-    bool NodeInList (ListNode<T>* node);
+    bool NodeInList (ListNode<T>* node) const;
 
     void InsertElems (const MyList<T>& lst);
+
+    ListNode<T>* GetNode (const T& val) const;
+
+    void Iterate (ListNode<T>*& node) const;
 };
 
 template <typename T>
@@ -162,7 +166,7 @@ void MyList<T>::Remove(ListNode<T>* node) {
 }
 
 template <typename T>
-bool MyList<T>::NodeInList(ListNode<T>* node) {
+bool MyList<T>::NodeInList(ListNode<T>* node) const {
     ListNode<T>* current = GetHead();
     while (current != fic) {
         if (current == node) return true;
@@ -180,6 +184,28 @@ void MyList<T>::InsertElems (const MyList<T>& lst) {
         InsertTail (node -> val);
         node = node -> next;
     }
+}
+
+template <typename T>
+ListNode<T>* MyList<T>::GetNode (const T& val) const {
+    ListNode<T>* current = GetHead();
+    while (current != fic) {
+        if (current -> val == val) return current;
+        current = current -> next;
+    }
+    return nullptr;
+}
+
+template <typename T>
+void MyList<T>::Iterate (ListNode<T>*& node) const {
+    if (node == nullptr) {
+        node = GetHead();
+    }
+    else {
+        assert (NodeInList(node));
+        node = node -> next;
+    }
+    if (node == fic) node = nullptr;
 }
 
 #endif

@@ -65,16 +65,17 @@ RegionSet::RegionSet():
     regions () {}
 
 void RegionSet::MergeRegions() {
-    ListNode<Rect>* end_of_list = regions.EndOfList();
-    ListNode<Rect>* node1 = regions.GetHead();
+    ListNode<Rect>* node1 = nullptr;
+    regions.Iterate(node1);
 
-    while (node1 != end_of_list) {
-        ListNode<Rect>* node2 = node1 -> next;
-        while (node2 != end_of_list) {
+    while (node1 != nullptr) {
+        ListNode<Rect>* node2 = node1;
+        regions.Iterate(node2);
+        while (node2 != nullptr) {
             Rect r1 = node1 -> val;
             Rect r2 = node2 -> val;
             if (r1.Contains(r2)) {
-                node2 = node2 -> next;
+                regions.Iterate(node2);
                 regions.Remove (node2 -> prev);
                 continue;
             }
@@ -88,12 +89,12 @@ void RegionSet::MergeRegions() {
                 Vec v2 (std::max(r1.Right(), r2.Right()), std::max(r1.Bot(), r2.Bot()));
                 node1 -> val = Rect (v1, v2);
                 regions.Remove (node2);
-                node1 = end_of_list;
+                node1 = nullptr;
                 break;
             }
-            node2 = node2 -> next;
+            regions.Iterate(node2);
         }
-        node1 = node1 -> next;
+        regions.Iterate(node1);
     }
 }
 
@@ -107,10 +108,10 @@ void RegionSet::SubtractRegion (const Rect& region) {
     while (restart) {
         restart = false;
 
-        ListNode<Rect>* end_of_list = regions.EndOfList();
-        ListNode<Rect>* node = regions.GetHead();
+        ListNode<Rect>* node = nullptr;
+        regions.Iterate(node);
 
-        while (node != end_of_list) {
+        while (node != nullptr) {
             if (Intersect (region, node -> val)) {
                 Rect r1 = node -> val;
                 Rect r2 = region;
@@ -152,27 +153,26 @@ void RegionSet::SubtractRegion (const Rect& region) {
                 restart = true;
                 break;
             }
-            else node = node -> next;
+            else regions.Iterate(node);
         }
     }
 }
 
 void RegionSet::operator+= (const RegionSet& regset2) {
-    ListNode<Rect>* end_of_list = regset2.regions.EndOfList();
-    ListNode<Rect>* node = regset2.regions.GetHead();
-
-    while (node != end_of_list) {
+    ListNode<Rect>* node = nullptr;
+    regset2.regions.Iterate(node);
+    while (node != nullptr) {
         AddRegion (node -> val);
-        node = node -> next;
+        regset2.regions.Iterate(node);
     }
 }
 
 void RegionSet::operator-= (const RegionSet& regset2) {
-    ListNode<Rect>* end_of_list = regset2.regions.EndOfList();
-    ListNode<Rect>* node = regset2.regions.GetHead();
-    while (node != end_of_list) {
+    ListNode<Rect>* node = nullptr;
+    regset2.regions.Iterate(node);
+    while (node != nullptr) {
         SubtractRegion (node -> val);
-        node = node -> next;
+        regset2.regions.Iterate(node);
     }
 }
 
@@ -184,32 +184,33 @@ void RegionSet::operator^= (const RegionSet& regset2) {
 }
 
 void RegionSet::Move (const Vec& vec) {
-    ListNode<Rect>* end_of_list = regions.EndOfList();
-    ListNode<Rect>* node = regions.GetHead();
+    ListNode<Rect>* node = nullptr;
+    regions.Iterate(node);
 
-    while (node != end_of_list) {
+    while (node != nullptr) {
         node -> val.Move(vec);
-        node = node -> next;
+        regions.Iterate(node);
     }
 }
 
 bool RegionSet::Contains (const Vec& vec) const {
-    ListNode<Rect>* end_of_list = regions.EndOfList();
-    ListNode<Rect>* node = regions.GetHead();
-    while (node != end_of_list) {
+    ListNode<Rect>* node = nullptr;
+    regions.Iterate(node);
+    while (node != nullptr) {
         if (node -> val.Contains(vec)) return true;
-        node = node -> next;
+        regions.Iterate(node);
     }
     return false;
 }
 
 void RegionSet::Print() const {
-    ListNode<Rect>* node = regions.GetHead();
-    while (node != regions.EndOfList()){
+    ListNode<Rect>* node = nullptr;
+    regions.Iterate(node);
+    while (node != nullptr){
         std::cerr << "\t";
         node -> val.Print();
         std::cerr << "\n";
-        node = node -> next;
+        regions.Iterate(node);
     }
 }
 
