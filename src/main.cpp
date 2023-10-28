@@ -118,26 +118,23 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    Texture textures[4];
-    LoadTxtBtnTextures(textures);
-
-    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, textures, Text(&tools_txt));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&   brush_txt), &tm, &brush));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&    rect_txt), &tm, &recttool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&    line_txt), &tm, &linetool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& ellipse_txt), &tm, &elltool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&polyline_txt), &tm, &polyline));
+    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, Text(&tools_txt));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    line_txt), &tm, &linetool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(& ellipse_txt), &tm, &elltool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&polyline_txt), &tm, &polyline));
     mainwin.AddSubWidget (bm);
 
-    bm = new BtnChooseMenu (205, 25, 200, 80, textures, Text(&cols_txt));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 255)));
+    bm = new BtnChooseMenu (205, 25, 200, 80, Text(&cols_txt));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
     mainwin.AddSubWidget (bm);
 
     Window* win = new Window (200, 200, 610, 630);

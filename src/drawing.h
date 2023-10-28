@@ -144,7 +144,7 @@ class ToolBtn : public TxtButton {
 
     public:
 
-    ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_);
+    ToolBtn (double x, double y, size_t w, size_t h, const Text& txt_, ToolManager* tm, Tool* tool_);
 
     virtual void MousePress (const MouseState& mstate) override;
 
@@ -152,13 +152,13 @@ class ToolBtn : public TxtButton {
 
 };
 
-class ColorBtn : public ImgButton {
+class ColorBtn : public Button {
     ToolManager* tool_man;
     Color color;
 
     public:
 
-    ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col);
+    ColorBtn (double x, double y, size_t w, size_t h, ToolManager* tm, const Color& col);
 
     virtual void MousePress (const MouseState& mstate) override;
 

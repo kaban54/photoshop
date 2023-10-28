@@ -17,6 +17,8 @@ class Button : public Widget {
     explicit Button (double x, double y, size_t w, size_t h);
 
     virtual void MouseMove (const MouseState& mstate) override;
+
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
 
 
@@ -33,12 +35,12 @@ class ImgButton : public Button {
 };
 
 
-class TxtButton : public ImgButton {
+class TxtButton : public Button {
     Text txt;
 
     public:
 
-    explicit TxtButton (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_);
+    explicit TxtButton (double x, double y, size_t w, size_t h, const Text& txt_);
 
     void SetText (const Text& txt);
 
@@ -54,7 +56,7 @@ class BtnChooseMenu : public TxtButton {
     double nextbtn_y;
     public:
 
-    explicit BtnChooseMenu(double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_);
+    explicit BtnChooseMenu(double x, double y, size_t w, size_t h, const Text& txt_);
 
     void AddButton (Button* btn);
 
@@ -70,5 +72,8 @@ class BtnChooseMenu : public TxtButton {
 
     virtual bool MouseOnWidget (const Vec& mousepos) const override;
 };
+
+
+void DrawButton (RenderTarget& rt, const Rect& rect, ButtonState state, const RegionSet* to_draw);
 
 #endif

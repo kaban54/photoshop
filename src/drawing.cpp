@@ -231,8 +231,8 @@ bool PolyLine::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& c
 }
 
 
-ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_, ToolManager* tm, Tool* tool_):
-    TxtButton (x, y, w, h, textures_, txt_),
+ToolBtn::ToolBtn (double x, double y, size_t w, size_t h, const Text& txt_, ToolManager* tm, Tool* tool_):
+    TxtButton (x, y, w, h, txt_),
     tool_man (tm),
     tool (tool_)
     {}
@@ -252,8 +252,8 @@ void ToolBtn::MouseRelease (const MouseState& mstate) {
     }
 }
 
-ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, const Texture* textures_, ToolManager* tm, const Color& col):
-    ImgButton (x, y, w, h, textures_),
+ColorBtn::ColorBtn (double x, double y, size_t w, size_t h, ToolManager* tm, const Color& col):
+    Button (x, y, w, h),
     tool_man (tm),
     color (col)
     {}
@@ -274,7 +274,7 @@ void ColorBtn::MouseRelease (const MouseState& mstate) {
 }
 
 void ColorBtn::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-    rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
+    DrawButton (rt, GetBounds(), state, to_draw);
     rt.DrawRect (Rect (GetPos() + GetSize() / 4, GetPos() + GetSize() * 3 / 4), color, to_draw);
 
     #ifdef REGDEBUG

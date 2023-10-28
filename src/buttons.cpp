@@ -22,6 +22,10 @@ void Button::MouseMove (const MouseState& mstate) {
     }
 }
 
+void Button::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    DrawButton (rt, GetBounds(), state, to_draw);
+}
+
 
 ImgButton::ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_):
     Button (x, y, w, h)
@@ -51,8 +55,8 @@ void ImgButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 }
 
 
-TxtButton::TxtButton (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_):
-    ImgButton (x, y, w, h, textures_),
+TxtButton::TxtButton (double x, double y, size_t w, size_t h, const Text& txt_):
+    Button (x, y, w, h),
     txt (txt_)
     {}
 
@@ -61,7 +65,7 @@ void TxtButton::SetText (const Text& txt_) {
 }
 
 void TxtButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-    rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
+    DrawButton (rt, GetBounds(), state, to_draw);
     rt.DrawText (txt, GetPos() + Vec (40, 18), Color (0, 0, 0), to_draw);
 
     #ifdef REGDEBUG
@@ -71,8 +75,8 @@ void TxtButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 
 
 
-BtnChooseMenu::BtnChooseMenu (double x, double y, size_t w, size_t h, const Texture* textures_, const Text& txt_):
-    TxtButton (x, y, w, h, textures_, txt_),
+BtnChooseMenu::BtnChooseMenu (double x, double y, size_t w, size_t h, const Text& txt_):
+    TxtButton (x, y, w, h, txt_),
     nextbtn_y (h)
     {}
 
@@ -131,4 +135,30 @@ bool BtnChooseMenu::MouseOnWidget (const Vec& mousepos) const {
     if (GetRegset() -> Contains (mousepos)) return true;
     else if (state == BTN_PRESSED) return MouseOnSubwidgets (mousepos);
     else return false;
+}
+
+
+void DrawButton (RenderTarget& rt, const Rect& rect, ButtonState state, const RegionSet* to_draw) {
+    if (state == BTN_NORMAL) {
+        rt.DrawRect (rect, Color(128, 128, 128), to_draw);
+        rt.DrawRect (Rect (rect.x, rect.y, rect.w - 4, 8)     , Color (192, 192, 192), to_draw);
+        rt.DrawRect (Rect (rect.x, rect.y + 8, 8, rect.h - 12), Color (192, 192, 192), to_draw);
+        rt.DrawRect (Rect (rect.x + 4, rect.Bot() - 8, rect.w - 4, 8)   , Color (64, 64, 64), to_draw);
+        rt.DrawRect (Rect (rect.Right() - 8, rect.y + 4, 8, rect.h - 12), Color (64, 64, 64), to_draw);
+        rt.DrawRect (Rect (rect.x + 4, rect.Bot() - 8, 4, 4)  , Color (128, 128, 128), to_draw);
+        rt.DrawRect (Rect (rect.Right() - 8, rect.y + 4, 4, 4), Color (128, 128, 128), to_draw);
+    }
+    else if (state == BTN_FOCUSED) {
+        rt.DrawRect (rect, Color(160, 160, 160), to_draw);
+        rt.DrawRect (Rect (rect.x, rect.y, rect.w - 4, 8)     , Color (224, 224, 224), to_draw);
+        rt.DrawRect (Rect (rect.x, rect.y + 8, 8, rect.h - 12), Color (224, 224, 224), to_draw);
+        rt.DrawRect (Rect (rect.x + 4, rect.Bot() - 8, rect.w - 4, 8)   , Color (96, 96, 96), to_draw);
+        rt.DrawRect (Rect (rect.Right() - 8, rect.y + 4, 8, rect.h - 12), Color (96, 96, 96), to_draw);
+        rt.DrawRect (Rect (rect.x + 4, rect.Bot() - 8, 4, 4)  , Color (160, 160, 160), to_draw);
+        rt.DrawRect (Rect (rect.Right() - 8, rect.y + 4, 4, 4), Color (160, 160, 160), to_draw);
+    }
+    else if (state == BTN_PRESSED) {
+        rt.DrawRect (rect, Color (64, 64, 64), to_draw);
+        rt.DrawRect (Rect (rect.x + 4, rect.y + 4, rect.w - 8, rect.h - 8), Color (128, 128, 128), to_draw);
+    }
 }
