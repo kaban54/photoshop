@@ -68,7 +68,7 @@ class RenderTarget {
 
     void DrawImg (const Image& img, const Vec& pos, const RegionSet* to_draw = nullptr);
 
-    void DrawRegset (const RegionSet& regset, const Color& col);
+    void DrawRegset (const RegionSet& regset, const Color& col, bool fill = false);
 };
 
 #endif

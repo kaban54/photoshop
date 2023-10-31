@@ -7,9 +7,13 @@
 #include <unistd.h>
 #include "buttons.h"
 #include "drawing.h"
+#include "window.h"
+#include "filter.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
 sf::Font GLOBAL_FONT;
+
+const char* EVENTLOG_FILENAME = "logs/eventlog";
 
 const int W = 2160;
 const int H = 1440;
@@ -20,24 +24,28 @@ void SetWidgets (Window& mainwin);
 
 int main() {
     GLOBAL_FONT.loadFromFile (FONT_FILENAME);
+    FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
+    EventLogger eventlogger (eventlogfile);
 
     sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    //sfwindow.setFramerateLimit (300);
+    sfwindow.setFramerateLimit (120);
 
     Vec mousepos (0, 0);
-    bool mouse_pressed = false;
-
-    Background bg (W, H);
-    Window* mainwin = new Window (100, 100, 1920, 1080);
 
     RenderTarget rt (W, H);
+    Background bg (W, H);
+    bg.SetRenderTarget (&rt);
+    Window* mainwin = new Window (100, 100, 1920, 1080);
     SetWidgets (*mainwin);
     bg.AddSubWidget(mainwin);
-    bg.SetRenderTarget (&rt);
 
     bg.Show();
-    bg.Render(rt, bg.GetRegset());
-    bg.RenderSubWidgets(rt);
+
+    EventManager event_man;
+    event_man.AddObject(&bg);
+    event_man.AddObject(&eventlogger);
+
+    TestFilter tf;
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -49,22 +57,28 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
+                if (event.key.code == sf::Keyboard::Q)
+                    tf.Apply(rt);
             }
 
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
-                bg.MouseMove (mousepos);
+                event_man.MouseMove (MouseState(mousepos));
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left ) bg.MousePress (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) bg.MousePress (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left )
+                    event_man.MousePress (MouseState(mousepos, MOUSE_LEFT ));
+                if (event.mouseButton.button == sf::Mouse::Right)
+                    event_man.MousePress (MouseState(mousepos, MOUSE_RIGHT));
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left ) bg.MouseRelease (mousepos, MOUSE_LEFT );
-                if (event.mouseButton.button == sf::Mouse::Right) bg.MouseRelease (mousepos, MOUSE_RIGHT);
+                if (event.mouseButton.button == sf::Mouse::Left )
+                    event_man.MouseRelease (MouseState(mousepos, MOUSE_LEFT ));
+                if (event.mouseButton.button == sf::Mouse::Right)
+                    event_man.MouseRelease (MouseState(mousepos, MOUSE_RIGHT));
             }
         }
         
@@ -72,6 +86,8 @@ int main() {
         rt.Display(sfwindow);
         sfwindow.display();
     }
+
+    fclose (eventlogfile);
     return 0;
 }
 
@@ -105,34 +121,37 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    Texture textures[4];
-    LoadTxtBtnTextures(textures);
+    static sf::Text filter_test_txt ("filter test", GLOBAL_FONT, 30);
+    static TestFilter test_filter;
+    static FilterManager fm;
+    fm.SetFilter (&test_filter);
 
-    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, textures, Text(&tools_txt));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&   brush_txt), &tm, &brush));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&    rect_txt), &tm, &recttool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&    line_txt), &tm, &linetool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(& ellipse_txt), &tm, &elltool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, textures, Text(&polyline_txt), &tm, &polyline));
+    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, Text(&filter_test_txt), &fm, &test_filter));
+
+
+    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, Text(&tools_txt));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    line_txt), &tm, &linetool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(& ellipse_txt), &tm, &elltool));
+    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&polyline_txt), &tm, &polyline));
     mainwin.AddSubWidget (bm);
 
-    bm = new BtnChooseMenu (205, 25, 200, 80, textures, Text(&cols_txt));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 255, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(0, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, textures, &tm, Color(255, 255, 255)));
+    bm = new BtnChooseMenu (205, 25, 200, 80, Text(&cols_txt));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 255)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
+    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
     mainwin.AddSubWidget (bm);
 
     Window* win = new Window (200, 200, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
     win = new Window (1000, 100, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
-
-    mainwin.AddSubWidget (new TxtButton (700, 140, 200, 200, textures, Text(&tools_txt)));
 }

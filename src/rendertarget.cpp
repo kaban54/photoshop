@@ -203,10 +203,11 @@ void RenderTarget::DrawImg (const Image& img, const Vec& pos, const RegionSet* t
     screen.display();
 }
 
-void RenderTarget::DrawRegset (const RegionSet& regset, const Color& col) {
+void RenderTarget::DrawRegset (const RegionSet& regset, const Color& col, bool fill) {
     sf::RectangleShape rect;
     const int outl_thikness = 3;
-    rect.setFillColor (sf::Color::Transparent);
+    if (fill) rect.setFillColor (sf::Color(col.r, col.g, col.b, col.a));
+    else      rect.setFillColor (sf::Color::Transparent);
     rect.setOutlineThickness (outl_thikness);
     rect.setOutlineColor (sf::Color(col.r, col.g, col.b, col.a));
 
