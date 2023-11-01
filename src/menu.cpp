@@ -13,6 +13,10 @@ void Menu::MouseMove (const MouseState& mstate) {
     if (visible) GetSubwidgets() -> MouseMove (mstate);
 }
 
+bool Menu::MouseOnWidget (const Vec& mousepos) const {
+    return MouseOnSubwidgets(mousepos);
+}
+
 
 MenuBtn::MenuBtn (double x, double y, double w, double h, const Text& txt_, Menu* menu_):
     TxtButton (x, y, w, h, nullptr, nullptr, txt_),
@@ -48,7 +52,7 @@ void MenuBtn::MouseMove (const MouseState& mstate) {
         Render (*GetRendertarget(), GetRegset());
     }
     else if (state == BTN_PRESSED) {
-        if (menu -> MouseOnSubwidgets(mstate.pos)) return;
+        if (menu -> MouseOnWidget(mstate.pos)) return;
         else {
             menu -> visible = false;
             state = BTN_NORMAL;

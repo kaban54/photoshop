@@ -37,7 +37,7 @@ void Widget::Move (const Vec& vec) {
 }
 
 void Widget::Show() {
-    if (parent != nullptr) {     
+    if (parent != nullptr) {
         parent -> subwidgets.MoveToTail(this);
         parent -> Show();
     }
@@ -88,7 +88,6 @@ void Widget::UpdateRegset(const RegionSet& regs) {
         rt -> DrawRegset (to_draw, Color (255, 0, 0, 128), true);
         #endif
     }
-
     regset.regions.Clear();
     regset += newregs;
 
@@ -139,15 +138,6 @@ void WidgetManager::Move (const Vec& vec) {
         widgets.Iterate(node);
     }
 }
-
-// void WidgetManager::SubtractRegset (const RegionSet& regions) {
-//     ListNode<Widget*>* node = nullptr;
-//     widgets.Iterate(node);
-//     while (node != nullptr) {
-//         node -> val -> SubtractRegset(regions);
-//         widgets.Iterate(node);
-//     }
-// }
 
 void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
     ListNode<Widget*>* node = nullptr;

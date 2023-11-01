@@ -16,7 +16,7 @@ class Menu : public Widget {
 
     virtual void MouseMove (const MouseState& mstate) override;
 
-    virtual bool MouseOnWidget (const Vec& mousepos) const override {return false;}
+    virtual bool MouseOnWidget (const Vec& mousepos) const override;
 };
 
 

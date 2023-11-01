@@ -99,6 +99,7 @@ void RegionSet::MergeRegions() {
 }
 
 void RegionSet::AddRegion (const Rect& region) {
+    if (region.w * region.h == 0) return;
     regions.InsertHead(region);
     MergeRegions();
 }
