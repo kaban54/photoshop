@@ -59,8 +59,11 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
-                if (event.key.code == sf::Keyboard::Q)
-                    tf.Apply(rt);
+                event_man.KeyboardPress ((KeyboardKey) event.key.code);
+            }
+
+            if (event.type == sf::Event::KeyReleased) {
+                event_man.KeyboardRelease ((KeyboardKey) event.key.code);
             }
 
             if (event.type == sf::Event::MouseMoved) {

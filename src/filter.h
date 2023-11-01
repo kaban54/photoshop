@@ -15,13 +15,17 @@ class Filter {
 };
 
 class TestFilter : public Filter {
+    double test_param;
+
     public:
+
+    explicit TestFilter(): test_param (0) {}
 
     virtual void Apply (RenderTarget &rt) const override;
 
-    virtual void SetParams (const std::vector<double>& params) override {}
+    virtual void SetParams (const std::vector<double>& params) override;
 
-    virtual std::vector<const char*> GetParamNames() const override {return std::vector<const char*> {};}
+    virtual std::vector<const char*> GetParamNames() const override {return std::vector<const char*> {"test param"};}
 };
 
 

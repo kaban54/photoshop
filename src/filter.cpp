@@ -1,6 +1,9 @@
 #include "filter.h"
 
 void TestFilter::Apply (RenderTarget &rt) const {
+    
+    std::cout << "Applying TestFilter: param = " << test_param << "\n";
+
     Image img;
     rt.GetImg(img);
 
@@ -16,6 +19,11 @@ void TestFilter::Apply (RenderTarget &rt) const {
     }
 
     rt.DrawImg(img, Vec(0, 0));
+}
+
+void TestFilter::SetParams (const std::vector<double>& params) {
+    assert (params.size == 1);
+    test_param = params[0];
 }
 
 

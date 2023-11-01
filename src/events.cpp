@@ -67,6 +67,27 @@ void EventManager::MouseMove (const MouseState& mstate) {
     }
 }
 
+void EventManager::KeyboardPress (KeyboardKey key) {
+    ListNode<EventProcessable*>* node = nullptr;
+    objects.Iterate (node);
+    while (node != nullptr) {
+        EventProcessable* obj = node -> val;
+        if (obj -> GetPriority() >= min_priorities[KEYBOARD_PRESS]) obj -> KeyboardPress (key);
+        objects.Iterate(node);
+    }
+}
+
+void EventManager::KeyboardRelease (KeyboardKey key) {
+    ListNode<EventProcessable*>* node = nullptr;
+    objects.Iterate (node);
+    while (node != nullptr) {
+        EventProcessable* obj = node -> val;
+        if (obj -> GetPriority() >= min_priorities[KEYBOARD_RELEASE]) obj -> KeyboardRelease (key);
+        objects.Iterate(node);
+    }
+}
+
+
 
 EventLogger::EventLogger (FILE* logfile_):
     logfile (logfile_)
@@ -87,5 +108,15 @@ void EventLogger::MouseRelease (const MouseState& mstate) {
 
 void EventLogger::MouseMove (const MouseState& mstate) {
     fprintf (logfile, "MOUSE_MOVE\t\t(%d, %d)\n", (int)mstate.pos.x, (int)mstate.pos.y);
+    fflush (logfile);
+}
+
+void EventLogger::KeyboardPress (KeyboardKey key) {
+    fprintf (logfile, "KEYBOARD_PRESS\t\t%d\n", key);
+    fflush (logfile);
+}
+
+void EventLogger::KeyboardRelease (KeyboardKey key) {
+    fprintf (logfile, "KEYBOARD_RELEASE\t\t%d\n", key);
     fflush (logfile);
 }
