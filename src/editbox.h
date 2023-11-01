@@ -16,7 +16,7 @@ class EditBox : public Widget {
 
     virtual void MousePress (const MouseState& mstate) override;
 
-    virtual void KeyboardPress (KeyboardKey key) override;
+    virtual void KeyboardPress (const KeyboardState& kstate) override;
 };
 
 #endif

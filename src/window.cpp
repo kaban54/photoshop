@@ -55,12 +55,12 @@ void Window::MouseMove (const MouseState& mstate) {
     GetSubwidgets() -> MouseMove (mstate);
 }
 
-void Window::KeyboardPress (KeyboardKey key) {
-    GetSubwidgets() -> KeyboardPress (key);
+void Window::KeyboardPress (const KeyboardState& kstate) {
+    GetSubwidgets() -> KeyboardPress (kstate);
 }
 
-void Window::KeyboardRelease (KeyboardKey key) {
-    GetSubwidgets() -> KeyboardRelease (key);
+void Window::KeyboardRelease (const KeyboardState& kstate) {
+    GetSubwidgets() -> KeyboardRelease (kstate);
 }
 
 
@@ -88,12 +88,12 @@ void Background::MouseMove (const MouseState& mstate) {
     GetSubwidgets() -> MouseMove (mstate);
 }
 
-void Background::KeyboardPress (KeyboardKey key) {
-    GetSubwidgets() -> KeyboardPress (key);
+void Background::KeyboardPress (const KeyboardState& kstate) {
+    GetSubwidgets() -> KeyboardPress (kstate);
 }
 
-void Background::KeyboardRelease (KeyboardKey key) {
-    GetSubwidgets() -> KeyboardRelease (key);
+void Background::KeyboardRelease (const KeyboardState& kstate) {
+    GetSubwidgets() -> KeyboardRelease (kstate);
 }
 
 

@@ -10,7 +10,7 @@
 #include "filter.h"
 #include "editbox.h"
 
-const char* FONT_FILENAME = "fonts/font.ttf";
+const char* FONT_FILENAME = "fonts/font2.ttf";
 Font GLOBAL_FONT;
 
 const char* EVENTLOG_FILENAME = "logs/eventlog";
@@ -61,11 +61,13 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
-                event_man.KeyboardPress ((KeyboardKey) event.key.code);
+                KeyboardState kstate ((KeyboardKey)event.key.code, event.key.alt, event.key.control, event.key.shift);
+                event_man.KeyboardPress (kstate);   
             }
 
             if (event.type == sf::Event::KeyReleased) {
-                event_man.KeyboardRelease ((KeyboardKey) event.key.code);
+                KeyboardState kstate ((KeyboardKey)event.key.code, event.key.alt, event.key.control, event.key.shift);
+                event_man.KeyboardRelease (kstate);
             }
 
             if (event.type == sf::Event::MouseMoved) {

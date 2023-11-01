@@ -23,32 +23,32 @@ void EditBox::MousePress (const MouseState& mstate) {
     if (!MouseOnWidget(mstate.pos) &&  editing) editing = false;
 }
 
-void EditBox::KeyboardPress (KeyboardKey key) {
+void EditBox::KeyboardPress (const KeyboardState& kstate) {
     if (!editing) return;
-    if (key == Enter_KEY) {
+    if (kstate.key == Enter_KEY && !kstate.shift) {
         editing = false;
+        Render (*GetRendertarget(), GetRegset());
         return;
     }
-    else if (key >= A_KEY && key <= Z_KEY) {
-        txt.str.insert (cursor_pos++, 1, 'a' + key - A_KEY);
-        Render (*GetRendertarget(), GetRegset());
-    }
-    else if (key >= NUM0_KEY && key <= NUM9_KEY) {
-        txt.str.insert (cursor_pos++, 1, '0' + key - NUM0_KEY);
-        Render (*GetRendertarget(), GetRegset());
-    }
-    else if (key == Backspace_KEY) {
+    if (kstate.key == Backspace_KEY) {
         if (txt.str.size() > 0 && cursor_pos > 0) txt.str.erase (--cursor_pos, 1);
         Render (*GetRendertarget(), GetRegset());
     }
-    else if (key == Right_KEY) {
+    else if (kstate.key == Delete_KEY) {
+        if (txt.str.size() > 0 && cursor_pos < txt.str.size()) txt.str.erase (cursor_pos, 1);
+        Render (*GetRendertarget(), GetRegset());
+    }
+    else if (kstate.key == Right_KEY) {
         if (cursor_pos < txt.str.size()) cursor_pos++;
         Render (*GetRendertarget(), GetRegset());
     }
-    else if (key == Left_KEY) {
+    else if (kstate.key == Left_KEY) {
         if (cursor_pos > 0) cursor_pos--;
         Render (*GetRendertarget(), GetRegset());
     }
-
-
+    char c = GetSymb(kstate);
+    if (c != 0) {
+       txt.str.insert (cursor_pos++, 1, c);
+       Render (*GetRendertarget(), GetRegset());
+    }
 }

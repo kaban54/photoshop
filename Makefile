@@ -6,9 +6,9 @@ SRCDIR = src/
 
 all: prog
 
-prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/filter.o \
+prog: obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/filter.o obj/keyboard.o\
 	  obj/region.o obj/buttons.o obj/drawing.o obj/events.o obj/window.o obj/menu.o obj/editbox.o
-	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/filter.o \
+	$(CC) -o prog obj/main.o obj/vec.o obj/widget.o obj/rendertarget.o obj/color.o obj/filter.o obj/keyboard.o\
 			      obj/region.o obj/buttons.o obj/drawing.o obj/events.o obj/window.o obj/menu.o obj/editbox.o $(SFMLFLAGS)
 
 regtest: src/regtest.cpp src/vec.cpp src/widget.cpp src/rendertarget.cpp src/color.cpp src/filter.cpp\

@@ -20,9 +20,9 @@ class Window : public Widget {
 
     virtual void MouseMove (const MouseState& mstate) override;
 
-    virtual void KeyboardPress (KeyboardKey key) override;
+    virtual void KeyboardPress (const KeyboardState& kstate) override;
 
-    virtual void KeyboardRelease (KeyboardKey key) override;
+    virtual void KeyboardRelease (const KeyboardState& kstate) override;
 };
 
 
@@ -39,9 +39,9 @@ class Background : public Widget {
 
     virtual void MouseMove (const MouseState& mstate) override;
 
-    virtual void KeyboardPress (KeyboardKey key) override;
+    virtual void KeyboardPress (const KeyboardState& kstate) override;
 
-    virtual void KeyboardRelease (KeyboardKey key) override;
+    virtual void KeyboardRelease (const KeyboardState& kstate) override;
 };
 
 class ModalWindow : public Window {
