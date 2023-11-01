@@ -57,3 +57,15 @@ void MenuBtn::MouseMove (const MouseState& mstate) {
         }
     }
 }
+
+
+VerticalMenu::VerticalMenu (double x, double y):
+    pos (Vec(x, y)),
+    nextbtn_y (y)
+    {}
+
+void VerticalMenu::AddButton (Button* btn) {
+    btn -> SetBounds (Rect(pos.x, nextbtn_y, btn -> GetSize().x, btn -> GetSize().y));
+    nextbtn_y += btn -> GetSize().y;
+    AddSubWidget (btn);
+}

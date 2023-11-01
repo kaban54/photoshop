@@ -130,24 +130,26 @@ void SetWidgets (Window& mainwin) {
     mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, Text(&filter_test_txt), &fm, &test_filter));
 
 
-    BtnChooseMenu* bm = new BtnChooseMenu (5, 25, 200, 80, Text(&tools_txt));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    line_txt), &tm, &linetool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(& ellipse_txt), &tm, &elltool));
-    bm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&polyline_txt), &tm, &polyline));
-    mainwin.AddSubWidget (bm);
+    VerticalMenu* vm = new VerticalMenu (5, 105);
+    vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
+    vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
+    vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    line_txt), &tm, &linetool));
+    vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(& ellipse_txt), &tm, &elltool));
+    vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&polyline_txt), &tm, &polyline));
+    mainwin.AddSubWidget (vm);
+    mainwin.AddSubWidget (new MenuBtn (5, 25, 200, 80, Text(&tools_txt), vm));
 
-    bm = new BtnChooseMenu (205, 25, 200, 80, Text(&cols_txt));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 255)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
-    bm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
-    mainwin.AddSubWidget (bm);
+    vm = new VerticalMenu (205, 105);
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 0)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 255)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 255)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 0)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 255)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
+    vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
+    mainwin.AddSubWidget (vm);
+    mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, Text(&cols_txt), vm));
 
     Window* win = new Window (200, 200, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
@@ -155,10 +157,4 @@ void SetWidgets (Window& mainwin) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
-
-    Menu *me = new Menu;
-    me -> AddSubWidget (new ColorBtn (300, 900, 300, 100, &tm, Color(128, 0, 255)));
-    mainwin.AddSubWidget (me);
-
-    mainwin.AddSubWidget (new MenuBtn (100, 900, 200, 100, Text(&brush_txt), me));
 }

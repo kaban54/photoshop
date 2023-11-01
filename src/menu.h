@@ -34,4 +34,15 @@ class MenuBtn : public TxtButton {
     virtual void MouseMove (const MouseState& mstate) override;
 };
 
+class VerticalMenu : public Menu {
+    Vec pos;
+    double nextbtn_y;
+
+    public:
+
+    explicit VerticalMenu (double x, double y);
+
+    void AddButton (Button* btn);
+};
+
 #endif
