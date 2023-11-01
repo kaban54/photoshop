@@ -41,6 +41,9 @@ void MenuBtn::MouseMove (const MouseState& mstate) {
     if (!visible) return;
     if (state == BTN_DISABLED) return;
 
+    GetSubwidgets() -> MouseMove(mstate);
+    menu -> MouseMove(mstate);
+
     if (MouseOnWidget (mstate.pos)) {
         if (state == BTN_NORMAL) {
             state = BTN_FOCUSED;
