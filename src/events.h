@@ -151,15 +151,15 @@ class EventProcessable {
 
     uint8_t GetPriority() {return priority;}
 
-    virtual void MousePress (const MouseState& mstate) {};
+    virtual void MousePress (const MouseState& mstate) {}
 
-    virtual void MouseRelease (const MouseState& mstate) {};
+    virtual void MouseRelease (const MouseState& mstate) {}
 
-    virtual void MouseMove (const MouseState& mstate) {};
+    virtual void MouseMove (const MouseState& mstate) {}
 
-    virtual void KeyboardPress (KeyboardKey key) {};
+    virtual void KeyboardPress (KeyboardKey key) {}
 
-    virtual void KeyboardRelease (KeyboardKey key) {};
+    virtual void KeyboardRelease (KeyboardKey key) {}
 };
 
 

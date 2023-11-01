@@ -4,6 +4,22 @@ Color* Image::GetPixels() const {
     return (Color*)sfimg.getPixelsPtr();
 }
 
+Text::Text (const std::string& str_, const Font& fnt_, size_t char_size_):
+    fnt (fnt_),
+    str (str_),
+    char_size (char_size_)
+    {}
+
+Vec Text::GetSize (size_t len) const {
+    if (len > str.size()) len = str.size();
+    char substr [len + 1] = "";
+    strncpy (substr, str.c_str(), len);
+    substr[len] = '\0';
+    sf::Text sftxt (substr, *fnt.sffont, char_size);
+    sf::FloatRect bounds = sftxt.getGlobalBounds();
+    return Vec (bounds.width, bounds.height);
+}
+
 RenderTarget::RenderTarget (unsigned int w, unsigned int h):
     width (w),
     height (h),
@@ -113,7 +129,7 @@ void RenderTarget::DrawTexture (const Texture& texture, const Vec& pos, const Ve
 }
 
 void RenderTarget::DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet* regset) {
-    sf::Text text = *(txt.sftxt);
+    sf::Text text (txt.str, *txt.fnt.sffont, txt.char_size);
     text.setPosition (0, 0);
     sf::FloatRect bounds = text.getGlobalBounds();
     sf::RenderTexture sfrt;

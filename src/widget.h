@@ -56,6 +56,10 @@ class WidgetManager {
 
     void MouseMove (const MouseState& mstate);
 
+    void KeyboardPress (KeyboardKey key);
+
+    void KeyboardRelease (KeyboardKey key);
+
     void MoveToTail (Widget* wid);
 
     void UpdateRegset (const RegionSet& parent_regs);

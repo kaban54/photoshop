@@ -5,7 +5,8 @@
 #include "region.h"
 #include "vec.h"
 #include "color.h"
-
+#include "string"
+#include "string.h"
 
 struct Image {
     sf::Image sfimg;
@@ -27,12 +28,22 @@ struct Texture {
     explicit Texture (sf::Texture* sftexture_): sftexture (sftexture_) {}
 };
 
+struct Font {
+    sf::Font* sffont;
+
+    explicit Font (): sffont (nullptr) {}
+
+    explicit Font (sf::Font* fnt_): sffont (fnt_) {}
+};
+
 struct Text {
-    sf::Text* sftxt;
+    std::string str;
+    Font fnt;
+    size_t char_size;
 
-    explicit Text() {}
+    explicit Text (const std::string& str_, const Font& fnt_, size_t char_size_);
 
-    explicit Text (sf::Text* sftxt_): sftxt (sftxt_) {} 
+    Vec GetSize(size_t len) const;
 };
 
 class RenderTarget {

@@ -1,4 +1,3 @@
-#include "widget.h"
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
@@ -9,9 +8,10 @@
 #include "drawing.h"
 #include "window.h"
 #include "filter.h"
+#include "editbox.h"
 
 const char* FONT_FILENAME = "fonts/font.ttf";
-sf::Font GLOBAL_FONT;
+Font GLOBAL_FONT;
 
 const char* EVENTLOG_FILENAME = "logs/eventlog";
 
@@ -23,7 +23,9 @@ void LoadTxtBtnTextures (Texture textures[4]);
 void SetWidgets (Window& mainwin);
 
 int main() {
-    GLOBAL_FONT.loadFromFile (FONT_FILENAME);
+    sf::Font fnt;
+    fnt.loadFromFile (FONT_FILENAME);
+    GLOBAL_FONT.sffont = &fnt;
     FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
     EventLogger eventlogger (eventlogfile);
 
@@ -109,14 +111,14 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 
 void SetWidgets (Window& mainwin) {
 
-    static sf::Text     edit_txt ("edit"    , GLOBAL_FONT, 30);
-    static sf::Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
-    static sf::Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
-    static sf::Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
-    static sf::Text     rect_txt ("rect"    , GLOBAL_FONT, 30);
-    static sf::Text     line_txt ("line"    , GLOBAL_FONT, 30);
-    static sf::Text  ellipse_txt ("ellipse" , GLOBAL_FONT, 30);
-    static sf::Text polyline_txt ("polyline", GLOBAL_FONT, 30);
+    static Text     edit_txt ("edit"    , GLOBAL_FONT, 30);
+    static Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
+    static Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
+    static Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
+    static Text     rect_txt ("rect"    , GLOBAL_FONT, 30);
+    static Text     line_txt ("line"    , GLOBAL_FONT, 30);
+    static Text  ellipse_txt ("ellipse" , GLOBAL_FONT, 30);
+    static Text polyline_txt ("polyline", GLOBAL_FONT, 30);
 
     static Brush brush (25);
     static RectTool recttool;
@@ -127,20 +129,20 @@ void SetWidgets (Window& mainwin) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    static sf::Text filter_test_txt ("filter test", GLOBAL_FONT, 30);
+    static Text filter_test_txt ("filter test", GLOBAL_FONT, 30);
     static TestFilter test_filter;
     static FilterManager fm;
     fm.SetFilter (&test_filter);
 
-    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, Text(&filter_test_txt), &fm, &test_filter));
+    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, filter_test_txt, &fm, &test_filter));
 
 
     VerticalMenu* tools_vm = new VerticalMenu (405, 105);
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&   brush_txt), &tm, &brush));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    rect_txt), &tm, &recttool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&    line_txt), &tm, &linetool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(& ellipse_txt), &tm, &elltool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, Text(&polyline_txt), &tm, &polyline));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,    brush_txt, &tm, &brush));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,     rect_txt, &tm, &recttool));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,     line_txt, &tm, &linetool));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,  ellipse_txt, &tm, &elltool));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, polyline_txt, &tm, &polyline));
     // mainwin.AddSubWidget (tools_vm);
     //mainwin.AddSubWidget (new MenuBtn (5, 25, 200, 80, Text(&tools_txt), vm));
 
@@ -159,10 +161,10 @@ void SetWidgets (Window& mainwin) {
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> AddSubWidget (tools_vm);
     vm -> AddSubWidget (cols_vm);
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, Text(&tools_txt), tools_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, Text(& cols_txt),  cols_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, tools_txt, tools_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  cols_txt,  cols_vm));
     mainwin.AddSubWidget (vm);
-    mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, Text(&edit_txt), vm));
+    mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, edit_txt, vm));
 
     Window* win = new Window (200, 200, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
@@ -170,4 +172,6 @@ void SetWidgets (Window& mainwin) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
+
+    mainwin.AddSubWidget (new EditBox (100, 900, 600, 80, GLOBAL_FONT, 30));
 }

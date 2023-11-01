@@ -185,6 +185,25 @@ void WidgetManager::MouseMove (const MouseState& mstate) {
     }
 }
 
+
+void WidgetManager::KeyboardPress (KeyboardKey key) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
+        node -> val -> KeyboardPress(key);
+        widgets.Iterate(node);
+    }
+}
+
+void WidgetManager::KeyboardRelease (KeyboardKey key) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
+        node -> val -> KeyboardRelease(key);
+        widgets.Iterate(node);
+    }
+}
+
 void WidgetManager::MoveToTail (Widget* wid) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
