@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
 #include <unistd.h>
-#include "buttons.h"
+#include "menu.h"
 #include "drawing.h"
 #include "window.h"
 #include "filter.h"
@@ -27,7 +27,8 @@ int main() {
     FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
     EventLogger eventlogger (eventlogfile);
 
-    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
+    // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
+    sf::RenderWindow sfwindow (sf::VideoMode (2000, 1200), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
     Vec mousepos (0, 0);
@@ -154,4 +155,10 @@ void SetWidgets (Window& mainwin) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
+
+    Menu *me = new Menu;
+    me -> AddSubWidget (new ColorBtn (300, 900, 300, 100, &tm, Color(128, 0, 255)));
+    mainwin.AddSubWidget (me);
+
+    mainwin.AddSubWidget (new MenuBtn (100, 900, 200, 100, Text(&brush_txt), me));
 }

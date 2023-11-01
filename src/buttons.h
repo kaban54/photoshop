@@ -10,16 +10,18 @@ enum ButtonState {
     BTN_DISABLED = 3,
 };
 
-typedef void BtnFunc (void* args);
+struct BtnArgs {};
+
+typedef void BtnFunc (BtnArgs* args);
 
 class Button : public Widget {
     BtnFunc* action;
-    void* action_args;
+    BtnArgs* action_args;
     public:
 
     ButtonState state;
 
-    explicit Button (double x, double y, double w, double h, BtnFunc* action_, void* action_args_);
+    explicit Button (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_);
 
     virtual void MousePress (const MouseState& mstate) override;
 
@@ -48,7 +50,7 @@ class TxtButton : public Button {
     Text txt;
     public:
 
-    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, void* action_args_, const Text& txt_);
+    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Text& txt_);
 
     void SetText (const Text& txt);
 
@@ -60,13 +62,11 @@ class BtnChooseMenu : public TxtButton {
     double nextbtn_y;
     public:
 
-    explicit BtnChooseMenu(double x, double y, double w, double h, const Text& txt_);
+    explicit BtnChooseMenu (double x, double y, double w, double h, const Text& txt_);
 
     void AddButton (Button* btn);
 
     virtual void GetMaxRegset (RegionSet* dst) const override;
-
-    //virtual void Render (RenderTarget& rt, RegionSet* to_draw) const override;
 
     virtual void MousePress (const MouseState& mstate) override;
 

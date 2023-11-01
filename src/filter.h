@@ -43,12 +43,15 @@ class FilterManager {
 };
 
 
-struct FilterBtnArgs {
+struct FilterBtnArgs : public BtnArgs{
     FilterManager* filter_man;
     Filter* filter;
+    explicit FilterBtnArgs (FilterManager* filter_man_, Filter* filter_):
+        filter_man (filter_man_),
+        filter (filter_) {}
 };
 
-void filter_btn_action (void* filter_btn_args);
+void filter_btn_action (BtnArgs* filter_btn_args);
 
 class FilterBtn : public TxtButton {
     FilterBtnArgs filter_btn_args;

@@ -20,7 +20,9 @@ const Color BG_COLOR = Color (192, 192, 192);
 class Renderable {
     public:
 
-    Renderable() {}
+    bool visible;
+
+    Renderable(): visible (true) {}
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const = 0;
 };
@@ -44,8 +46,6 @@ class WidgetManager {
 
     void Move (const Vec& vec);
 
-    // void SubtractRegset (const RegionSet& regions);
-
     void SetRenderTarget (RenderTarget *rt_);
 
     void MousePress (const MouseState& mstate);
@@ -59,6 +59,8 @@ class WidgetManager {
     void MoveToTail (Widget* wid);
 
     void UpdateRegset (const RegionSet& parent_regs);
+
+    virtual void GetMaxRegset (RegionSet* dst) const;
 };
 
 class Widget : public Renderable, public EventProcessable {
@@ -94,8 +96,6 @@ class Widget : public Renderable, public EventProcessable {
     void RenderSubWidgets (RenderTarget& rt) const;
 
     void Move (const Vec& vec);
-
-    // void SubtractRegset (const RegionSet& regions);
 
     void UpdateRegset (const RegionSet& regs);
 

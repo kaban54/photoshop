@@ -20,6 +20,7 @@ void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 }
 
 void Window::MousePress (const MouseState& mstate) {
+    if (!visible) return;
     GetSubwidgets() -> MousePress (mstate);
     if (MouseOnWidget(mstate.pos)) {
         if (Rect(GetPos().x, GetPos().y, GetSize().x, 30).Contains(mstate.pos) && mstate.btn == MOUSE_LEFT) {
@@ -31,6 +32,7 @@ void Window::MousePress (const MouseState& mstate) {
 }
 
 void Window::MouseRelease (const MouseState& mstate) {
+    if (!visible) return;
     if (mstate.btn == MOUSE_LEFT && is_moving) {
         is_moving = false;
         hold_pos = Vec (0, 0);
@@ -39,11 +41,11 @@ void Window::MouseRelease (const MouseState& mstate) {
 }
 
 void Window::MouseMove (const MouseState& mstate) {
+    if (!visible) return;
     if (is_moving) {
         Vec mousepos = mstate.pos;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
             Move (mousepos - hold_pos);
-            //regset.regions.Clear();
             Show();
             Render(*GetRendertarget(), GetRegset());
             RenderSubWidgets(*GetRendertarget());

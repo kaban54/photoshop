@@ -36,11 +36,6 @@ void Widget::Move (const Vec& vec) {
     subwidgets.Move(vec);
 }
 
-// void Widget::SubtractRegset (const RegionSet& regions) {
-//     regset -= regions;
-//     subwidgets.SubtractRegset(regions);
-// }
-
 void Widget::Show() {
     if (parent != nullptr) {     
         parent -> subwidgets.MoveToTail(this);
@@ -55,7 +50,9 @@ void Widget::Show() {
 
 void Widget::GetMaxRegset (RegionSet* dst) const {
     assert(dst != nullptr);
+    if (!visible) return;
     dst -> AddRegion (bounds);
+    subwidgets.GetMaxRegset (dst);
 }
 
 bool Widget::MouseOnWidget (const Vec& mousepos) const {
@@ -67,32 +64,36 @@ bool Widget::MouseOnSubwidgets(const Vec& mousepos) const {
 }
 
 void Widget::UpdateRegset(const RegionSet& regs) {
-    RegionSet to_draw;
-    to_draw += regs;
-
-    ListNode<Widget*>* node = subwidgets.widgets.GetHead();
-    while (node != subwidgets.widgets.EndOfList()) {
-        RegionSet child_max_regset;
-        node -> val -> GetMaxRegset(&child_max_regset);
-        to_draw -= child_max_regset;
-        node = node -> next;
-    }
-
     RegionSet newregs;
-    newregs += to_draw;
-    to_draw -= regset;
+    if (visible) {
+        RegionSet to_draw;
+        to_draw += regs;
 
-    #ifndef REGDEBUG
-    if (to_draw.regions.GetSize() > 0) Render(*rt, &to_draw);
-    #else
-    Render (*rt, &newregs);
-    // rt -> DrawRegset (regset, Color (0, 0, 255, 128));
-    rt -> DrawRegset (to_draw, Color (255, 0, 0, 128), true);
-    #endif
+        ListNode<Widget*>* node = subwidgets.widgets.GetHead();
+        while (node != subwidgets.widgets.EndOfList()) {
+            RegionSet child_max_regset;
+            node -> val -> GetMaxRegset(&child_max_regset);
+            to_draw -= child_max_regset;
+            node = node -> next;
+        }
+
+        newregs += to_draw;
+        to_draw -= regset;
+
+        #ifndef REGDEBUG
+        if (to_draw.regions.GetSize() > 0) Render(*rt, &to_draw);
+        #else
+        Render (*rt, &newregs);
+        // rt -> DrawRegset (regset, Color (0, 0, 255, 128));
+        rt -> DrawRegset (to_draw, Color (255, 0, 0, 128), true);
+        #endif
+    }
 
     regset.regions.Clear();
     regset += newregs;
-    subwidgets.UpdateRegset(regs);
+
+    if (visible) subwidgets.UpdateRegset(regs);
+    else         subwidgets.UpdateRegset(newregs);
 }
 
 
@@ -122,8 +123,10 @@ void WidgetManager::Render (RenderTarget& rt) const {
     widgets.Iterate(node);
     while (node != nullptr) {
         Widget* wid = node -> val;
-        wid -> Render(rt, wid -> GetRegset());
-        wid -> RenderSubWidgets (rt);
+        if (wid -> visible) {
+            wid -> Render(rt, wid -> GetRegset());
+            wid -> RenderSubWidgets (rt);
+        }
         widgets.Iterate(node);
     }
 }
@@ -227,6 +230,15 @@ void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {
         }
 
         node -> val -> UpdateRegset(regs);
+        widgets.Iterate(node);
+    }
+}
+
+void WidgetManager::GetMaxRegset (RegionSet* dst) const {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
+        node -> val -> GetMaxRegset(dst);
         widgets.Iterate(node);
     }
 }

@@ -139,35 +139,41 @@ class PolyLine : public Tool {
 };
 
 
-struct ToolBtnArgs {
+struct ToolBtnArgs : public BtnArgs {
     ToolManager* tool_man;
     Tool* tool;
+    explicit ToolBtnArgs (ToolManager* tool_man_, Tool* tool_):
+        tool_man (tool_man_),
+        tool (tool_) {}
 };
 
-void tool_btn_action (void* tool_btn_args);
+void tool_btn_action (BtnArgs* tool_btn_args);
 
 class ToolBtn : public TxtButton {
     ToolBtnArgs tool_btn_args;
 
     public:
 
-    ToolBtn (double x, double y, double w, double h, const Text& txt_, ToolManager* tm, Tool* tool_);
+    explicit ToolBtn (double x, double y, double w, double h, const Text& txt_, ToolManager* tm, Tool* tool_);
 };
 
 
-struct ColorBtnArgs {
+struct ColorBtnArgs : public BtnArgs {
     ToolManager* tool_man;
     Color col;
+    explicit ColorBtnArgs (ToolManager* tool_man_, Color col_):
+        tool_man (tool_man_),
+        col (col_) {}
 };
 
-void col_btn_action (void* col_btn_args);
+void col_btn_action (BtnArgs* col_btn_args);
 
 class ColorBtn : public Button {
     ColorBtnArgs col_btn_args;
 
     public:
 
-    ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
+    explicit ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };

@@ -233,7 +233,7 @@ bool PolyLine::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& c
 }
 
 
-void tool_btn_action (void* tool_btn_args) {
+void tool_btn_action (BtnArgs* tool_btn_args) {
     ToolManager* tool_man = ((ToolBtnArgs*)tool_btn_args) -> tool_man;
     Tool*        tool     = ((ToolBtnArgs*)tool_btn_args) -> tool;
     tool_man -> SetTool (tool);
@@ -241,12 +241,12 @@ void tool_btn_action (void* tool_btn_args) {
 
 ToolBtn::ToolBtn (double x, double y, double w, double h, const Text& txt_, ToolManager* tm, Tool* tool_):
     TxtButton (x, y, w, h, tool_btn_action, &tool_btn_args, txt_),
-    tool_btn_args {tm, tool_}
+    tool_btn_args (tm, tool_)
     {}
 
 
 
-void col_btn_action (void* col_btn_args) {
+void col_btn_action (BtnArgs* col_btn_args) {
     ToolManager* tool_man = ((ColorBtnArgs*)col_btn_args) -> tool_man;
     Color        color    = ((ColorBtnArgs*)col_btn_args) -> col;
     tool_man -> SetColor (color);

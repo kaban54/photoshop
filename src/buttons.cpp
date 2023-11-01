@@ -1,6 +1,6 @@
 #include "buttons.h"
 
-Button::Button (double x, double y, double w, double h, BtnFunc* action_, void* action_args_):
+Button::Button (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_):
     Widget (x, y, w, h),
     state (BTN_NORMAL),
     action (action_),
@@ -35,11 +35,9 @@ void Button::MouseMove (const MouseState& mstate) {
             Render (*GetRendertarget(), GetRegset());
         }
     }
-    else {
-        if (state == BTN_FOCUSED) {
-            state = BTN_NORMAL;
-            Render (*GetRendertarget(), GetRegset());
-        }
+    else if (state == BTN_FOCUSED) {
+        state = BTN_NORMAL;
+        Render (*GetRendertarget(), GetRegset());
     }
 }
 
@@ -76,7 +74,7 @@ void Button::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 // }
 
 
-TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, void* action_args_, const Text& txt_):
+TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Text& txt_):
     Button (x, y, w, h, action_, action_args_),
     txt (txt_)
     {}
@@ -156,7 +154,6 @@ bool BtnChooseMenu::MouseOnWidget (const Vec& mousepos) const {
     else if (state == BTN_PRESSED) return MouseOnSubwidgets (mousepos);
     else return false;
 }
-
 
 void DrawButton (RenderTarget& rt, const Rect& rect, ButtonState state, const RegionSet* to_draw) {
     if (state == BTN_NORMAL) {
