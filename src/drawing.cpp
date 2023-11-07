@@ -6,11 +6,11 @@ ToolManager::ToolManager ():
     {}
 
 
-void ToolManager::SetTool (Tool* tool) {
+inline void ToolManager::SetTool (Tool* tool) {
     cur_tool = tool;
 }
 
-void ToolManager::SetColor (const Color& col_) {
+inline void ToolManager::SetColor (const Color& col_) {
     col = col_;
 }
 
@@ -82,12 +82,13 @@ Brush::Brush (unsigned int r):
     radius (r)
     {}
 
-void Brush::SetRadius (unsigned int r) {
+inline void Brush::SetRadius (unsigned int r) {
     radius = r;
 }
 
 bool Brush::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) {
     perm -> DrawCircle (mstate.pos, radius, col);
+    last_pos = mstate.pos;
     return true;
 }
 
@@ -98,10 +99,12 @@ bool Brush::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseSt
 
 bool Brush::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     perm -> DrawCircle (pos, radius, col);
+    perm -> DrawLine (last_pos, pos, radius * 2, col);
+    last_pos = pos;
     return true;
 }
 
-bool Brush::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) {
+inline bool Brush::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) {
     return false;
 }
 
@@ -133,29 +136,37 @@ bool RectTool::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& c
 }
 
 
+LineTool::LineTool (unsigned int thikness_):
+    thikness (thikness_)
+    {}
+
+inline void LineTool::SetThikness (unsigned int thikness_) {
+    thikness = thikness_;
+}
+
 bool LineTool::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) {
     start_pos = mstate.pos;
     last_pos = mstate.pos;
-    tmp -> DrawLine (mstate.pos, mstate.pos, col);
+    tmp -> DrawLine (mstate.pos, mstate.pos, thikness, col);
     return true;
 }
 
 bool LineTool::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
-    perm -> DrawLine (start_pos, mstate.pos, col);
+    perm -> DrawLine (start_pos, mstate.pos, thikness, col);
     return false;
 }
 
 bool LineTool::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
-    tmp -> DrawLine (start_pos, pos, col);
+    tmp -> DrawLine (start_pos, pos, thikness, col);
     last_pos = pos;
     return true;
 }
 
 bool LineTool::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
-    perm -> DrawLine (start_pos, last_pos, col);
+    perm -> DrawLine (start_pos, last_pos, thikness, col);
     return false;
 }
 
@@ -187,20 +198,31 @@ bool EllipseTool::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color
 }
 
 
-PolyLine::PolyLine () {
-    start_pos = Vec(-1, -1);
+PolyLine::PolyLine (unsigned int thikness_):
+    thikness (thikness_)
+    {
+        start_pos = Vec(-1, -1);
+    }
+
+inline void PolyLine::SetThikness (unsigned int thikness_) {
+    thikness = thikness_;
 }
 
 bool PolyLine::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) {
     if (start_pos.x == -1 && start_pos.y == -1) {
         start_pos = mstate.pos;
         last_pos = mstate.pos;
-        tmp -> DrawLine (mstate.pos, mstate.pos, col);
+        tmp -> DrawLine (mstate.pos, mstate.pos, thikness, col);
+        if (thikness > 1) tmp -> DrawCircle (mstate.pos, thikness / 2, col);
         return true;
     }
     else {
         tmp -> ClearScreen (Color (0, 0, 0, 0));
-        perm -> DrawLine (start_pos, mstate.pos, col);
+        perm -> DrawLine (start_pos, mstate.pos, thikness, col);
+        if (thikness > 1) {
+            perm -> DrawCircle (mstate.pos, thikness / 2, col);
+            perm -> DrawCircle (start_pos , thikness / 2, col);
+        }
         if (mstate.btn == MOUSE_RIGHT) {
             start_pos = Vec (-1, -1);
             last_pos = start_pos;
@@ -220,14 +242,18 @@ bool PolyLine::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const Mous
 
 bool PolyLine::PaintOnMove (RenderTarget* perm, RenderTarget *tmp, const Vec& pos, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
-    tmp -> DrawLine (start_pos, pos, col);
+    tmp -> DrawLine (start_pos, pos, thikness, col);
+    if (thikness > 1) {
+        tmp -> DrawCircle (      pos, thikness / 2, col);
+        tmp -> DrawCircle (start_pos, thikness / 2, col);
+    }
     last_pos = pos;
     return true;
 }
 
 bool PolyLine::Deactivate (RenderTarget* perm, RenderTarget *tmp, const Color& col) {
     tmp -> ClearScreen (Color (0, 0, 0, 0));
-    perm -> DrawLine (start_pos, last_pos, col);
+    perm -> DrawLine (start_pos, last_pos, thikness, col);
     start_pos = Vec (-1, -1);
     return false;
 }

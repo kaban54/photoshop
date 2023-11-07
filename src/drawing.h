@@ -69,7 +69,7 @@ class Brush : public Tool {
 
     public:
 
-    explicit Brush (unsigned int r);
+    explicit Brush (unsigned int r = 1);
 
     void SetRadius (unsigned int r);
 
@@ -97,9 +97,13 @@ class RectTool : public Tool {
 };
 
 class LineTool : public Tool {
+    unsigned int thikness;
+
     public:
 
-    explicit LineTool() {}
+    explicit LineTool (unsigned int thikness_ = 1);
+
+    void SetThikness (unsigned int thikness_);
 
     virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 
@@ -125,9 +129,13 @@ class EllipseTool : public Tool {
 };
 
 class PolyLine : public Tool {
+    unsigned int thikness;
+
     public:
 
-    explicit PolyLine();
+    explicit PolyLine (unsigned int thikness_ = 1);
+
+    void SetThikness (unsigned int thikness_);
 
     virtual bool PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) override;
 

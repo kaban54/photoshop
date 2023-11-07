@@ -74,13 +74,29 @@ void RenderTarget::DrawRect (const Rect& rect, const Color& col, const RegionSet
     }
 }
 
-void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet* regset) {    
+void RenderTarget::DrawLine (const Vec& p1, const Vec& p2, double thikness, const Color& col, const RegionSet* regset) {    
     sf::Color color (col.r, col.g, col.b, col.a);
-    sf::Vertex line[] = {
-        sf::Vertex (sf::Vector2f (p1.x, p1.y), color),
-        sf::Vertex (sf::Vector2f (p2.x, p2.y), color)
-    };
-    screen.draw (line, 2, sf::Lines);
+    if (thikness == 1) {
+        sf::Vertex line[] = {
+            sf::Vertex (sf::Vector2f (p1.x, p1.y), color),
+            sf::Vertex (sf::Vector2f (p2.x, p2.y), color)
+        };
+        screen.draw (line, 2, sf::Lines);
+    }
+    else {
+        Vec dir = p2 - p1;
+        Vec normal (-dir.y, dir.x);
+        normal = !normal * thikness / 2;
+
+        sf::ConvexShape polygon;
+        polygon.setFillColor (color);
+        polygon.setPointCount (4);
+        polygon.setPoint (0, sf::Vector2f(p1.x + normal.x, p1.y + normal.y));
+        polygon.setPoint (1, sf::Vector2f(p1.x - normal.x, p1.y - normal.y));
+        polygon.setPoint (2, sf::Vector2f(p2.x - normal.x, p2.y - normal.y));
+        polygon.setPoint (3, sf::Vector2f(p2.x + normal.x, p2.y + normal.y));
+        screen.draw(polygon);
+    }
     screen.display();
 }
 

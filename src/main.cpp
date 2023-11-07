@@ -124,9 +124,9 @@ void SetWidgets (Window& mainwin) {
 
     static Brush brush (25);
     static RectTool recttool;
-    static LineTool linetool;
+    static LineTool linetool (15);
     static EllipseTool elltool;
-    static PolyLine polyline;
+    static PolyLine polyline (15);
     static ToolManager tm;
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));

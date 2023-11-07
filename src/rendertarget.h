@@ -63,7 +63,7 @@ class RenderTarget {
 
     void DrawRect (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
 
-    void DrawLine (const Vec& p1, const Vec& p2, const Color& col, const RegionSet* to_draw = nullptr);
+    void DrawLine (const Vec& p1, const Vec& p2, double thikness, const Color& col, const RegionSet* to_draw = nullptr);
 
     void SetPixel (const Vec& point, const Color& col, const RegionSet* to_draw = nullptr);
 
