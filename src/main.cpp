@@ -137,7 +137,9 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     tm.SetColor (Color (255, 0, 128));
 
     static Text filter_test_txt ("test", GLOBAL_FONT, 30);
+    static Text clr_filter_txt ("clear", GLOBAL_FONT, 30);
     static TestFilter test_filter;
+    static ClearFilter clr_filter;
     static FilterManager fm;
     fm.SetFilter (&test_filter);
 
@@ -161,6 +163,7 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
 
     VerticalMenu* filters_vm = new VerticalMenu (405, 265);
     filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, filter_test_txt, &fm, &test_filter, &ev_man, &mainwin));
+    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80,  clr_filter_txt, &fm, & clr_filter, &ev_man, &mainwin));
 
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> AddSubWidget (tools_vm);

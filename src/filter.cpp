@@ -29,6 +29,47 @@ void TestFilter::SetParams (const std::vector<double>& params) {
 }
 
 
+
+void ClearFilter::Apply (RenderTarget &rt) const {
+    Image img;
+    rt.GetImg(img);
+
+    Color* pixels = img.GetPixels();
+    unsigned int w = img.GetWidth();
+    unsigned int h = img.GetHeight();
+
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            Color* pix = pixels + y * w + x;
+            *pix = col;
+        }
+    }
+
+    rt.DrawImg(img, Vec(0, 0));
+}
+
+void ClearFilter::SetParams (const std::vector<double>& params) {
+    assert (params.size() == 3);
+    double red   = params[0];
+    double green = params[1];
+    double blue  = params[2];
+
+    if (red < 0) red = 0;
+    else if (red > 255) red = 255;
+    if (green < 0) green = 0;
+    else if (green > 255) green = 255;
+    if (blue < 0) blue = 0;
+    else if (blue > 255) blue = 255;
+
+    col = Color (red, green, blue);
+
+}
+
+std::vector<const char*> ClearFilter::GetParamNames() const {
+    return std::vector<const char*> {"Red", "Green", "Blue"};
+}
+
+
 FilterManager::FilterManager ():
     current (nullptr),
     active (false)

@@ -36,6 +36,23 @@ class TestFilter : public Filter {
     virtual std::vector<const char*> GetParamNames() const override {return std::vector<const char*> {"test param"};}
 };
 
+class ClearFilter : public Filter {
+    Color col;
+
+    public:
+
+    explicit ClearFilter():
+        Filter (3),
+        col (255, 255, 255) {}
+    
+    virtual void Apply (RenderTarget &rt) const override;
+
+    virtual void SetParams (const std::vector<double>& params) override;
+
+    virtual std::vector<const char*> GetParamNames() const override;
+
+};
+
 
 class FilterManager {
     Filter* current;
