@@ -32,7 +32,7 @@ void Window::MousePress (const MouseState& mstate) {
         Show();
     }
     GetSubwidgets() -> MousePress (mstate);
-    if (need_to_close) delete this;
+    if (need_to_close) Close();
 }
 
 void Window::MouseRelease (const MouseState& mstate) {
@@ -114,7 +114,6 @@ ModalWindow::~ModalWindow() {
     event_man -> ResetPriorities();
     event_man -> RemoveObject (this);
 }
-
 
 void window_close_btn_action (BtnArgs* btn_args) {
     ((WindowCloseBtnArgs*) btn_args) -> win -> need_to_close = true;

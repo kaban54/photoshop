@@ -4,6 +4,7 @@
 #include "rendertarget.h"
 #include "buttons.h"
 #include "window.h"
+#include "editbox.h"
 
 class Filter {
     public:
@@ -72,6 +73,7 @@ class SetFilterController {
     EventManager* ev_man;
     Widget* parent_wid;
     ModalWindow* mw;
+    std::vector<FloatNumEditBox*> editboxes;
 
     public:
 

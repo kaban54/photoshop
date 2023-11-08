@@ -26,6 +26,8 @@ class Window : public Widget {
     virtual void KeyboardPress (const KeyboardState& kstate) override;
 
     virtual void KeyboardRelease (const KeyboardState& kstate) override;
+
+    virtual void Close() {delete this;}
 };
 
 
@@ -54,13 +56,9 @@ class ModalWindow : public Window {
 
     ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
 
-    virtual void KeyboardPress (const KeyboardState& kstate) {
-        if (kstate.key == Q_KEY) {
-            delete this;
-        }
-    }
-
     ~ModalWindow();
+
+    virtual void Close() override {delete this;}
 };
 
 

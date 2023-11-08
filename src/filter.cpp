@@ -60,18 +60,29 @@ SetFilterController::SetFilterController (FilterManager* fm, Filter* filt, Event
     filter_man (fm),
     filter (filt),
     ev_man (ev_man_),
-    parent_wid (parent_wid_)
+    parent_wid (parent_wid_),
+    editboxes ()
     {
-        mw = new ModalWindow (150, 150, 400, 400, ev_man);
-        mw -> AddSubWidget (new SetFilterOkBtn (100, 200, 200, 100, this));
+        mw = new ModalWindow (150, 150, 400, 100 * (filter -> num_of_params) + 125, ev_man);
+        mw -> AddSubWidget (new SetFilterOkBtn (100, 100 * (filter -> num_of_params) + 50, 200, 50, this));
+        for (unsigned int i = 0; i < filter -> num_of_params; i++) {
+            editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, GLOBAL_FONT, 30));
+            mw -> AddSubWidget (editboxes.back());
+        }
+
         parent_wid -> AddSubWidget (mw);
     }
 
 SetFilterController::~SetFilterController() {
-    delete mw;
+    mw -> need_to_close = true;
 }
 
 void SetFilterController::OkBtnPress() {
+    std::vector<double> params;
+    for (int i = 0; i < filter -> num_of_params; i++) {
+        params.push_back(editboxes[i] -> TextToDouble());
+    }
+    filter -> SetParams (params);
     filter_man -> SetFilter (filter);
     filter_man -> Activate();
     delete this;

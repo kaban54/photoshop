@@ -133,6 +133,6 @@ void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
     }
 }
 
-inline double FloatNumEditBox::TextToDouble() const {
+double FloatNumEditBox::TextToDouble() const {
     return atof (txt.str.c_str());
 }
