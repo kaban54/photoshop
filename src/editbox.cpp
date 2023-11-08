@@ -25,30 +25,103 @@ void EditBox::MousePress (const MouseState& mstate) {
 
 void EditBox::KeyboardPress (const KeyboardState& kstate) {
     if (!editing) return;
-    if (kstate.key == Enter_KEY && !kstate.shift) {
-        editing = false;
-        Render (*GetRendertarget(), GetRegset());
-        return;
+    switch (kstate.key) {
+    
+        case Enter_KEY:
+            if (!kstate.shift) {
+                editing = false;
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
+        
+        case Backspace_KEY:
+            if (txt.str.size() > 0 && cursor_pos > 0) txt.str.erase (--cursor_pos, 1);
+            Render (*GetRendertarget(), GetRegset());
+            break;
+
+        case Delete_KEY:
+            if (txt.str.size() > 0 && cursor_pos < txt.str.size()) txt.str.erase (cursor_pos, 1);
+            Render (*GetRendertarget(), GetRegset());
+            break;
+        
+        case Right_KEY:
+            if (cursor_pos < txt.str.size()) cursor_pos++;
+            Render (*GetRendertarget(), GetRegset());
+            break;
+        
+        case Left_KEY:
+            if (cursor_pos > 0) cursor_pos--;
+            Render (*GetRendertarget(), GetRegset());
+            break;
+
+        default:
+            char c = GetSymb(kstate);
+            if (c != 0) {
+                txt.str.insert (cursor_pos++, 1, c);
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
     }
-    if (kstate.key == Backspace_KEY) {
-        if (txt.str.size() > 0 && cursor_pos > 0) txt.str.erase (--cursor_pos, 1);
-        Render (*GetRendertarget(), GetRegset());
-    }
-    else if (kstate.key == Delete_KEY) {
-        if (txt.str.size() > 0 && cursor_pos < txt.str.size()) txt.str.erase (cursor_pos, 1);
-        Render (*GetRendertarget(), GetRegset());
-    }
-    else if (kstate.key == Right_KEY) {
-        if (cursor_pos < txt.str.size()) cursor_pos++;
-        Render (*GetRendertarget(), GetRegset());
-    }
-    else if (kstate.key == Left_KEY) {
-        if (cursor_pos > 0) cursor_pos--;
-        Render (*GetRendertarget(), GetRegset());
-    }
-    char c = GetSymb(kstate);
-    if (c != 0) {
-       txt.str.insert (cursor_pos++, 1, c);
-       Render (*GetRendertarget(), GetRegset());
+
+}
+
+
+FloatNumEditBox::FloatNumEditBox (double x, double y, double w, double h, const Font& fnt, size_t char_size):
+    EditBox (x, y, w, h, fnt, char_size),
+    point_is_set (false)
+    {}
+
+
+void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
+    if (!editing) return;
+    switch (kstate.key) {
+        case Enter_KEY:
+            if (!kstate.shift) {
+                editing = false;
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
+        
+        case Backspace_KEY:
+            if (txt.str.size() > 0 && cursor_pos > 0) {
+                if (txt.str[cursor_pos - 1] == '.') point_is_set = false;
+                txt.str.erase (--cursor_pos, 1);
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
+
+        case Delete_KEY:
+            if (txt.str.size() > 0 && cursor_pos < txt.str.size()) {
+                if (txt.str[cursor_pos] == '.') point_is_set = false;
+                txt.str.erase (cursor_pos, 1);
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
+        
+        case Right_KEY:
+            if (cursor_pos < txt.str.size()) cursor_pos++;
+            Render (*GetRendertarget(), GetRegset());
+            break;
+        
+        case Left_KEY:
+            if (cursor_pos > 0) cursor_pos--;
+            Render (*GetRendertarget(), GetRegset());
+            break;
+
+        case Period_KEY:
+            if (!point_is_set && !kstate.shift) {
+                txt.str.insert (cursor_pos++, 1, '.');
+                point_is_set = true;
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
+
+        default:
+            char c = GetSymb(kstate);
+            if (c >= '0' && c <= '9') {
+                txt.str.insert (cursor_pos++, 1, c);
+                Render (*GetRendertarget(), GetRegset());
+            }
+            break;
     }
 }

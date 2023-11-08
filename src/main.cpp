@@ -168,5 +168,5 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
 
-    mainwin.AddSubWidget (new EditBox (100, 900, 600, 80, GLOBAL_FONT, 30));
+    mainwin.AddSubWidget (new FloatNumEditBox (100, 900, 600, 80, GLOBAL_FONT, 30));
 }
