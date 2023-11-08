@@ -3,9 +3,14 @@
 
 #include "rendertarget.h"
 #include "buttons.h"
+#include "window.h"
 
 class Filter {
     public:
+    const unsigned int num_of_params;
+
+    Filter (unsigned int num_of_params_):
+        num_of_params (num_of_params_) {}
 
     virtual void Apply (RenderTarget &rt) const = 0;
 
@@ -19,7 +24,9 @@ class TestFilter : public Filter {
 
     public:
 
-    explicit TestFilter(): test_param (0) {}
+    explicit TestFilter():
+        Filter (1),
+        test_param (0) {}
 
     virtual void Apply (RenderTarget &rt) const override;
 
@@ -47,22 +54,53 @@ class FilterManager {
 };
 
 
-struct FilterBtnArgs : public BtnArgs{
-    FilterManager* filter_man;
-    Filter* filter;
-    explicit FilterBtnArgs (FilterManager* filter_man_, Filter* filter_):
-        filter_man (filter_man_),
-        filter (filter_) {}
+class SetFilterController;
+
+class SetFilterOkBtn : public TxtButton {
+    SetFilterController* sfc;
+
+    public:
+
+    SetFilterOkBtn (double x, double y, double w, double h, SetFilterController* sfc_);
+
+    virtual void MousePress (const MouseState& mstate) override;
 };
 
-void filter_btn_action (BtnArgs* filter_btn_args);
+class SetFilterController {
+    FilterManager* filter_man;
+    Filter* filter;
+    EventManager* ev_man;
+    Widget* parent_wid;
+    ModalWindow* mw;
+
+    public:
+
+    explicit SetFilterController (FilterManager* fm, Filter* filt, EventManager* ev_man_, Widget* parent_wid_);
+
+    ~SetFilterController();
+
+    void OkBtnPress ();
+};
+
+struct FilterBtnArgs : public BtnArgs {
+    FilterManager* filter_man;
+    Filter* filter;
+    EventManager* ev_man;
+    Widget* parent_wid;
+    explicit FilterBtnArgs (FilterManager* filter_man_, Filter* filter_, EventManager* ev_man_, Widget* parent_wid_):
+        filter_man (filter_man_),
+        filter (filter_),
+        ev_man (ev_man_),
+        parent_wid (parent_wid_) {}
+};
 
 class FilterBtn : public TxtButton {
     FilterBtnArgs filter_btn_args;
 
     public:
 
-    explicit FilterBtn (double x, double y, double w, double h, const Text& txt_, FilterManager* fm, Filter* filter_);
+    explicit FilterBtn (double x, double y, double w, double h, const Text& txt_,
+                        FilterManager* fm, Filter* filter_, EventManager* ev_man_, Widget* parent_wid_);
 };
 
 #endif

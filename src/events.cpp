@@ -28,7 +28,7 @@ void EventManager::RemoveObject (EventProcessable* obj) {
 }
 
 void EventManager::ResetPriorities() {
-    memset (min_priorities, 0, NUM_OF_EVENTS);
+    memset (min_priorities, 0, NUM_OF_EVENTS * sizeof(min_priorities[0]));
 }
 
 void EventManager::SetMinPriorities (const std::vector<Events>& events, uint8_t new_priority) {
@@ -41,9 +41,11 @@ void EventManager::MousePress (const MouseState& mstate) {
     ListNode<EventProcessable*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
+        ListNode<EventProcessable*>* nextnode = node;
+        objects.Iterate (nextnode);
         EventProcessable* obj = node -> val;
         if (obj -> GetPriority() >= min_priorities[MOUSE_PRESS]) obj -> MousePress (mstate);
-        objects.Iterate(node);
+        node = nextnode;
     }
 }
 
@@ -71,9 +73,11 @@ void EventManager::KeyboardPress (const KeyboardState& kstate) {
     ListNode<EventProcessable*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
+        ListNode<EventProcessable*>* nextnode = node;
+        objects.Iterate (nextnode);
         EventProcessable* obj = node -> val;
         if (obj -> GetPriority() >= min_priorities[KEYBOARD_PRESS]) obj -> KeyboardPress (kstate);
-        objects.Iterate(node);
+        node = nextnode;
     }
 }
 

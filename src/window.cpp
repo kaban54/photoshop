@@ -1,11 +1,11 @@
 #include "window.h"
 
-Window::Window (double x, double y, double w, double h):
+Window::Window (double x, double y, double w, double h, bool close_btn):
     Widget (x, y, w, h),
     is_moving (false),
     need_to_close (false)
     {
-        AddSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
+        if (close_btn) AddSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
     }
 
 void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
@@ -102,12 +102,12 @@ void Background::KeyboardRelease (const KeyboardState& kstate) {
 
 
 ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* event_man_):
-    Window (x, y, w, h),
+    Window (x, y, w, h, false),
     event_man (event_man_)
     {
         event_man -> AddObject (this);
         SetPriority (1);
-        event_man -> SetMinPriorities (std::vector<Events>({MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE}), 1);
+        event_man -> SetMinPriorities (std::vector<Events>({MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, KEYBOARD_PRESS, KEYBOARD_RELEASE}), 1);
     }
 
 ModalWindow::~ModalWindow() {

@@ -20,7 +20,7 @@ const int H = 1440;
 
 void LoadTxtBtnTextures (Texture textures[4]);
 
-void SetWidgets (Window& mainwin);
+void SetWidgets (Window& mainwin, EventManager& ev_man);
 
 int main() {
     sf::Font fnt;
@@ -28,23 +28,22 @@ int main() {
     GLOBAL_FONT.sffont = &fnt;
     FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
     EventLogger eventlogger (eventlogfile);
+    EventManager event_man;
+    event_man.AddObject(&eventlogger);
 
     // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
     sf::RenderWindow sfwindow (sf::VideoMode (2000, 1200), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
-    Vec mousepos (0, 0);
-
     RenderTarget rt (W, H);
     Background bg (W, H);
     bg.SetRenderTarget (&rt);
     Window* mainwin = new Window (100, 100, 1920, 1080);
-    SetWidgets (*mainwin);
+    SetWidgets (*mainwin, event_man);
     bg.AddSubWidget(mainwin);
 
-    EventManager event_man;
-    event_man.AddObject(&eventlogger);
     event_man.AddObject(&bg);
+    Vec mousepos (0, 0);
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -106,8 +105,7 @@ void LoadTxtBtnTextures (Texture textures[4]) {
     textures[3].sftexture = nullptr;
 }
 
-void SetWidgets (Window& mainwin) {
-
+void SetWidgets (Window& mainwin, EventManager& ev_man) {
     static Text     edit_txt ("edit"    , GLOBAL_FONT, 30);
     static Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
     static Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
@@ -131,7 +129,7 @@ void SetWidgets (Window& mainwin) {
     static FilterManager fm;
     fm.SetFilter (&test_filter);
 
-    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, filter_test_txt, &fm, &test_filter));
+    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, filter_test_txt, &fm, &test_filter, &ev_man, &mainwin));
 
 
     VerticalMenu* tools_vm = new VerticalMenu (405, 105);

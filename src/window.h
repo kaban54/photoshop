@@ -13,7 +13,7 @@ class Window : public Widget {
     public:
     bool need_to_close;
 
-    explicit Window (double x, double y, double w, double h);
+    explicit Window (double x, double y, double w, double h, bool close_btn = true);
 
     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 
@@ -53,6 +53,12 @@ class ModalWindow : public Window {
     public:
 
     ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
+
+    virtual void KeyboardPress (const KeyboardState& kstate) {
+        if (kstate.key == Q_KEY) {
+            delete this;
+        }
+    }
 
     ~ModalWindow();
 };
