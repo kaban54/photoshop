@@ -67,6 +67,11 @@ void Window::KeyboardRelease (const KeyboardState& kstate) {
     GetSubwidgets() -> KeyboardRelease (kstate);
 }
 
+void Window::TimerEvent (double time) {
+    GetSubwidgets() -> TimerEvent (time);
+}
+
+
 
 Background::Background (double w_, double h_):
     Widget (0, 0, w_, h_)
@@ -98,6 +103,10 @@ void Background::KeyboardPress (const KeyboardState& kstate) {
 
 void Background::KeyboardRelease (const KeyboardState& kstate) {
     GetSubwidgets() -> KeyboardRelease (kstate);
+}
+
+void Background::TimerEvent (double time) {
+    GetSubwidgets() -> TimerEvent (time);
 }
 
 

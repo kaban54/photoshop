@@ -22,6 +22,7 @@ enum Events {
     MOUSE_MOVE,
     KEYBOARD_PRESS,
     KEYBOARD_RELEASE,
+    TIMER_EVENT,
 
     NUM_OF_EVENTS
 };
@@ -55,6 +56,8 @@ class EventProcessable {
     virtual void KeyboardPress (const KeyboardState& kstate) {}
 
     virtual void KeyboardRelease (const KeyboardState& kstate) {}
+
+    virtual void TimerEvent (double time) {}
 };
 
 
@@ -83,6 +86,8 @@ class EventManager : public EventProcessable {
     virtual void KeyboardPress (const KeyboardState& kstate) override;
 
     virtual void KeyboardRelease (const KeyboardState& kstate) override;
+
+    virtual void TimerEvent (double time) override;
 };
 
 

@@ -93,7 +93,6 @@ bool Brush::PaintOnPress (RenderTarget* perm, RenderTarget *tmp, const MouseStat
 }
 
 bool Brush::PaintOnRelease (RenderTarget* perm, RenderTarget *tmp, const MouseState& mstate, const Color& col) {
-    perm -> DrawCircle (mstate.pos, radius, col);
     return false;
 }
 

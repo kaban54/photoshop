@@ -29,7 +29,7 @@ class Renderable {
 
 class Widget;
 
-class WidgetManager {
+class WidgetManager : public EventProcessable{
     public:
 
     MyList<Widget*> widgets;
@@ -50,17 +50,19 @@ class WidgetManager {
 
     void SetRenderTarget (RenderTarget *rt_);
 
-    void MousePress (const MouseState& mstate);
+    virtual void MousePress (const MouseState& mstate) override;
 
-    void MouseRelease (const MouseState& mstate);
+    virtual void MouseRelease (const MouseState& mstate) override;
+
+    virtual void MouseMove (const MouseState& mstate) override;
+
+    virtual void KeyboardPress (const KeyboardState& kstate) override;
+
+    virtual void KeyboardRelease (const KeyboardState& kstate) override;
+    
+    virtual void TimerEvent (double time) override;
 
     bool MouseOnWidgets (const Vec& mousepos) const;
-
-    void MouseMove (const MouseState& mstate);
-
-    void KeyboardPress (const KeyboardState& kstate);
-
-    void KeyboardRelease (const KeyboardState& kstate);
 
     void MoveToTail (Widget* wid);
 

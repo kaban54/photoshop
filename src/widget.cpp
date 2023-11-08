@@ -211,7 +211,6 @@ void WidgetManager::MouseMove (const MouseState& mstate) {
     }
 }
 
-
 void WidgetManager::KeyboardPress (const KeyboardState& kstate) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
@@ -226,6 +225,15 @@ void WidgetManager::KeyboardRelease (const KeyboardState& kstate) {
     widgets.Iterate(node);
     while (node != nullptr) {
         node -> val -> KeyboardRelease(kstate);
+        widgets.Iterate(node);
+    }
+}
+
+void WidgetManager::TimerEvent (double time) {
+    ListNode<Widget*>* node = nullptr;
+    widgets.Iterate(node);
+    while (node != nullptr) {
+        node -> val -> TimerEvent(time);
         widgets.Iterate(node);
     }
 }

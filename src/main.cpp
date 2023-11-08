@@ -1,4 +1,5 @@
 #include <cmath>
+#include <ctime>
 #include <iostream>
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
@@ -45,6 +46,9 @@ int main() {
     event_man.AddObject(&bg);
     Vec mousepos (0, 0);
 
+    sf::Clock clk;
+    double last_time = 0;
+
     while (sfwindow.isOpen()) {
         sf::Event event;
 
@@ -84,6 +88,13 @@ int main() {
                     event_man.MouseRelease (MouseState(mousepos, MOUSE_RIGHT));
             }
         }
+
+        double current_time = clk.getElapsedTime().asSeconds();
+        if (current_time - last_time > 0.01) {
+            last_time = current_time;
+            event_man.TimerEvent (current_time);
+        }
+
         
         sfwindow.clear(sf::Color (192, 192, 192));
         rt.Display(sfwindow);

@@ -91,6 +91,16 @@ void EventManager::KeyboardRelease (const KeyboardState& kstate) {
     }
 }
 
+void EventManager::TimerEvent (double time) {
+    ListNode<EventProcessable*>* node = nullptr;
+    objects.Iterate (node);
+    while (node != nullptr) {
+        EventProcessable* obj = node -> val;
+        if (obj -> GetPriority() >= min_priorities[TIMER_EVENT]) obj -> TimerEvent (time);
+        objects.Iterate(node);
+    }
+}
+
 
 
 EventLogger::EventLogger (FILE* logfile_):

@@ -27,6 +27,8 @@ class Window : public Widget {
 
     virtual void KeyboardRelease (const KeyboardState& kstate) override;
 
+    virtual void TimerEvent (double time) override;
+
     virtual void Close() {delete this;}
 };
 
@@ -47,6 +49,8 @@ class Background : public Widget {
     virtual void KeyboardPress (const KeyboardState& kstate) override;
 
     virtual void KeyboardRelease (const KeyboardState& kstate) override;
+
+    virtual void TimerEvent (double time) override;
 };
 
 class ModalWindow : public Window {

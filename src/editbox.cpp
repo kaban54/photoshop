@@ -4,18 +4,20 @@ EditBox::EditBox (double x, double y, double w, double h, const Font& fnt, size_
     Widget (x, y, w, h),
     txt ("", fnt, char_size),
     editing (false),
-    cursor_pos (0)
+    cursor_pos (0),
+    cursor_visible (false)
     {}
 
 
 void EditBox::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     rt.DrawRect (GetBounds(), Color(255, 255, 255), to_draw);
     if (txt.str.size() > 0) rt.DrawText (txt, GetPos() + Vec(10, 10), Color(0, 0, 0), to_draw);
+}
 
-    if (editing) {
-        double cursor_x = txt.GetSize(cursor_pos).x + GetPos().x + 11;
-        rt.DrawRect (Rect (cursor_x, GetPos().y + 10, 2, txt.char_size), Color (0, 0, 128), to_draw);
-    }
+void EditBox::DrawCursor (RenderTarget& rt, const RegionSet* to_draw) const {
+    double cursor_x = txt.GetSize(cursor_pos).x + GetPos().x + 11;
+    Color cursor_col = cursor_visible ? Color (0, 0, 128) : Color (255, 255, 255);
+    rt.DrawRect (Rect (cursor_x, GetPos().y + 10, 2, txt.char_size), cursor_col, to_draw);
 }
 
 void EditBox::MousePress (const MouseState& mstate) {
@@ -61,6 +63,23 @@ void EditBox::KeyboardPress (const KeyboardState& kstate) {
                 Render (*GetRendertarget(), GetRegset());
             }
             break;
+    }
+}
+
+void EditBox::TimerEvent (double time) {
+    if (!editing) return;
+
+    if (time - floor (time) < 0.5) {
+        if (cursor_visible) {
+            cursor_visible = false;
+            DrawCursor (*GetRendertarget(), GetRegset());
+        }
+    }
+    else {
+        if (!cursor_visible) {
+            cursor_visible = true;
+            DrawCursor (*GetRendertarget(), GetRegset());
+        }
     }
 
 }
