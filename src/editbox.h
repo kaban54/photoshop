@@ -2,6 +2,7 @@
 #define EDITBOX_H
 
 #include "widget.h"
+#include <cstdlib>
 
 class EditBox : public Widget {
     public:
@@ -20,11 +21,14 @@ class EditBox : public Widget {
 
 class FloatNumEditBox : public EditBox {
     bool point_is_set;
+    bool minus_is_set;
     public:
 
     explicit FloatNumEditBox (double x, double y, double w, double h, const Font& fnt, size_t char_size);
 
     virtual void KeyboardPress (const KeyboardState& kstate) override;
+
+    double TextToDouble() const;
 };
 
 #endif

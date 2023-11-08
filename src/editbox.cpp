@@ -68,7 +68,8 @@ void EditBox::KeyboardPress (const KeyboardState& kstate) {
 
 FloatNumEditBox::FloatNumEditBox (double x, double y, double w, double h, const Font& fnt, size_t char_size):
     EditBox (x, y, w, h, fnt, char_size),
-    point_is_set (false)
+    point_is_set (false),
+    minus_is_set (false)
     {}
 
 void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
@@ -83,7 +84,8 @@ void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
         
         case Backspace_KEY:
             if (txt.str.size() > 0 && cursor_pos > 0) {
-                if (txt.str[cursor_pos - 1] == '.') point_is_set = false;
+                if      (txt.str[cursor_pos - 1] == '.') point_is_set = false;
+                else if (txt.str[cursor_pos - 1] == '-') minus_is_set = false;
                 txt.str.erase (--cursor_pos, 1);
                 Render (*GetRendertarget(), GetRegset());
             }
@@ -91,7 +93,8 @@ void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
 
         case Delete_KEY:
             if (txt.str.size() > 0 && cursor_pos < txt.str.size()) {
-                if (txt.str[cursor_pos] == '.') point_is_set = false;
+                if      (txt.str[cursor_pos] == '.') point_is_set = false;
+                else if (txt.str[cursor_pos] == '-') minus_is_set = false;
                 txt.str.erase (cursor_pos, 1);
                 Render (*GetRendertarget(), GetRegset());
             }
@@ -117,10 +120,19 @@ void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
 
         default:
             char c = GetSymb(kstate);
-            if (c >= '0' && c <= '9') {
+            if (c >= '0' && c <= '9' && !(minus_is_set && cursor_pos == 0)) {
                 txt.str.insert (cursor_pos++, 1, c);
+                Render (*GetRendertarget(), GetRegset());
+            }
+            if (c == '-' && cursor_pos == 0 && !minus_is_set) {
+                txt.str.insert (cursor_pos++, 1, c);
+                minus_is_set = true;
                 Render (*GetRendertarget(), GetRegset());
             }
             break;
     }
+}
+
+inline double FloatNumEditBox::TextToDouble() const {
+    return atof (txt.str.c_str());
 }
