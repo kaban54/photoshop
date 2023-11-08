@@ -107,6 +107,7 @@ void LoadTxtBtnTextures (Texture textures[4]) {
 
 void SetWidgets (Window& mainwin, EventManager& ev_man) {
     static Text     edit_txt ("edit"    , GLOBAL_FONT, 30);
+    static Text  filters_txt ("filters" , GLOBAL_FONT, 30);
     static Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
     static Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
     static Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
@@ -124,12 +125,10 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     tm.SetTool (&brush);
     tm.SetColor (Color (255, 0, 128));
 
-    static Text filter_test_txt ("filter test", GLOBAL_FONT, 30);
+    static Text filter_test_txt ("test", GLOBAL_FONT, 30);
     static TestFilter test_filter;
     static FilterManager fm;
     fm.SetFilter (&test_filter);
-
-    mainwin.AddSubWidget (new FilterBtn (600, 100, 300, 100, filter_test_txt, &fm, &test_filter, &ev_man, &mainwin));
 
 
     VerticalMenu* tools_vm = new VerticalMenu (405, 105);
@@ -138,8 +137,6 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,     line_txt, &tm, &linetool));
     tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,  ellipse_txt, &tm, &elltool));
     tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, polyline_txt, &tm, &polyline));
-    // mainwin.AddSubWidget (tools_vm);
-    //mainwin.AddSubWidget (new MenuBtn (5, 25, 200, 80, Text(&tools_txt), vm));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 185);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
@@ -150,14 +147,17 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 255, 255)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
-    // mainwin.AddSubWidget (cols_vm);
-    //mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, Text(&cols_txt), vm));
+
+    VerticalMenu* filters_vm = new VerticalMenu (405, 265);
+    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, filter_test_txt, &fm, &test_filter, &ev_man, &mainwin));
 
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> AddSubWidget (tools_vm);
     vm -> AddSubWidget (cols_vm);
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, tools_txt, tools_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  cols_txt,  cols_vm));
+    vm -> AddSubWidget (filters_vm);
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,   tools_txt,   tools_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,    cols_txt,    cols_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, filters_txt, filters_vm));
     mainwin.AddSubWidget (vm);
     mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, edit_txt, vm));
 
@@ -167,6 +167,4 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     win = new Window (1000, 100, 610, 630);
     win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.AddSubWidget (win);
-
-    mainwin.AddSubWidget (new FloatNumEditBox (100, 900, 600, 80, GLOBAL_FONT, 30));
 }
