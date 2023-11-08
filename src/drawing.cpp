@@ -47,7 +47,7 @@ Canvas::Canvas (int x, int y, int w, int h, ToolManager* tm, FilterManager* fm):
 void Canvas::MousePress (const MouseState& mstate) {
     if (MouseOnWidget(mstate.pos)) {
         Show();
-        if (filter_man -> IsActive())filter_man -> Apply (data);
+        if (filter_man -> IsActive()) filter_man -> Apply (data);
         else drawing = tool_man -> PaintOnPress (&data, &tmp, MouseState(mstate.pos - GetPos(), mstate.btn));
         Render (*GetRendertarget(), GetRegset());
     }

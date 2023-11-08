@@ -43,7 +43,7 @@ void filter_btn_action (BtnArgs* filter_btn_args) {
     FilterManager* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
     Filter*        filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
     filter_man -> SetFilter (filter);
-    filter_man->Activate();
+    filter_man -> Activate();
 }
 
 FilterBtn::FilterBtn (double x, double y, double w, double h, const Text& txt_, FilterManager* fm, Filter* filter_):
