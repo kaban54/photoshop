@@ -71,7 +71,6 @@ FloatNumEditBox::FloatNumEditBox (double x, double y, double w, double h, const 
     point_is_set (false)
     {}
 
-
 void FloatNumEditBox::KeyboardPress (const KeyboardState& kstate) {
     if (!editing) return;
     switch (kstate.key) {
