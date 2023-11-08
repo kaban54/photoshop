@@ -12,6 +12,7 @@ EditBox::EditBox (double x, double y, double w, double h, const Font& fnt, size_
 void EditBox::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     rt.DrawRect (GetBounds(), Color(255, 255, 255), to_draw);
     if (txt.str.size() > 0) rt.DrawText (txt, GetPos() + Vec(10, 10), Color(0, 0, 0), to_draw);
+    DrawCursor(rt, to_draw);
 }
 
 void EditBox::DrawCursor (RenderTarget& rt, const RegionSet* to_draw) const {
@@ -22,7 +23,13 @@ void EditBox::DrawCursor (RenderTarget& rt, const RegionSet* to_draw) const {
 
 void EditBox::MousePress (const MouseState& mstate) {
     if ( MouseOnWidget(mstate.pos) && !editing) editing = true;
-    if (!MouseOnWidget(mstate.pos) &&  editing) editing = false;
+    if (!MouseOnWidget(mstate.pos) &&  editing) {
+        editing = false;
+        if (cursor_visible) {
+            cursor_visible = false;
+            DrawCursor(*GetRendertarget(), GetRegset());
+        }
+    }
 }
 
 void EditBox::KeyboardPress (const KeyboardState& kstate) {
@@ -32,7 +39,10 @@ void EditBox::KeyboardPress (const KeyboardState& kstate) {
         case Enter_KEY:
             if (!kstate.shift) {
                 editing = false;
-                Render (*GetRendertarget(), GetRegset());
+                if (cursor_visible) {
+                    cursor_visible = false;
+                    DrawCursor(*GetRendertarget(), GetRegset());
+                }
             }
             break;
         
