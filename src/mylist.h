@@ -157,6 +157,7 @@ void MyList<T>::RemoveTail() {
 
 template <typename T>
 void MyList<T>::Remove(ListNode<T>* node) {
+    assert (node != nullptr);
     assert (NodeInList(node));
 
     node -> next -> prev = node -> prev;

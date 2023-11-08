@@ -38,7 +38,9 @@ class WidgetManager {
 
     ~WidgetManager();
     
-    void AddWidget (Widget* widget);
+    void AddWidget (Widget* wid);
+
+    void RemoveWidget (Widget* wid);
 
     size_t GetSize() const;
 
@@ -79,11 +81,15 @@ class Widget : public Renderable, public EventProcessable {
 
     explicit Widget (double x, double y, double w, double h);
     
+    ~Widget();
+
     const Rect& GetBounds() const {return bounds;}
 
     Vec GetPos() const {return bounds.GetPos();}
 
     Vec GetSize() const {return bounds.GetSize();}
+
+    Widget* GetParent() const {return parent;}
 
     const RegionSet* GetRegset() const {return (&regset);}
 
@@ -92,6 +98,8 @@ class Widget : public Renderable, public EventProcessable {
     WidgetManager* GetSubwidgets() {return &subwidgets;}
 
     void SetBounds (const Rect& bounds_) {bounds = bounds_;}
+
+    void SetParent (Widget* parent_) {parent = parent_;}
 
     void SetRenderTarget (RenderTarget *rt_);
 
@@ -102,6 +110,8 @@ class Widget : public Renderable, public EventProcessable {
     void Move (const Vec& vec);
 
     void UpdateRegset (const RegionSet& regs);
+
+    void UpdateAllRegsets();
 
     void Show();
 

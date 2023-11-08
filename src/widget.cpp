@@ -4,15 +4,24 @@ Widget::Widget():
     bounds (),
     parent (nullptr),
     subwidgets (),
-    regset ()
+    regset (),
+    rt (nullptr)
     {}
 
 Widget::Widget (double x, double y, double w, double h):
     bounds (x, y, w, h),
     parent (nullptr),
     subwidgets (),
-    regset ()
+    regset (),
+    rt (nullptr)
     {}
+
+Widget::~Widget() {
+    if (parent != nullptr) {
+        parent -> subwidgets.RemoveWidget (this);
+        parent -> UpdateAllRegsets();
+    }
+}
 
 void Widget::SetRenderTarget (RenderTarget *rt_) {
     rt = rt_;
@@ -24,6 +33,7 @@ void Widget::AddSubWidget (Widget* wid) {
     wid -> parent = this;
     wid -> SetRenderTarget (rt);
     subwidgets.AddWidget (wid);
+    UpdateAllRegsets();
 }
 
 void Widget::RenderSubWidgets (RenderTarget& rt) const {
@@ -34,6 +44,15 @@ void Widget::Move (const Vec& vec) {
     bounds.Move(vec);
     regset.Move(vec);
     subwidgets.Move(vec);
+}
+
+void Widget::UpdateAllRegsets() {
+    if (rt == nullptr) return;
+    Widget* w_ptr = this;
+    while (w_ptr -> parent != nullptr) {w_ptr = w_ptr -> parent;}
+    RegionSet regs;
+    GetMaxRegset(&regs);
+    UpdateRegset(regs);
 }
 
 void Widget::Show() {
@@ -104,13 +123,18 @@ WidgetManager::~WidgetManager() {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
+        node -> val -> SetParent (nullptr);
         delete (node -> val);
         widgets.Iterate(node);
     }
 }
 
-inline void WidgetManager::AddWidget (Widget *wid) {
+inline void WidgetManager::AddWidget (Widget* wid) {
     widgets.InsertTail(wid);
+}
+
+inline void WidgetManager::RemoveWidget (Widget* wid) {
+    widgets.Remove(widgets.GetNode(wid));
 }
 
 size_t WidgetManager::GetSize() const {
@@ -152,8 +176,10 @@ void WidgetManager::MousePress (const MouseState& mstate) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
+        ListNode<Widget*>* nextnode = node;
+        widgets.Iterate (nextnode);
         node -> val -> MousePress(mstate);
-        widgets.Iterate(node);
+        node = nextnode;
     }
 }
 

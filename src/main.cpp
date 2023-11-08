@@ -42,14 +42,9 @@ int main() {
     SetWidgets (*mainwin);
     bg.AddSubWidget(mainwin);
 
-    bg.Show();
-
     EventManager event_man;
-    event_man.AddObject(&bg);
     event_man.AddObject(&eventlogger);
-
-    TestFilter tf;
-
+    event_man.AddObject(&bg);
 
     while (sfwindow.isOpen()) {
         sf::Event event;

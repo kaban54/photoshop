@@ -2,8 +2,11 @@
 
 Window::Window (double x, double y, double w, double h):
     Widget (x, y, w, h),
-    is_moving (false)
-    {}
+    is_moving (false),
+    need_to_close (false)
+    {
+        AddSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
+    }
 
 void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
     Rect rect = GetBounds();
@@ -21,14 +24,15 @@ void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
 
 void Window::MousePress (const MouseState& mstate) {
     if (!visible) return;
-    GetSubwidgets() -> MousePress (mstate);
     if (MouseOnWidget(mstate.pos)) {
-        if (Rect(GetPos().x, GetPos().y, GetSize().x, 30).Contains(mstate.pos) && mstate.btn == MOUSE_LEFT) {
+        if (Rect(GetPos().x, GetPos().y, GetSize().x, 20).Contains(mstate.pos) && mstate.btn == MOUSE_LEFT) {
                 is_moving = true;
                 hold_pos = mstate.pos;
             }
         Show();
     }
+    GetSubwidgets() -> MousePress (mstate);
+    if (need_to_close) delete this;
 }
 
 void Window::MouseRelease (const MouseState& mstate) {
@@ -109,4 +113,18 @@ ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* 
 ModalWindow::~ModalWindow() {
     event_man -> ResetPriorities();
     event_man -> RemoveObject (this);
+}
+
+
+void window_close_btn_action (BtnArgs* btn_args) {
+    ((WindowCloseBtnArgs*) btn_args) -> win -> need_to_close = true;
+}
+
+WindowCloseBtn::WindowCloseBtn (double x, double y, double w, double h, Window* win_):
+    Button (x, y, w, h, window_close_btn_action, &wclose_btn_args),
+    wclose_btn_args (win_)
+    {}
+
+void WindowCloseBtn::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawRect (GetBounds(), Color(255, 0, 0), to_draw);
 }

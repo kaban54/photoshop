@@ -2,13 +2,16 @@
 #define WINDOW_H
 
 #include "widget.h"
+#include "buttons.h"
 
+class WindowCloseBtn;
 
 class Window : public Widget {
-    bool is_moving;
     Vec hold_pos;
+    bool is_moving;
 
     public:
+    bool need_to_close;
 
     explicit Window (double x, double y, double w, double h);
 
@@ -52,6 +55,25 @@ class ModalWindow : public Window {
     ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
 
     ~ModalWindow();
+};
+
+
+struct WindowCloseBtnArgs : public BtnArgs {
+    Window* win;
+    explicit WindowCloseBtnArgs (Window* win_):
+        win (win_) {}
+};
+
+void window_close_btn_action (BtnArgs* btn_args);
+
+class WindowCloseBtn : public Button {
+    WindowCloseBtnArgs wclose_btn_args;
+
+    public:
+
+    explicit WindowCloseBtn (double x, double y, double w, double h, Window* win_);
+
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
 };
 
 #endif
