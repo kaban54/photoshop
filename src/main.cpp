@@ -37,13 +37,13 @@ int main() {
     sfwindow.setFramerateLimit (120);
 
     RenderTarget rt (W, H);
-    Background bg (W, H);
-    bg.SetRenderTarget (&rt);
+    Background* bg = new Background (W, H);
+    bg -> SetRenderTarget (&rt);
     Window* mainwin = new Window (100, 100, 1920, 1080);
     SetWidgets (*mainwin, event_man);
-    bg.AddSubWidget(mainwin);
+    bg -> AddSubWidget(mainwin);
 
-    event_man.AddObject(&bg);
+    event_man.AddObject(bg);
     Vec mousepos (0, 0);
 
     sf::Clock clk;
@@ -101,6 +101,7 @@ int main() {
         sfwindow.display();
     }
 
+    delete bg;
     fclose (eventlogfile);
     return 0;
 }

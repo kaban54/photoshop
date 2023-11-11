@@ -285,3 +285,14 @@ void WidgetManager::GetMaxRegset (RegionSet* dst) const {
         widgets.Iterate(node);
     }
 }
+
+
+TxtWidget::TxtWidget (double x, double y, double w, double h,
+                      const std::string& str_, const Font& fnt_, size_t char_size_):
+    Widget (x, y, w, h),
+    txt (str_, fnt_, char_size_)
+    {}
+
+void TxtWidget::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawText (txt, GetPos(), Color (0, 0, 0), to_draw);
+}

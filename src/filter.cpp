@@ -29,7 +29,6 @@ void TestFilter::SetParams (const std::vector<double>& params) {
 }
 
 
-
 void ClearFilter::Apply (RenderTarget &rt) const {
     Image img;
     rt.GetImg(img);
@@ -106,9 +105,13 @@ SetFilterController::SetFilterController (FilterManager* fm, Filter* filt, Event
     {
         mw = new ModalWindow (150, 150, 400, 100 * (filter -> num_of_params) + 125, ev_man);
         mw -> AddSubWidget (new SetFilterOkBtn (100, 100 * (filter -> num_of_params) + 50, 200, 50, this));
+
+        std::vector<const char*> param_names = filter -> GetParamNames();
+
         for (unsigned int i = 0; i < filter -> num_of_params; i++) {
             editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, GLOBAL_FONT, 30));
             mw -> AddSubWidget (editboxes.back());
+            //mw -> AddSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names[i], GLOBAL_FONT, 30));
         }
 
         parent_wid -> AddSubWidget (mw);

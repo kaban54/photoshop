@@ -12,7 +12,7 @@
 #include "mylist.h"
 #include "events.h"
 
-const size_t BASE_WIDGETMAN_CAP = 4;
+
 const Color WINDOW_BG_COLOR = Color (128, 128, 128);
 const Color BG_COLOR = Color (192, 192, 192);
 
@@ -124,5 +124,14 @@ class Widget : public Renderable, public EventProcessable {
     bool MouseOnSubwidgets(const Vec& mousepos) const;
 };
 
+
+class TxtWidget : public Widget{
+    public:
+    Text txt;
+
+    TxtWidget (double x, double y, double w, double h, const std::string& str_, const Font& fnt_, size_t char_size_);
+
+    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+};
 
 #endif
