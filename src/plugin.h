@@ -1,4 +1,7 @@
 #include <cinttypes>
+#include "myvector.h"
+#include "vec2.h"
+
 
 namespace plugin {
     enum class InterfaceType {
@@ -10,6 +13,14 @@ namespace plugin {
     struct Array {
         uint64_t size;
         T* data;
+
+        explicit Array (uint64_t size_, T* data_):
+            size (size_),
+            data (data_) {}
+
+        explicit Array (MyVector<T>& myvec):
+            size (myvec.GetSize()),
+            data (myvec.GetData()) {}
     };
 
     struct Color {
@@ -24,11 +35,6 @@ namespace plugin {
         uint64_t width;
 
         Color *pixels;
-    };
-
-    struct Vec2 {
-        double x;
-        double y;
     };
 
     enum class MouseButton {
