@@ -8,105 +8,218 @@
 #include <string.h>
 #include <vector>
 
-enum MouseButton {
-    MOUSE_NOBTN = -1,
-    MOUSE_LEFT  = 0,
-    MOUSE_RIGHT = 1,
+#include "vec2.h"
+#include "myvector.h"
 
-    NUM_OF_MBUTONS
-};
+namespace plugin {
+    enum class MouseButton {
+        Left,
+        Right
+    };
 
-enum Events {
-    MOUSE_PRESS,
-    MOUSE_RELEASE,
-    MOUSE_MOVE,
-    KEYBOARD_PRESS,
-    KEYBOARD_RELEASE,
-    TIMER_EVENT,
+    struct MouseContext {
+        Vec2 position;
+        MouseButton button;
+    };
 
-    NUM_OF_EVENTS
-};
+    enum class Key {
+        Unknown = -1, 
+        A = 0,        
+        B,            
+        C,            
+        D,            
+        E,            
+        F,            
+        G,            
+        H,            
+        I,            
+        J,            
+        K,            
+        L,            
+        M,            
+        N,            
+        O,            
+        P,            
+        Q,            
+        R,            
+        S,            
+        T,            
+        U,            
+        V,            
+        W,            
+        X,            
+        Y,            
+        Z,            
+        Num0,         
+        Num1,         
+        Num2,         
+        Num3,         
+        Num4,         
+        Num5,         
+        Num6,         
+        Num7,         
+        Num8,         
+        Num9,         
+        Escape,       
+        LControl,     
+        LShift,       
+        LAlt,         
+        LSystem,      
+        RControl,     
+        RShift,       
+        RAlt,         
+        RSystem,      
+        Menu,         
+        LBracket,     
+        RBracket,     
+        Semicolon,    
+        Comma,        
+        Period,       
+        Apostrophe,   
+        Slash,        
+        Backslash,    
+        Grave,        
+        Equal,        
+        Hyphen,       
+        Space,        
+        Enter,        
+        Backspace,    
+        Tab,          
+        PageUp,       
+        PageDown,     
+        End,          
+        Home,         
+        Insert,       
+        Delete,       
+        Add,          
+        Subtract,     
+        Multiply,     
+        Divide,       
+        Left,         
+        Right,        
+        Up,           
+        Down,         
+        Numpad0,      
+        Numpad1,      
+        Numpad2,      
+        Numpad3,      
+        Numpad4,      
+        Numpad5,      
+        Numpad6,      
+        Numpad7,      
+        Numpad8,      
+        Numpad9,      
+        F1,           
+        F2,           
+        F3,           
+        F4,           
+        F5,           
+        F6,           
+        F7,           
+        F8,           
+        F9,           
+        F10,          
+        F11,          
+        F12,          
+        F13,          
+        F14,          
+        F15,          
+        Pause,        
+        
+        KeyCount,     
+    };
 
-struct MouseState {
-    Vec pos;
-    MouseButton btn;
+    struct KeyboardContext {
+        bool alt;
+        bool shift;
+        bool ctrl;
 
-    explicit MouseState();
+        Key key;
+    };
 
-    explicit MouseState (const Vec& pos_, MouseButton btn_ = MOUSE_NOBTN);
-};
+    enum class EventType {
+        MousePress,
+        MouseRelease,
+        MouseMove,
+        KeyPress,
+        KeyRelease, 
+        Clock,
 
-class EventProcessable {
-    uint8_t priority;
+        NumOfEvents
+    };
 
-    public:
+    struct EventProcessableI {
+        virtual uint8_t getPriority() const = 0;
+        virtual bool onMouseMove(MouseContext context) = 0;
+        virtual bool onMouseRelease(MouseContext context) = 0;
+        virtual bool onMousePress(MouseContext context) = 0;
+        virtual bool onKeyboardPress(KeyboardContext context) = 0;
+        virtual bool onKeyboardRelease(KeyboardContext context) = 0;
+        virtual bool onClock(uint64_t delta) = 0;
+    };
 
-    explicit EventProcessable();
+    struct EventManagerI {
+        virtual void registerObject(EventProcessableI *object)   = 0;
+        virtual void setPriority(EventType, uint8_t priority)    = 0;
+        virtual void unregisterObject(EventProcessableI *object) = 0;
+    };
+}
 
-    void SetPriority (uint8_t priority_) {priority = priority_;}
-
-    uint8_t GetPriority() {return priority;}
-
-    virtual void MousePress (const MouseState& mstate) {}
-
-    virtual void MouseRelease (const MouseState& mstate) {}
-
-    virtual void MouseMove (const MouseState& mstate) {}
-
-    virtual void KeyboardPress (const KeyboardState& kstate) {}
-
-    virtual void KeyboardRelease (const KeyboardState& kstate) {}
-
-    virtual void TimerEvent (double time) {}
-};
+using namespace plugin;
 
 
-class EventManager : public EventProcessable {
-    MyList<EventProcessable*> objects;
-    uint8_t min_priorities[NUM_OF_EVENTS];
+class EventManager : public EventProcessableI, public EventManagerI {
+    MyList<EventProcessableI*> objects;
+    uint8_t min_priorities[(int)EventType::NumOfEvents];
     
     public:
 
     explicit EventManager();
 
-    void AddObject (EventProcessable* obj);
+    virtual void registerObject(EventProcessableI *object) override;
 
-    void RemoveObject (EventProcessable* obj);
+    virtual void setPriority(EventType event, uint8_t priority) override;
 
-    void SetMinPriorities (const std::vector<Events>& events, uint8_t new_priority);
+    virtual void unregisterObject(EventProcessableI *object) override;
+
+    void SetMinPriorities (const MyVector<EventType>& events, uint8_t new_priority);
 
     void ResetPriorities();
 
-    virtual void MousePress (const MouseState& mstate) override;
+    virtual uint8_t getPriority() const override;
 
-    virtual void MouseRelease (const MouseState& mstate) override;
+    virtual bool onMouseMove(MouseContext context) override;
 
-    virtual void MouseMove (const MouseState& mstate) override;
+    virtual bool onMouseRelease(MouseContext context) override;
 
-    virtual void KeyboardPress (const KeyboardState& kstate) override;
+    virtual bool onMousePress(MouseContext context) override;
 
-    virtual void KeyboardRelease (const KeyboardState& kstate) override;
+    virtual bool onKeyboardPress(KeyboardContext context) override;
 
-    virtual void TimerEvent (double time) override;
+    virtual bool onKeyboardRelease(KeyboardContext context) override;
+
+    virtual bool onClock(uint64_t delta) override;
 };
 
 
-class EventLogger : public EventProcessable {
+class EventLogger : public plugin::EventProcessableI {
     FILE* logfile;
 
     public:
 
-    explicit EventLogger (FILE* logfile_);
+    explicit EventLogger(FILE* logfile_);
 
-    virtual void MousePress (const MouseState& mstate) override;
+    virtual bool onMouseMove(MouseContext context) override;
 
-    virtual void MouseRelease (const MouseState& mstate) override;
+    virtual bool onMouseRelease(MouseContext context) override;
 
-    virtual void MouseMove (const MouseState& mstate) override;
+    virtual bool onMousePress(MouseContext context) override;
 
-    virtual void KeyboardPress (const KeyboardState& kstate) override;
+    virtual bool onKeyboardPress(KeyboardContext context) override;
 
-    virtual void KeyboardRelease (const KeyboardState& kstate) override;
+    virtual bool onKeyboardRelease(KeyboardContext context) override;
+
+    virtual bool onClock(uint64_t delta) override;
 };
 
 #endif

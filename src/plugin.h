@@ -1,26 +1,12 @@
 #include <cinttypes>
 #include "myvector.h"
 #include "vec2.h"
-
+#include "events.h"
 
 namespace plugin {
     enum class InterfaceType {
         Tool,
         Filter
-    };
-
-    template<class T>
-    struct Array {
-        uint64_t size;
-        T* data;
-
-        explicit Array (uint64_t size_, T* data_):
-            size (size_),
-            data (data_) {}
-
-        explicit Array (MyVector<T>& myvec):
-            size (myvec.GetSize()),
-            data (myvec.GetData()) {}
     };
 
     struct Color {
@@ -35,132 +21,6 @@ namespace plugin {
         uint64_t width;
 
         Color *pixels;
-    };
-
-    enum class MouseButton {
-        Left,
-        Right
-    };
-
-    /// @note см про относительность координат
-    struct MouseContext {
-        Vec2 position;
-        MouseButton button;
-    };
-
-    enum class Key {
-        Unknown = -1, 
-        A = 0,        
-        B,            
-        C,            
-        D,            
-        E,            
-        F,            
-        G,            
-        H,            
-        I,            
-        J,            
-        K,            
-        L,            
-        M,            
-        N,            
-        O,            
-        P,            
-        Q,            
-        R,            
-        S,            
-        T,            
-        U,            
-        V,            
-        W,            
-        X,            
-        Y,            
-        Z,            
-        Num0,         
-        Num1,         
-        Num2,         
-        Num3,         
-        Num4,         
-        Num5,         
-        Num6,         
-        Num7,         
-        Num8,         
-        Num9,         
-        Escape,       
-        LControl,     
-        LShift,       
-        LAlt,         
-        LSystem,      
-        RControl,     
-        RShift,       
-        RAlt,         
-        RSystem,      
-        Menu,         
-        LBracket,     
-        RBracket,     
-        Semicolon,    
-        Comma,        
-        Period,       
-        Apostrophe,   
-        Slash,        
-        Backslash,    
-        Grave,        
-        Equal,        
-        Hyphen,       
-        Space,        
-        Enter,        
-        Backspace,    
-        Tab,          
-        PageUp,       
-        PageDown,     
-        End,          
-        Home,         
-        Insert,       
-        Delete,       
-        Add,          
-        Subtract,     
-        Multiply,     
-        Divide,       
-        Left,         
-        Right,        
-        Up,           
-        Down,         
-        Numpad0,      
-        Numpad1,      
-        Numpad2,      
-        Numpad3,      
-        Numpad4,      
-        Numpad5,      
-        Numpad6,      
-        Numpad7,      
-        Numpad8,      
-        Numpad9,      
-        F1,           
-        F2,           
-        F3,           
-        F4,           
-        F5,           
-        F6,           
-        F7,           
-        F8,           
-        F9,           
-        F10,          
-        F11,          
-        F12,          
-        F13,          
-        F14,          
-        F15,          
-        Pause,        
-        
-        KeyCount,     
-    };
-
-    struct KeyboardContext {
-        bool alt;
-        bool shift;
-        bool ctrl;
-
-        Key key;
     };
 
     struct RenderTargetI {
@@ -201,42 +61,6 @@ namespace plugin {
 
         virtual Interface *getInterface() = 0;
         virtual ~Plugin() = 0;
-    };
-
-    enum class EventType {
-        MousePress,
-        MouseRelease,
-        MouseMove,
-        KeyPress,
-        KeyRelease
-    };
-
-    struct EventProcessableI {
-        // MouseContext хранит в себе координаты относительно позиции RT из GuiI::getRenderTarget.
-        // Мотивация: если RT это не весь экран, а RT в каком-то окне (как идейно и планировалось), то, 
-        // строго говоря, плагин не знает где в реальном мире находится RT (его могли перетаскивать и проч)
-        // и не может пересчитать их в локальные.
-        
-        /// @warning aka proposal: тогда вызов этих функций без предварительного вызова getRenderTarget UB.
-
-        virtual bool onMouseMove(MouseContext context) = 0;
-        virtual bool onMouseRelease(MouseContext context) = 0;
-        virtual bool onMousePress(MouseContext context) = 0;
-        virtual bool onKeyboardPress(KeyboardContext context) = 0;
-        virtual bool onKeyboardRelease(KeyboardContext context) = 0;
-
-        /// @brief clock event
-        /// @param context microseconds
-        virtual bool onClock(uint64_t delta) = 0;
-    };
-
-    struct EventManagerI {
-        virtual void registerObject(EventProcessableI *object)   = 0;
-
-        // 0 минимальный, ивенты приходят только объектам с их priority >= установленной по этому типу
-        // 0 -- default
-        virtual void setPriority(EventType, uint8_t priority)    = 0;
-        virtual void unregisterObject(EventProcessableI *object) = 0;
     };
 
     struct WidgetI: public EventProcessableI {
