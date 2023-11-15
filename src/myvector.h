@@ -38,7 +38,7 @@ class MyVector {
         return (size == 0);
     }
 
-    T& operator[] (size_t index) {
+    T& operator[] (size_t index) const {
         assert (index < size);
         return (data[index]);
     }
@@ -153,6 +153,22 @@ void MyVector<T>::extend() {
     data = (T*) realloc (data, new_cap * sizeof(data[0]));
     assert (data != nullptr);
     capacity = new_cap;
+}
+
+namespace plugin {
+    template<class T>
+    struct Array {
+        uint64_t size;
+        T* data;
+
+        explicit Array (uint64_t size_, T* data_):
+            size (size_),
+            data (data_) {}
+
+        explicit Array (MyVector<T>& myvec):
+            size (myvec.GetSize()),
+            data (myvec.GetData()) {}
+    };
 }
 
 #endif
