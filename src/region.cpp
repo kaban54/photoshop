@@ -14,7 +14,7 @@ Rect::Rect (double x_, double y_, double w_, double h_):
     h (h_)
     {}
 
-Rect::Rect (const Vec& p1, const Vec& p2):
+Rect::Rect (const Vec2& p1, const Vec2& p2):
     x (p1.x < p2.x ? p1.x : p2.x),
     y (p1.y < p2.y ? p1.y : p2.y),
     w (fabs (p2.x - p1.x)),
@@ -28,7 +28,7 @@ bool Rect::Contains (const Rect& rect) const {
             rect.Bot()   <= Bot()   );
 }
 
-bool Rect::Contains (const Vec& vec) const {
+bool Rect::Contains (const Vec2& vec) const {
     return (vec.x >= Left()  &&
             vec.x <= Right() &&
             vec.y >= Top()   &&
@@ -41,7 +41,7 @@ void Rect::Print () const {
 }
 
 
-void Rect::Move (const Vec& vec) {
+void Rect::Move (const Vec2& vec) {
     x += vec.x;
     y += vec.y;
 }
@@ -85,8 +85,8 @@ void RegionSet::MergeRegions() {
                 break;
             }
             if (HaveCommonSide(r1, r2)) {
-                Vec v1 (std::min(r1.Left(), r2.Left()), std::min(r1.Top(), r2.Top()));
-                Vec v2 (std::max(r1.Right(), r2.Right()), std::max(r1.Bot(), r2.Bot()));
+                Vec2 v1 (std::min(r1.Left(), r2.Left()), std::min(r1.Top(), r2.Top()));
+                Vec2 v2 (std::max(r1.Right(), r2.Right()), std::max(r1.Bot(), r2.Bot()));
                 node1 -> val = Rect (v1, v2);
                 regions.Remove (node2);
                 node1 = nullptr;
@@ -145,7 +145,7 @@ void RegionSet::SubtractRegion (const Rect& region) {
                     for (int y_index = 0; y_index < 3; y_index++) {
                         if (Y[y_index] < r1.Top() || Y[y_index] >= r1.Bot()) continue;
                         if (Y[y_index] == Y[y_index + 1]) continue;
-                        Rect reg (Vec(X[x_index], Y[y_index]), Vec(X[x_index + 1], Y[y_index + 1]));
+                        Rect reg (Vec2(X[x_index], Y[y_index]), Vec2(X[x_index + 1], Y[y_index + 1]));
                         if (!Intersect(reg, r2)) new_regions.AddRegion(reg);
                     }
                 }
@@ -184,7 +184,7 @@ void RegionSet::operator^= (const RegionSet& regset2) {
     *this -= tmp;
 }
 
-void RegionSet::Move (const Vec& vec) {
+void RegionSet::Move (const Vec2& vec) {
     ListNode<Rect>* node = nullptr;
     regions.Iterate(node);
 
@@ -194,7 +194,7 @@ void RegionSet::Move (const Vec& vec) {
     }
 }
 
-bool RegionSet::Contains (const Vec& vec) const {
+bool RegionSet::Contains (const Vec2& vec) const {
     ListNode<Rect>* node = nullptr;
     regions.Iterate(node);
     while (node != nullptr) {
