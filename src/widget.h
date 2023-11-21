@@ -8,7 +8,6 @@
 #include <assert.h>
 #include "rendertarget.h"
 #include "region.h"
-#include "color.h"
 #include "mylist.h"
 #include "events.h"
 
