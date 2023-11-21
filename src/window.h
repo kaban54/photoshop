@@ -4,10 +4,11 @@
 #include "widget.h"
 #include "buttons.h"
 
-class WindowCloseBtn;
+const Color WINDOW_BG_COLOR = Color (128, 128, 128);
+const Color BG_COLOR = Color (192, 192, 192);
 
 class Window : public Widget {
-    Vec hold_pos;
+    Vec2 hold_pos;
     bool is_moving;
 
     public:
@@ -15,19 +16,16 @@ class Window : public Widget {
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const override;
 
-    virtual void MousePress (const MouseState& mstate) override;
+    virtual void render(RenderTargetI*) override;
 
-    virtual void MouseRelease (const MouseState& mstate) override;
-
-    virtual void MouseMove (const MouseState& mstate) override;
-
-    virtual void KeyboardPress (const KeyboardState& kstate) override;
-
-    virtual void KeyboardRelease (const KeyboardState& kstate) override;
-
-    virtual void TimerEvent (double time) override;
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override;
+    virtual bool onKeyboardRelease (KeyboardContext context) override;
+    virtual bool onClock (uint64_t delta) override;
 
     virtual void Close() {delete this;}
 };
@@ -38,19 +36,14 @@ class Background : public Widget {
 
     explicit Background (double w_, double h_);
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const override;
 
-    virtual void MousePress (const MouseState& mstate) override;
-
-    virtual void MouseRelease (const MouseState& mstate) override;
-
-    virtual void MouseMove (const MouseState& mstate) override;
-
-    virtual void KeyboardPress (const KeyboardState& kstate) override;
-
-    virtual void KeyboardRelease (const KeyboardState& kstate) override;
-
-    virtual void TimerEvent (double time) override;
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override;
+    virtual bool onKeyboardRelease (KeyboardContext context) override;
+    virtual bool onClock (uint64_t delta) override;
 };
 
 class ModalWindow : public Window {
@@ -61,6 +54,8 @@ class ModalWindow : public Window {
     ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
 
     ~ModalWindow();
+
+    virtual uint8_t getPriority() const override {return 1;}
 
     virtual void Close() override {delete this;}
 };

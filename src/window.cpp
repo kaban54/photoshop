@@ -5,70 +5,71 @@ Window::Window (double x, double y, double w, double h, bool close_btn):
     is_moving (false),
     need_to_close (false)
     {
-        if (close_btn) AddSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
+        if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
     }
 
-void Window::Render (RenderTarget& rt, const RegionSet* to_draw) const {
+void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const {
     Rect rect = GetBounds();
-    rt.DrawRect (rect, Color(0, 0, 0), to_draw);
+    rt.DrawRect_rs (rect, Color(0, 0, 0), to_draw);
     rect.x += 2;
     rect.y += 20;
     rect.w -= 4;
     rect.h -= 22;
-    rt.DrawRect (rect, WINDOW_BG_COLOR, to_draw);
+    rt.DrawRect_rs (rect, WINDOW_BG_COLOR, to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(255, 0, 0, 128));
     #endif
 }
 
-void Window::MousePress (const MouseState& mstate) {
-    if (!visible) return;
-    if (MouseOnWidget(mstate.pos)) {
-        if (Rect(GetPos().x, GetPos().y, GetSize().x, 20).Contains(mstate.pos) && mstate.btn == MOUSE_LEFT) {
+bool Window::onMousePress (MouseContext context) {
+    if (!getAvailable()) return;
+    if (MouseOnWidget(context.position)) {
+        if (Rect(getPos().x, getPos().y, getSize().x, 20).Contains(context.position) &&
+            context.button == MouseButton::Left) {
                 is_moving = true;
-                hold_pos = mstate.pos;
+                hold_pos = context.position;
             }
         Show();
     }
-    GetSubwidgets() -> MousePress (mstate);
+    GetSubwidgets() -> onMousePress(context);
     if (need_to_close) Close();
 }
 
-void Window::MouseRelease (const MouseState& mstate) {
-    if (!visible) return;
-    if (mstate.btn == MOUSE_LEFT && is_moving) {
+bool Window::onMouseRelease (MouseContext context) {
+    if (!getAvailable()) return;
+    if (context.button == MouseButton::Left && is_moving) {
         is_moving = false;
-        hold_pos = Vec (0, 0);
+        hold_pos = Vec2 (0, 0);
     }
-    GetSubwidgets() -> MouseRelease (mstate);
+    GetSubwidgets() -> onMouseRelease (context);
 }
 
-void Window::MouseMove (const MouseState& mstate) {
-    if (!visible) return;
+bool Window::onMouseMove (MouseContext context) {
+    if (!getAvailable()) return;
     if (is_moving) {
-        Vec mousepos = mstate.pos;
+        Vec2 mousepos = context.position;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
-            Move (mousepos - hold_pos);
+            move (mousepos - hold_pos);
             Show();
-            Render(*GetRendertarget(), GetRegset());
+            RenderInRegset(*GetRendertarget(), GetRegset());
             RenderSubWidgets(*GetRendertarget());
             hold_pos = mousepos;
         }
     }
-    GetSubwidgets() -> MouseMove (mstate);
+    GetSubwidgets() -> onMouseMove (context);
 }
 
-void Window::KeyboardPress (const KeyboardState& kstate) {
-    GetSubwidgets() -> KeyboardPress (kstate);
+bool Window::onKeyboardPress (KeyboardContext context) {
+    GetSubwidgets() -> onKeyboardPress (context);
 }
 
-void Window::KeyboardRelease (const KeyboardState& kstate) {
-    GetSubwidgets() -> KeyboardRelease (kstate);
+bool Window::onKeyboardRelease (KeyboardContext context) {
+    GetSubwidgets() -> onKeyboardRelease (context);
 }
 
-void Window::TimerEvent (double time) {
-    GetSubwidgets() -> TimerEvent (time);
+bool Window::onClock (uint64_t delta) {
+    GetSubwidgets() -> onClock(delta);
 }
 
 
@@ -77,36 +78,36 @@ Background::Background (double w_, double h_):
     Widget (0, 0, w_, h_)
     {}
 
-void Background::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-    rt.DrawRect (GetBounds(), BG_COLOR, to_draw);
+void Background::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const {
+    rt.DrawRect_rs (GetBounds(), BG_COLOR, to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 0, 255, 128));
     #endif
 }
 
-void Background::MousePress (const MouseState& mstate) {
-    GetSubwidgets() -> MousePress (mstate);
+bool Background::onMousePress (MouseContext context) {
+    GetSubwidgets() -> onMousePress (context);
 }
 
-void Background::MouseRelease (const MouseState& mstate) {
-    GetSubwidgets() -> MouseRelease (mstate);
+bool Background::onMouseRelease (MouseContext context) {
+    GetSubwidgets() -> onMouseRelease (context);
 }
 
-void Background::MouseMove (const MouseState& mstate) {
-    GetSubwidgets() -> MouseMove (mstate);
+bool Background::onMouseMove (MouseContext context) {
+    GetSubwidgets() -> onMouseMove (context);
 }
 
-void Background::KeyboardPress (const KeyboardState& kstate) {
-    GetSubwidgets() -> KeyboardPress (kstate);
+bool Background::onKeyboardPress (KeyboardContext context) {
+    GetSubwidgets() -> onKeyboardPress (context);
 }
 
-void Background::KeyboardRelease (const KeyboardState& kstate) {
-    GetSubwidgets() -> KeyboardRelease (kstate);
+bool Background::onKeyboardRelease (KeyboardContext context) {
+    GetSubwidgets() -> onKeyboardRelease (context);
 }
 
-void Background::TimerEvent (double time) {
-    GetSubwidgets() -> TimerEvent (time);
+bool Background::onClock (uint64_t delta) {
+    GetSubwidgets() -> onClock (delta);
 }
 
 
@@ -114,14 +115,17 @@ ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* 
     Window (x, y, w, h, false),
     event_man (event_man_)
     {
-        event_man -> AddObject (this);
-        SetPriority (1);
-        event_man -> SetMinPriorities (std::vector<Events>({MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, KEYBOARD_PRESS, KEYBOARD_RELEASE}), 1);
+        event_man -> registerObject (this);
+        event_man -> setPriority (EventType::MousePress  , 1);
+        event_man -> setPriority (EventType::MouseRelease, 1);
+        event_man -> setPriority (EventType::MouseMove   , 1);
+        event_man -> setPriority (EventType::KeyPress    , 1);
+        event_man -> setPriority (EventType::KeyRelease  , 1);
     }
 
 ModalWindow::~ModalWindow() {
     event_man -> ResetPriorities();
-    event_man -> RemoveObject (this);
+    event_man -> unregisterObject (this);
 }
 
 void window_close_btn_action (BtnArgs* btn_args) {

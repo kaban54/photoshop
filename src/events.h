@@ -167,7 +167,6 @@ namespace plugin {
 
 using namespace plugin;
 
-
 class EventManager : public EventProcessableI, public EventManagerI {
     MyList<EventProcessableI*> objects;
     uint8_t min_priorities[(int)EventType::NumOfEvents];

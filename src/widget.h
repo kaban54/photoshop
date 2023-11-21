@@ -12,10 +12,6 @@
 #include "events.h"
 
 
-const Color WINDOW_BG_COLOR = Color (128, 128, 128);
-const Color BG_COLOR = Color (192, 192, 192);
-
-
 namespace plugin {
     struct WidgetI: public EventProcessableI {
         virtual void registerSubWidget(WidgetI* object) = 0;
@@ -92,19 +88,14 @@ class WidgetManager : public EventProcessableI {
 
     virtual void GetMaxRegset (RegionSet* dst) const;
 
-    virtual uint8_t getPriority() const {return 0;}
+    virtual uint8_t getPriority() const override {return 0;}
 
-    virtual bool onMouseMove(MouseContext context) override;
-
-    virtual bool onMouseRelease(MouseContext context) override;
-
-    virtual bool onMousePress(MouseContext context) override;
-
-    virtual bool onKeyboardPress(KeyboardContext context) override;
-
-    virtual bool onKeyboardRelease(KeyboardContext context) override;
-
-    virtual bool onClock(uint64_t delta) override;
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override;
+    virtual bool onKeyboardRelease (KeyboardContext context) override;
+    virtual bool onClock (uint64_t delta) override;
 };
 
 class Widget : public WidgetI {
@@ -166,6 +157,8 @@ class Widget : public WidgetI {
     bool MouseOnSubwidgets(const Vec2& mousepos) const;
 
     void RenderSubWidgets (RenderTarget& rt) const;
+
+    virtual uint8_t getPriority() const override {return 0;}
 };
 
 

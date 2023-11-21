@@ -118,3 +118,33 @@ void RenderTarget::clear() {
     screen.clear();
     screen.display();
 }
+
+void RenderTarget::DrawRect_rs (const Rect& rect, const Color& col, const RegionSet* to_draw) {
+    sf::RectangleShape rectshape;
+    rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
+
+    if (to_draw == nullptr) {
+        rectshape.setSize (sf::Vector2f(rect.w, rect.h));
+        rectshape.setPosition (rect.x, rect.y);
+        screen.draw (rectshape);
+        screen.display();
+    }
+    else {
+        RegionSet tmp, rects;
+        tmp.AddRegion (rect);
+        IntersectRegsets (tmp, *to_draw, rects);
+        ListNode<Rect>* end_of_list = rects.regions.EndOfList();
+        ListNode<Rect>* node = rects.regions.GetHead();
+
+        while (node != end_of_list) {
+            Rect region = node -> val;
+
+            rectshape.setSize (sf::Vector2f(region.w, region.h));
+            rectshape.setPosition (region.x, region.y);
+            screen.draw (rectshape);
+            screen.display();
+
+            node = node -> next;
+        }
+    }
+}

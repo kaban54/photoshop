@@ -85,6 +85,8 @@ class RenderTarget : public RenderTargetI {
     virtual void display() override;
 
     virtual void clear() override;
+
+    void DrawRect_rs (const Rect& rect, const Color& col, const RegionSet* to_draw);
 };
 
 #endif
