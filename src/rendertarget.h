@@ -3,10 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <cinttypes>
+#include <cstring>
 #include "region.h"
 #include "vec2.h"
-#include "string"
-#include "string.h"
 
 namespace plugin {
     struct Color {

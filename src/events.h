@@ -1,14 +1,10 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#include "vec.h"
-#include "mylist.h"
-#include "keyboard.h"
 #include <stdint.h>
 #include <string.h>
-#include <vector>
-
 #include "vec2.h"
+#include "mylist.h"
 #include "myvector.h"
 
 namespace plugin {

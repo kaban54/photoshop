@@ -6,17 +6,22 @@
 class Menu : public Widget {
     public:
 
-    explicit Menu () {visible = false;}
+    explicit Menu () {
+        setAvailable(false);
+    }
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override {}
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override {};
+    virtual bool onKeyboardRelease (KeyboardContext context) override {};
+    virtual bool onClock (uint64_t delta) override {};
 
-    virtual void MousePress (const MouseState& mstate) override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
-    virtual void MouseRelease (const MouseState& mstate) override;
+    virtual void render(RenderTargetI*) override;
 
-    virtual void MouseMove (const MouseState& mstate) override;
-
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
+    virtual bool MouseOnWidget (const Vec2& mousepos) const override;
 };
 
 
@@ -25,17 +30,15 @@ class MenuBtn : public TxtButton {
 
     public:
 
-    explicit MenuBtn (double x, double y, double w, double h, const Text& txt_, Menu* menu_);
+    explicit MenuBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_, Menu* menu_);
 
-    virtual void MousePress (const MouseState& mstate) override;
-
-    virtual void MouseRelease (const MouseState& mstate) override;
-
-    virtual void MouseMove (const MouseState& mstate) override;
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
 };
 
 class VerticalMenu : public Menu {
-    Vec pos;
+    Vec2 pos;
     double nextbtn_y;
 
     public:

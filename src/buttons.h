@@ -55,7 +55,8 @@ class TxtButton : public Button {
     static const uint16_t DEFAULT_CHAR_SIZE = 30;
     public:
 
-    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_);
+    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_,
+                        const char *str = "", uint16_t char_size_ = DEFAULT_CHAR_SIZE);
 
     void SetText (const char *str, uint16_t char_size_ = DEFAULT_CHAR_SIZE);
 

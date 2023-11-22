@@ -1,7 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "vec2.h"
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>

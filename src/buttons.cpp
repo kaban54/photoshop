@@ -78,10 +78,11 @@ void Button::render(RenderTargetI*) {
 // }
 
 
-TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_):
+TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_,
+                      const char *str, uint16_t char_size_):
     Button (x, y, w, h, action_, action_args_),
-    txt (nullptr),
-    char_size (DEFAULT_CHAR_SIZE)
+    txt (str),
+    char_size (char_size_)
     {}
 
 void TxtButton::SetText (const char *str, uint16_t char_size_) {
