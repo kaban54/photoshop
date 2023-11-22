@@ -58,6 +58,7 @@ class RenderTarget : public RenderTargetI {
     uint64_t height;
     sf::RenderTexture screen;
     sf::Font* font;
+    Texture* texture;
 
     public:
 
@@ -92,6 +93,8 @@ class RenderTarget : public RenderTargetI {
     void DrawText_rs (Vec2 pos, const char *content, uint16_t char_size, Color col, const RegionSet* to_draw);
 
     void DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, const RegionSet* to_draw);
+
+    void DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* regset);
 };
 
 #endif

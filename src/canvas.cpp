@@ -54,12 +54,8 @@ void Canvas::render(RenderTargetI* rt) {
 }
 
 void Canvas::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
-    Texture* data_texture = data.getTexture();
-    Texture*  tmp_texture =  tmp.getTexture();
-    rt.DrawTexture_rs(getPos(), getSize(), data_texture, to_draw);
-    rt.DrawTexture_rs(getPos(), getSize(),  tmp_texture, to_draw);
-    delete data_texture;
-    delete  tmp_texture;
+    rt.DrawRenderTarget_rs(data, getPos(), to_draw);
+    rt.DrawRenderTarget_rs(tmp , getPos(), to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 255, 128));

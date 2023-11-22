@@ -13,7 +13,7 @@ namespace plugin {
         b (0),
         a (0) {}
 
-    sf::Color Color::GetSfColor() const {
+    inline sf::Color Color::GetSfColor() const {
         return sf::Color(r, g, b, a);
     }
 
@@ -83,7 +83,7 @@ void RenderTarget::setPixel(Vec2 pos, Color color) {
 void RenderTarget::drawEllipse(Vec2 pos, Vec2 size, Color color) {
     sf::CircleShape ellipse (size.x / 2);
     ellipse.setPosition (pos.x, pos.y);
-    ellipse.setScale (1, pos.y / pos.x);
+    ellipse.setScale (1, size.y / size.x);
     ellipse.setFillColor (color.GetSfColor());
     screen.draw (ellipse);
     screen.display();
@@ -233,5 +233,29 @@ void RenderTarget::DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, 
 
             node = node -> next;
         }
+    }
+}
+
+void RenderTarget::DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* regset) {
+    sf::Sprite sprite;
+    sprite.setTexture (rt.screen.getTexture());
+
+    ListNode<Rect>* end_of_list = regset -> regions.EndOfList();
+    ListNode<Rect>* node = regset -> regions.GetHead();
+
+    while (node != end_of_list) {
+        Rect region = node -> val;
+
+        double x = region.x - pos.x;
+        double y = region.y - pos.y;
+        double w = region.w;
+        double h = region.h;
+
+        sprite.setPosition (region.x, region.y);
+        sprite.setTextureRect (sf::IntRect(x, y, w, h));
+        screen.draw (sprite);
+        screen.display();
+
+        node = node -> next;
     }
 }
