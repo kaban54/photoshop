@@ -6,14 +6,10 @@
 #include "rendertarget.h"
 #include <unistd.h>
 #include "menu.h"
-#include "drawing.h"
 #include "window.h"
-#include "filter.h"
-#include "editbox.h"
+#include "canvas.h"
 
 const char* FONT_FILENAME = "fonts/font2.ttf";
-Font GLOBAL_FONT;
-
 const char* EVENTLOG_FILENAME = "logs/eventlog";
 
 const int W = 2160;
@@ -26,28 +22,28 @@ void SetWidgets (Window& mainwin, EventManager& ev_man);
 int main() {
     sf::Font fnt;
     fnt.loadFromFile (FONT_FILENAME);
-    GLOBAL_FONT.sffont = &fnt;
     FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
     EventLogger eventlogger (eventlogfile);
     EventManager event_man;
-    event_man.AddObject(&eventlogger);
+    event_man.registerObject(&eventlogger);
 
     // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
     sf::RenderWindow sfwindow (sf::VideoMode (2000, 1200), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
     RenderTarget rt (W, H);
+    rt.SetFont(&fnt);
     Background* bg = new Background (W, H);
     bg -> SetRenderTarget (&rt);
     Window* mainwin = new Window (100, 100, 1920, 1080);
     SetWidgets (*mainwin, event_man);
-    bg -> AddSubWidget(mainwin);
+    bg -> registerSubWidget(mainwin);
 
-    event_man.AddObject(bg);
-    Vec mousepos (0, 0);
+    event_man.registerObject(bg);
+    Vec2 mousepos (0, 0);
 
     sf::Clock clk;
-    double last_time = 0;
+    uint64_t last_time = 0;
 
     while (sfwindow.isOpen()) {
         sf::Event event;
@@ -59,45 +55,44 @@ int main() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape)
                     sfwindow.close();
-                KeyboardState kstate ((KeyboardKey)event.key.code, event.key.alt, event.key.control, event.key.shift);
-                event_man.KeyboardPress (kstate);   
+                KeyboardContext kstate = {event.key.alt, event.key.control, event.key.shift, (Key)event.key.code};
+                event_man.onKeyboardPress (kstate);   
             }
 
             if (event.type == sf::Event::KeyReleased) {
-                KeyboardState kstate ((KeyboardKey)event.key.code, event.key.alt, event.key.control, event.key.shift);
-                event_man.KeyboardRelease (kstate);
+                KeyboardContext kstate = {event.key.alt, event.key.control, event.key.shift, (Key)event.key.code};
+                event_man.onKeyboardRelease (kstate);
             }
 
             if (event.type == sf::Event::MouseMoved) {
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
-                event_man.MouseMove (MouseState(mousepos));
+                event_man.onMouseMove (MouseContext(mousepos, MouseButton::Left));
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left )
-                    event_man.MousePress (MouseState(mousepos, MOUSE_LEFT ));
+                    event_man.onMousePress (MouseContext(mousepos, MouseButton::Left));
                 if (event.mouseButton.button == sf::Mouse::Right)
-                    event_man.MousePress (MouseState(mousepos, MOUSE_RIGHT));
+                    event_man.onMousePress (MouseContext(mousepos, MouseButton::Right));
             }
 
             if (event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == sf::Mouse::Left )
-                    event_man.MouseRelease (MouseState(mousepos, MOUSE_LEFT ));
+                    event_man.onMouseRelease (MouseContext(mousepos, MouseButton::Left));
                 if (event.mouseButton.button == sf::Mouse::Right)
-                    event_man.MouseRelease (MouseState(mousepos, MOUSE_RIGHT));
+                    event_man.onMouseRelease (MouseContext(mousepos, MouseButton::Right));
             }
         }
 
-        double current_time = clk.getElapsedTime().asSeconds();
-        if (current_time - last_time > 0.01) {
+        uint64_t current_time = clk.getElapsedTime().asMicroseconds();
+        if (current_time - last_time >= 10000) {
+            event_man.onClock (current_time - last_time);
             last_time = current_time;
-            event_man.TimerEvent (current_time);
         }
 
-        
         sfwindow.clear(sf::Color (192, 192, 192));
-        rt.Display(sfwindow);
+        rt.SfDisplay(sfwindow);
         sfwindow.display();
     }
 
@@ -106,51 +101,25 @@ int main() {
     return 0;
 }
 
-void LoadTxtBtnTextures (Texture textures[4]) {
-    static sf::Texture sftextures[4];
-    sftextures[0].loadFromFile ("textures/e0.png");
-    sftextures[1].loadFromFile ("textures/e1.png");
-    sftextures[2].loadFromFile ("textures/e2.png");
-    textures[0].sftexture = sftextures + 0;
-    textures[1].sftexture = sftextures + 1;
-    textures[2].sftexture = sftextures + 2;
-    textures[3].sftexture = nullptr;
-}
+// void LoadTxtBtnTextures (Texture textures[4]) {
+//     static sf::Texture sftextures[4];
+//     sftextures[0].loadFromFile ("textures/e0.png");
+//     sftextures[1].loadFromFile ("textures/e1.png");
+//     sftextures[2].loadFromFile ("textures/e2.png");
+//     textures[0].sftexture = sftextures + 0;
+//     textures[1].sftexture = sftextures + 1;
+//     textures[2].sftexture = sftextures + 2;
+//     textures[3].sftexture = nullptr;
+// }
 
 void SetWidgets (Window& mainwin, EventManager& ev_man) {
-    static Text     edit_txt ("edit"    , GLOBAL_FONT, 30);
-    static Text  filters_txt ("filters" , GLOBAL_FONT, 30);
-    static Text     cols_txt ("colors"  , GLOBAL_FONT, 30);
-    static Text    tools_txt ("tools"   , GLOBAL_FONT, 30);
-    static Text    brush_txt ("brush"   , GLOBAL_FONT, 30);
-    static Text     rect_txt ("rect"    , GLOBAL_FONT, 30);
-    static Text     line_txt ("line"    , GLOBAL_FONT, 30);
-    static Text  ellipse_txt ("ellipse" , GLOBAL_FONT, 30);
-    static Text polyline_txt ("polyline", GLOBAL_FONT, 30);
-
     static Brush brush (25);
-    static RectTool recttool;
-    static LineTool linetool (15);
-    static EllipseTool elltool;
-    static PolyLine polyline (15);
     static ToolManager tm;
-    tm.SetTool (&brush);
-    tm.SetColor (Color (255, 0, 128));
-
-    static Text filter_test_txt ("test", GLOBAL_FONT, 30);
-    static Text clr_filter_txt ("clear", GLOBAL_FONT, 30);
-    static TestFilter test_filter;
-    static ClearFilter clr_filter;
-    static FilterManager fm;
-    fm.SetFilter (&test_filter);
-
+    tm.setTool (&brush);
+    tm.setColor (Color (255, 0, 128));
 
     VerticalMenu* tools_vm = new VerticalMenu (405, 105);
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,    brush_txt, &tm, &brush));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,     rect_txt, &tm, &recttool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,     line_txt, &tm, &linetool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80,  ellipse_txt, &tm, &elltool));
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, polyline_txt, &tm, &polyline));
+    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, "brush", 30, &tm, &brush));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 185);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 0, 0)));
@@ -162,24 +131,19 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
 
-    VerticalMenu* filters_vm = new VerticalMenu (405, 265);
-    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, filter_test_txt, &fm, &test_filter, &ev_man, &mainwin));
-    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80,  clr_filter_txt, &fm, & clr_filter, &ev_man, &mainwin));
 
     VerticalMenu* vm = new VerticalMenu (205, 105);
-    vm -> AddSubWidget (tools_vm);
-    vm -> AddSubWidget (cols_vm);
-    vm -> AddSubWidget (filters_vm);
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80,   tools_txt,   tools_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80,    cols_txt,    cols_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, filters_txt, filters_vm));
-    mainwin.AddSubWidget (vm);
-    mainwin.AddSubWidget (new MenuBtn (205, 25, 200, 80, edit_txt, vm));
+    vm -> registerSubWidget (tools_vm);
+    vm -> registerSubWidget (cols_vm);
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  "tools", 30, tools_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors", 30,  cols_vm));
+    mainwin.registerSubWidget (vm);
+    mainwin.registerSubWidget (new MenuBtn (205, 25, 200, 80, "edit", 30, vm));
 
     Window* win = new Window (200, 200, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
-    mainwin.AddSubWidget (win);
+    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    mainwin.registerSubWidget (win);
     win = new Window (1000, 100, 610, 630);
-    win -> AddSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
-    mainwin.AddSubWidget (win);
+    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    mainwin.registerSubWidget (win);
 }

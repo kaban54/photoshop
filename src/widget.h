@@ -41,7 +41,7 @@ namespace plugin {
         virtual void render(RenderTargetI* ) = 0;
         virtual void recalcRegion() = 0;
 
-        virtual ~WidgetI() = 0;
+        virtual ~WidgetI() {};
     };
 }
 
@@ -53,10 +53,14 @@ struct WidgetShell {
     WidgetI* external;
     Widget*  internal;
 
-    explicit WidgetShell(WidgetI* wid):
-        external (wid),
-        internal ((wid != nullptr && !wid -> isExtern()) ? dynamic_cast<Widget*>(wid) : nullptr) {}
+    explicit WidgetShell();
+
+    explicit WidgetShell(WidgetI* wid);
 };
+
+inline bool operator== (const WidgetShell& w1, const WidgetShell& w2) {
+    return w1.external == w2.external;
+}
 
 class WidgetManager : public EventProcessableI {
     public:
@@ -111,7 +115,7 @@ class Widget : public WidgetI {
 
     explicit Widget (double x, double y, double w, double h);
     
-    ~Widget();
+    virtual ~Widget();
 
     virtual void registerSubWidget(WidgetI* wid);
     virtual void unregisterSubWidget(WidgetI* wid);
@@ -159,7 +163,6 @@ class Widget : public WidgetI {
 
     virtual uint8_t getPriority() const override {return 0;}
 };
-
 
 // class TxtWidget : public Widget{
 //     public:

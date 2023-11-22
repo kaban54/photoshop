@@ -8,13 +8,14 @@ Button::Button (double x, double y, double w, double h, BtnFunc* action_, BtnArg
     {}
 
 bool Button::onMousePress (MouseContext context) {
-    if (state == BTN_DISABLED) return;
+    if (state == BTN_DISABLED) return false;
 
     if (MouseOnWidget (context.position)) {
         state = BTN_PRESSED;
         action(action_args);
         RenderInRegset (*GetRendertarget(), GetRegset());
     }
+    return false;
 }
 
 bool Button::onMouseRelease (MouseContext context) {
@@ -24,10 +25,11 @@ bool Button::onMouseRelease (MouseContext context) {
 
         RenderInRegset (*GetRendertarget(), GetRegset());
     }
+    return false;
 }
 
 bool Button::onMouseMove (MouseContext context) {
-    if (state == BTN_DISABLED) return;
+    if (state == BTN_DISABLED) return false;
 
     if (MouseOnWidget (context.position)) {
         if (state == BTN_NORMAL) {
@@ -39,6 +41,7 @@ bool Button::onMouseMove (MouseContext context) {
         state = BTN_NORMAL;
         RenderInRegset (*GetRendertarget(), GetRegset());
     }
+    return false;
 }
 
 void Button::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {

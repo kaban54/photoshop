@@ -28,7 +28,7 @@ void Window::render(RenderTargetI* rt) {
 }
 
 bool Window::onMousePress (MouseContext context) {
-    if (!getAvailable()) return;
+    if (!getAvailable()) return false;;
     if (MouseOnWidget(context.position)) {
         if (Rect(getPos().x, getPos().y, getSize().x, 20).Contains(context.position) &&
             context.button == MouseButton::Left) {
@@ -39,19 +39,21 @@ bool Window::onMousePress (MouseContext context) {
     }
     GetSubwidgets() -> onMousePress(context);
     if (need_to_close) Close();
+    return false;
 }
 
 bool Window::onMouseRelease (MouseContext context) {
-    if (!getAvailable()) return;
+    if (!getAvailable()) return false;;
     if (context.button == MouseButton::Left && is_moving) {
         is_moving = false;
         hold_pos = Vec2 (0, 0);
     }
     GetSubwidgets() -> onMouseRelease (context);
+    return false;
 }
 
 bool Window::onMouseMove (MouseContext context) {
-    if (!getAvailable()) return;
+    if (!getAvailable()) return false;;
     if (is_moving) {
         Vec2 mousepos = context.position;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
@@ -63,18 +65,22 @@ bool Window::onMouseMove (MouseContext context) {
         }
     }
     GetSubwidgets() -> onMouseMove (context);
+    return false;
 }
 
 bool Window::onKeyboardPress (KeyboardContext context) {
     GetSubwidgets() -> onKeyboardPress (context);
+    return false;
 }
 
 bool Window::onKeyboardRelease (KeyboardContext context) {
     GetSubwidgets() -> onKeyboardRelease (context);
+    return false;
 }
 
 bool Window::onClock (uint64_t delta) {
     GetSubwidgets() -> onClock(delta);
+    return false;
 }
 
 
@@ -97,26 +103,32 @@ void Background::render(RenderTargetI* rt) {
 
 bool Background::onMousePress (MouseContext context) {
     GetSubwidgets() -> onMousePress (context);
+    return false;
 }
 
 bool Background::onMouseRelease (MouseContext context) {
     GetSubwidgets() -> onMouseRelease (context);
+    return false;
 }
 
 bool Background::onMouseMove (MouseContext context) {
     GetSubwidgets() -> onMouseMove (context);
+    return false;
 }
 
 bool Background::onKeyboardPress (KeyboardContext context) {
     GetSubwidgets() -> onKeyboardPress (context);
+    return false;
 }
 
 bool Background::onKeyboardRelease (KeyboardContext context) {
     GetSubwidgets() -> onKeyboardRelease (context);
+    return false;
 }
 
 bool Background::onClock (uint64_t delta) {
     GetSubwidgets() -> onClock (delta);
+    return false;
 }
 
 

@@ -10,7 +10,7 @@
 
 template <typename T>
 class MyVector {
-    static const BASE_CAPACITY = 2;
+    static const size_t BASE_CAPACITY = 2;
     size_t size;
     size_t capacity;
     T* data;

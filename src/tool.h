@@ -4,6 +4,7 @@
 #include "interface.h"
 #include "rendertarget.h"
 #include "events.h"
+#include "buttons.h"
 
 namespace plugin {
     struct ToolI: public Interface {
@@ -64,11 +65,14 @@ class ToolManager : public ToolManagerI{
 };
 
 class Brush : public Tool {
-    unsigned int radius;
+    static const size_t NUM_OF_PARAMS = 1;
+    static const char* const PARAM_NAMES[];
+
+    double params[1];
 
     public:
 
-    explicit Brush (unsigned int r = 1);
+    explicit Brush (double r = 1);
 
     virtual void paintOnPress   (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) override;
     virtual void paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) override;
@@ -77,7 +81,44 @@ class Brush : public Tool {
 
     virtual Array<const char *> getParamNames() override;
     virtual Array<double> getParams() override;
-    virtual void setParams(Array<double> params) override;
+    virtual void setParams(Array<double> new_params) override;
+};
+
+
+struct ToolBtnArgs : public BtnArgs {
+    ToolManager* tool_man;
+    Tool* tool;
+    explicit ToolBtnArgs (ToolManager* tool_man_, Tool* tool_):
+        tool_man (tool_man_),
+        tool (tool_) {}
+};
+
+class ToolBtn : public TxtButton {
+    ToolBtnArgs tool_btn_args;
+
+    public:
+
+    explicit ToolBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
+                      ToolManager* tm, Tool* tool_);
+};
+
+
+struct ColorBtnArgs : public BtnArgs {
+    ToolManager* tool_man;
+    Color col;
+    explicit ColorBtnArgs (ToolManager* tool_man_, Color col_):
+        tool_man (tool_man_),
+        col (col_) {}
+};
+
+class ColorBtn : public Button {
+    ColorBtnArgs col_btn_args;
+
+    public:
+
+    explicit ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
+
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };
 
 #endif

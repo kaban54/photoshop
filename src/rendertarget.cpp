@@ -13,7 +13,7 @@ namespace plugin {
         b (0),
         a (0) {}
 
-    inline sf::Color Color::GetSfColor() const {
+    sf::Color Color::GetSfColor() const {
         return sf::Color(r, g, b, a);
     }
 
@@ -42,7 +42,7 @@ RenderTarget::RenderTarget (uint64_t w, uint64_t h):
         screen.create (w, h);
     }
 
-inline void RenderTarget::SetFont (sf::Font* fnt) {
+void RenderTarget::SetFont (sf::Font* fnt) {
     font = fnt;
 }
 
@@ -107,7 +107,7 @@ void RenderTarget::drawText(Vec2 pos, const char *content, uint16_t char_size, C
 
 Texture* RenderTarget::getTexture() {
     sf::Image sfimg = screen.getTexture().copyToImage();
-    Texture* ret = new Texture(sfimg.getSize().x, sfimg.getSize().y, (Color *)sfimg.getPixelsPtr());
+    return new Texture(sfimg.getSize().x, sfimg.getSize().y, (Color *)sfimg.getPixelsPtr());
 }
 
 void RenderTarget::display() {
@@ -116,6 +116,11 @@ void RenderTarget::display() {
 
 void RenderTarget::clear() {
     screen.clear();
+    screen.display();
+}
+
+void RenderTarget::Fill(Color col) {
+    screen.clear(col.GetSfColor());
     screen.display();
 }
 
@@ -188,5 +193,45 @@ void RenderTarget::DrawText_rs (Vec2 pos, const char *content, uint16_t char_siz
         screen.display();
 
         node = node -> next;
+    }
+}
+
+void RenderTarget::DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, const RegionSet* to_draw) {
+    sf::Image sfimg;
+    sfimg.create(texture -> width, texture -> height, (uint8_t *)texture -> pixels);
+    sf::Texture sftexture;
+    sftexture.loadFromImage(sfimg);
+
+    sf::Sprite sprite;
+    sprite.setTexture (sftexture);
+
+    double xscale = size.x / texture -> width;
+    double yscale = size.y / texture -> height;
+    sprite.setScale (xscale, yscale);
+
+    if (to_draw == nullptr) {
+        sprite.setPosition (pos.x, pos.y);
+        screen.draw (sprite);
+        screen.display();
+    }
+    else {
+        ListNode<Rect>* end_of_list = to_draw -> regions.EndOfList();
+        ListNode<Rect>* node = to_draw -> regions.GetHead();
+
+        while (node != end_of_list) {
+            Rect region = node -> val;
+
+            double x = (region.x - pos.x) / xscale;
+            double y = (region.y - pos.y) / yscale;
+            double w = region.w  / xscale;
+            double h = region.h / yscale;
+
+            sprite.setPosition (region.x, region.y);
+            sprite.setTextureRect (sf::IntRect(x, y, w, h));
+            screen.draw (sprite);
+            screen.display();
+
+            node = node -> next;
+        }
     }
 }

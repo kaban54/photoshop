@@ -1,5 +1,11 @@
 #include "widget.h"
 
+WidgetShell::WidgetShell() {};
+
+WidgetShell::WidgetShell(WidgetI* wid):
+        external (wid),
+        internal ((wid != nullptr && !wid -> isExtern()) ? dynamic_cast<Widget*>(wid) : nullptr) {}
+
 Widget::Widget():
     bounds (),
     parent (nullptr),
@@ -143,7 +149,7 @@ void Widget::UpdateRegset(const RegionSet& regs) {
 
 
 WidgetManager::WidgetManager ():
-    widgets()
+    widgets ()
     {}
 
 WidgetManager::~WidgetManager() {
@@ -242,6 +248,7 @@ bool WidgetManager::onMouseMove (MouseContext context) {
         node -> val.external -> onMouseMove(context);
         widgets.Iterate(node);
     }
+    return false;
 }
 
 bool WidgetManager::onKeyboardPress (KeyboardContext context) {
@@ -251,6 +258,7 @@ bool WidgetManager::onKeyboardPress (KeyboardContext context) {
         node -> val.external -> onKeyboardPress(context);
         widgets.Iterate(node);
     }
+    return false;
 }
 
 bool WidgetManager::onKeyboardRelease (KeyboardContext context) {
@@ -260,6 +268,7 @@ bool WidgetManager::onKeyboardRelease (KeyboardContext context) {
         node -> val.external -> onKeyboardRelease(context);
         widgets.Iterate(node);
     }
+    return false;
 }
 
 bool WidgetManager::onClock (uint64_t delta) {
@@ -269,6 +278,7 @@ bool WidgetManager::onClock (uint64_t delta) {
         node -> val.external -> onClock(delta);
         widgets.Iterate(node);
     }
+    return false;
 }
 
 void WidgetManager::MoveToTail (WidgetI* wid) {

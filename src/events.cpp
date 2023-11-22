@@ -43,6 +43,7 @@ bool EventManager::onMousePress (MouseContext context) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::MousePress]) obj -> onMousePress (context);
         node = nextnode;
     }
+    return false;
 }
 
 bool EventManager::onMouseRelease (MouseContext context) {
@@ -53,6 +54,7 @@ bool EventManager::onMouseRelease (MouseContext context) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::MouseRelease]) obj -> onMouseRelease (context);
         objects.Iterate(node);
     }
+    return false;
 }
 
 bool EventManager::onMouseMove (MouseContext context) {
@@ -63,6 +65,7 @@ bool EventManager::onMouseMove (MouseContext context) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::MouseMove]) obj -> onMouseMove (context);
         objects.Iterate(node);
     }
+    return false;
 }
 
 bool EventManager::onKeyboardPress (KeyboardContext context) {
@@ -75,6 +78,7 @@ bool EventManager::onKeyboardPress (KeyboardContext context) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::KeyPress]) obj -> onKeyboardPress (context);
         node = nextnode;
     }
+    return false;
 }
 
 bool EventManager::onKeyboardRelease (KeyboardContext context) {
@@ -87,6 +91,7 @@ bool EventManager::onKeyboardRelease (KeyboardContext context) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::KeyRelease]) obj -> onKeyboardRelease (context);
         node = nextnode;
     }
+    return false;
 }
 
 bool EventManager::onClock (uint64_t delta) {
@@ -99,6 +104,7 @@ bool EventManager::onClock (uint64_t delta) {
         if (obj -> getPriority() >= min_priorities[(int)EventType::Clock]) obj -> onClock (delta);
         node = nextnode;
     }
+    return false;
 }
 
 
@@ -109,29 +115,40 @@ EventLogger::EventLogger (FILE* logfile_):
         assert (logfile != nullptr);
     }
 
+inline uint8_t EventLogger::getPriority() const {
+    return UINT8_MAX;
+}
+
 bool EventLogger::onMousePress (MouseContext context) {
-    fprintf (logfile, "MOUSE_PRESS\t\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, context.button);
+    fprintf (logfile, "MOUSE_PRESS\t\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, (int)context.button);
     fflush (logfile);
+    return false;
 }
 
 bool EventLogger::onMouseRelease (MouseContext context) {
-    fprintf (logfile, "MOUSE_RELEASE\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, context.button);
+    fprintf (logfile, "MOUSE_RELEASE\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, (int)context.button);
     fflush (logfile);
+    return false;
 }
 
 bool EventLogger::onMouseMove (MouseContext context) {
     fprintf (logfile, "MOUSE_MOVE\t\t(%d, %d)\n", (int)context.position.x, (int)context.position.y);
     fflush (logfile);
+    return false;
 }
 
 bool EventLogger::onKeyboardPress (KeyboardContext context) {
-    fprintf (logfile, "KEYBOARD_PRESS\t\t%d\n", context.key);
+    fprintf (logfile, "KEYBOARD_PRESS\t\t%d\n", (int)context.key);
     fflush (logfile);
+    return false;
 }
 
 bool EventLogger::onKeyboardRelease (KeyboardContext context) {
-    fprintf (logfile, "KEYBOARD_RELEASE\t\t%d\n", context.key);
+    fprintf (logfile, "KEYBOARD_RELEASE\t\t%d\n", (int)context.key);
     fflush (logfile);
+    return false;
 }
 
-bool EventLogger::onClock (uint64_t delta) {}
+bool EventLogger::onClock (uint64_t delta) {
+    return false;
+}

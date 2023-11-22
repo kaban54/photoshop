@@ -16,6 +16,10 @@ namespace plugin {
     struct MouseContext {
         Vec2 position;
         MouseButton button;
+
+        explicit MouseContext(Vec2 pos, MouseButton btn):
+            position (pos),
+            button (btn) {}
     };
 
     enum class Key {
@@ -182,17 +186,11 @@ class EventManager : public EventProcessableI, public EventManagerI {
     void ResetPriorities();
 
     virtual uint8_t getPriority() const override;
-
     virtual bool onMouseMove(MouseContext context) override;
-
     virtual bool onMouseRelease(MouseContext context) override;
-
     virtual bool onMousePress(MouseContext context) override;
-
     virtual bool onKeyboardPress(KeyboardContext context) override;
-
     virtual bool onKeyboardRelease(KeyboardContext context) override;
-
     virtual bool onClock(uint64_t delta) override;
 };
 
@@ -204,16 +202,12 @@ class EventLogger : public plugin::EventProcessableI {
 
     explicit EventLogger(FILE* logfile_);
 
+    virtual uint8_t getPriority() const override;
     virtual bool onMouseMove(MouseContext context) override;
-
     virtual bool onMouseRelease(MouseContext context) override;
-
     virtual bool onMousePress(MouseContext context) override;
-
     virtual bool onKeyboardPress(KeyboardContext context) override;
-
     virtual bool onKeyboardRelease(KeyboardContext context) override;
-
     virtual bool onClock(uint64_t delta) override;
 };
 
