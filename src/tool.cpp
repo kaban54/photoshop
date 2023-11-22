@@ -1,6 +1,7 @@
 #include "tool.h"
 
 Tool::Tool (Texture* icon_):
+    drawing (false),
     icon (icon_),
     start_pos (),
     last_pos () {}
@@ -55,21 +56,27 @@ Brush::Brush (double r) {
 const char* const Brush::PARAM_NAMES[] = {"radius"};
 
 void Brush::paintOnPress (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {
+    drawing = true;
     double radius = params[0];
     data -> drawEllipse (context.position - Vec2(radius, radius), Vec2(radius * 2, radius * 2), color);
     last_pos = context.position;
 }
 
-void Brush::paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {}
+void Brush::paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {
+    drawing = false;
+}
 
 void Brush::paintOnMove (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {
+    if (!drawing) return;
     double radius = params[0];
     data -> drawEllipse (context.position - Vec2(radius, radius), Vec2(radius * 2, radius * 2), color);
     //data -> drawLine (last_pos, pos, radius * 2, col);
     last_pos = context.position;
 }
 
-void Brush::disable (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {}
+void Brush::disable (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) {
+    drawing = false;
+}
 
 Array<const char *> Brush::getParamNames() {
     MyVector<const char *> ret (NUM_OF_PARAMS);
@@ -89,25 +96,25 @@ void Brush::setParams(Array<double> new_params) {
 
 
 void tool_btn_action (BtnArgs* tool_btn_args) {
-    ToolManager* tool_man = ((ToolBtnArgs*)tool_btn_args) -> tool_man;
-    Tool*        tool     = ((ToolBtnArgs*)tool_btn_args) -> tool;
+    ToolManagerI* tool_man = ((ToolBtnArgs*)tool_btn_args) -> tool_man;
+    ToolI*        tool     = ((ToolBtnArgs*)tool_btn_args) -> tool;
     tool_man -> setTool (tool);
 }
 
 ToolBtn::ToolBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                  ToolManager* tm, Tool* tool_):
+                  ToolManagerI* tm, ToolI* tool_):
     TxtButton (x, y, w, h, tool_btn_action, &tool_btn_args, str, char_size_),
     tool_btn_args (tm, tool_)
     {}
 
 
 void col_btn_action (BtnArgs* col_btn_args) {
-    ToolManager* tool_man = ((ColorBtnArgs*)col_btn_args) -> tool_man;
-    Color        color    = ((ColorBtnArgs*)col_btn_args) -> col;
+    ToolManagerI* tool_man = ((ColorBtnArgs*)col_btn_args) -> tool_man;
+    Color         color    = ((ColorBtnArgs*)col_btn_args) -> col;
     tool_man -> setColor (color);
 }
 
-ColorBtn::ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col):
+ColorBtn::ColorBtn (double x, double y, double w, double h, ToolManagerI* tm, const Color& col):
     Button (x, y, w, h, col_btn_action, &col_btn_args),
     col_btn_args {tm, col}
     {}

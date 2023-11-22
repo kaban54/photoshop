@@ -49,11 +49,11 @@ class Background : public Widget {
 };
 
 class ModalWindow : public Window {
-    EventManager* event_man;
+    EventManagerI* event_man;
 
     public:
 
-    ModalWindow (double x, double y, double w, double h, EventManager* event_man_);
+    ModalWindow (double x, double y, double w, double h, EventManagerI* event_man_);
 
     ~ModalWindow();
 

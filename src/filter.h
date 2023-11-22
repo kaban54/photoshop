@@ -85,17 +85,17 @@ class SetFilterOkBtn : public TxtButton {
 };
 
 class SetFilterController {
-    FilterManager* filter_man;
+    FilterManagerI* filter_man;
     FilterI* filter;
-    EventManager* ev_man;
-    Widget* parent_wid;
+    EventManagerI* ev_man;
+    WidgetI* parent_wid;
     ModalWindow* mw;
     std::vector<FloatNumEditBox*> editboxes;
     size_t num_of_params;
 
     public:
 
-    explicit SetFilterController (FilterManager* fm, FilterI* filt, EventManager* ev_man_, Widget* parent_wid_);
+    explicit SetFilterController (FilterManagerI* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
 
     ~SetFilterController();
 
@@ -103,11 +103,11 @@ class SetFilterController {
 };
 
 struct FilterBtnArgs : public BtnArgs {
-    FilterManager* filter_man;
+    FilterManagerI* filter_man;
     FilterI* filter;
-    EventManager* ev_man;
-    Widget* parent_wid;
-    explicit FilterBtnArgs (FilterManager* filter_man_, FilterI* filter_, EventManager* ev_man_, Widget* parent_wid_):
+    EventManagerI* ev_man;
+    WidgetI* parent_wid;
+    explicit FilterBtnArgs (FilterManagerI* filter_man_, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
         filter_man (filter_man_),
         filter (filter_),
         ev_man (ev_man_),
@@ -120,7 +120,7 @@ class FilterBtn : public TxtButton {
     public:
 
     explicit FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                        FilterManager* fm, FilterI* filter_, EventManager* ev_man_, Widget* parent_wid_);
+                        FilterManagerI* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_);
 };
 
 #endif

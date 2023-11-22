@@ -16,16 +16,6 @@ namespace plugin {
         virtual Array<double> getParams() = 0;
         virtual void setParams(Array<double> params) = 0;
     };
-
-    struct Plugin {
-        /* где-то тут лежит App*, но это дело автора плагина */
-        uint64_t id;
-        const char *name;
-        InterfaceType type;
-
-        virtual Interface *getInterface() = 0;
-        virtual ~Plugin() = 0;
-    };
 }
 
 #endif

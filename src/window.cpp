@@ -132,7 +132,7 @@ bool Background::onClock (uint64_t delta) {
 }
 
 
-ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* event_man_):
+ModalWindow::ModalWindow (double x, double y, double w, double h, EventManagerI* event_man_):
     Window (x, y, w, h, false),
     event_man (event_man_)
     {
@@ -145,7 +145,11 @@ ModalWindow::ModalWindow (double x, double y, double w, double h, EventManager* 
     }
 
 ModalWindow::~ModalWindow() {
-    event_man -> ResetPriorities();
+    event_man -> setPriority (EventType::MousePress  , 0);
+    event_man -> setPriority (EventType::MouseRelease, 0);
+    event_man -> setPriority (EventType::MouseMove   , 0);
+    event_man -> setPriority (EventType::KeyPress    , 0);
+    event_man -> setPriority (EventType::KeyRelease  , 0);
     event_man -> unregisterObject (this);
 }
 

@@ -33,6 +33,7 @@ namespace plugin {
 using namespace plugin;
 
 struct Tool : public ToolI {
+    bool drawing;
     Vec2 start_pos;
     Vec2 last_pos;
     Texture* icon;
@@ -86,9 +87,9 @@ class Brush : public Tool {
 
 
 struct ToolBtnArgs : public BtnArgs {
-    ToolManager* tool_man;
-    Tool* tool;
-    explicit ToolBtnArgs (ToolManager* tool_man_, Tool* tool_):
+    ToolManagerI* tool_man;
+    ToolI* tool;
+    explicit ToolBtnArgs (ToolManagerI* tool_man_, ToolI* tool_):
         tool_man (tool_man_),
         tool (tool_) {}
 };
@@ -99,14 +100,14 @@ class ToolBtn : public TxtButton {
     public:
 
     explicit ToolBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                      ToolManager* tm, Tool* tool_);
+                      ToolManagerI* tm, ToolI* tool_);
 };
 
 
 struct ColorBtnArgs : public BtnArgs {
-    ToolManager* tool_man;
+    ToolManagerI* tool_man;
     Color col;
-    explicit ColorBtnArgs (ToolManager* tool_man_, Color col_):
+    explicit ColorBtnArgs (ToolManagerI* tool_man_, Color col_):
         tool_man (tool_man_),
         col (col_) {}
 };
@@ -116,7 +117,7 @@ class ColorBtn : public Button {
 
     public:
 
-    explicit ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
+    explicit ColorBtn (double x, double y, double w, double h, ToolManagerI* tm, const Color& col);
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };

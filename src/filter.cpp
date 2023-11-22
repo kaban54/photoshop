@@ -121,7 +121,7 @@ bool SetFilterOkBtn::onMousePress (MouseContext context) {
     return false;
 }
 
-SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, EventManager* ev_man_, Widget* parent_wid_):
+SetFilterController::SetFilterController (FilterManagerI* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_):
     filter_man (fm),
     filter (filt),
     ev_man (ev_man_),
@@ -160,16 +160,16 @@ void SetFilterController::OkBtnPress() {
 
 
 void filter_btn_action (BtnArgs* filter_btn_args) {
-    FilterManager* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
-    FilterI*       filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
-    EventManager*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
-    Widget*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
+    FilterManagerI* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
+    FilterI*        filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
+    EventManagerI*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
+    WidgetI*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
 
     new SetFilterController (filter_man, filter, ev_man, parent_wid);
 }
 
 FilterBtn::FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                      FilterManager* fm, FilterI* filter_, EventManager* ev_man_, Widget* parent_wid_):
+                      FilterManagerI* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
     TxtButton (x, y, w, h, filter_btn_action, &filter_btn_args, str, char_size_),
     filter_btn_args (fm, filter_, ev_man_, parent_wid_)
     {}

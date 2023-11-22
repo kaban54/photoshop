@@ -5,15 +5,13 @@
 #include <SFML/Graphics.hpp>
 #include "rendertarget.h"
 #include <unistd.h>
-#include "menu.h"
-#include "window.h"
-#include "canvas.h"
+#include "app.h"
 
 const char* FONT_FILENAME = "fonts/font2.ttf";
 const char* EVENTLOG_FILENAME = "logs/eventlog";
 
-const int W = 2160;
-const int H = 1440;
+const int W = 2000;
+const int H = 1200;
 
 void LoadTxtBtnTextures (Texture textures[4]);
 
@@ -22,27 +20,22 @@ void SetWidgets (Window& mainwin, EventManager& ev_man);
 int main() {
     sf::Font fnt;
     fnt.loadFromFile (FONT_FILENAME);
+    RenderTarget rt (W, H);
+    rt.SetFont(&fnt);
+
     FILE* eventlogfile = fopen (EVENTLOG_FILENAME, "w");
     EventLogger eventlogger (eventlogfile);
     EventManager event_man;
-    event_man.registerObject(&eventlogger);
+    event_man.registerObject (&eventlogger);
 
     // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    sf::RenderWindow sfwindow (sf::VideoMode (2000, 1200), "PHOTOSHOP228");
+    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
-    RenderTarget rt (W, H);
-    rt.SetFont(&fnt);
-    Background* bg = new Background (W, H);
-    bg -> SetRenderTarget (&rt);
-    Window* mainwin = new Window (100, 100, 1920, 1080);
+    App app (W, H, &event_man, &rt);
+    app.SetWidgets();
     
-    SetWidgets (*mainwin, event_man);
-    bg -> registerSubWidget(mainwin);
-    
-    event_man.registerObject(bg);
     Vec2 mousepos (0, 0);
-
     sf::Clock clk;
     uint64_t last_time = 0;
 
@@ -97,7 +90,6 @@ int main() {
         sfwindow.display();
     }
 
-    delete bg;
     fclose (eventlogfile);
     return 0;
 }
