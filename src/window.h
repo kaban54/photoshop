@@ -16,9 +16,9 @@ class Window : public Widget {
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
 
-    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
-    virtual void render(RenderTargetI*) override;
+    virtual void render(RenderTargetI* rt) override;
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
@@ -36,7 +36,9 @@ class Background : public Widget {
 
     explicit Background (double w_, double h_);
 
-    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+
+    virtual void render(RenderTargetI* rt) override;
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
@@ -76,7 +78,7 @@ class WindowCloseBtn : public Button {
 
     explicit WindowCloseBtn (double x, double y, double w, double h, Window* win_);
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };
 
 #endif

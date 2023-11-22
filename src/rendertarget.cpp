@@ -119,7 +119,7 @@ void RenderTarget::clear() {
     screen.display();
 }
 
-void RenderTarget::DrawRect_rs (const Rect& rect, const Color& col, const RegionSet* to_draw) {
+void RenderTarget::DrawRect_rs (const Rect& rect, Color col, const RegionSet* to_draw) {
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));
 
@@ -146,5 +146,47 @@ void RenderTarget::DrawRect_rs (const Rect& rect, const Color& col, const Region
 
             node = node -> next;
         }
+    }
+}
+
+void RenderTarget::DrawText_rs (Vec2 pos, const char *content, uint16_t char_size, Color col, const RegionSet* to_draw) {
+    sf::Text text (content, *font, char_size);
+    text.setPosition (0, 0);
+    sf::FloatRect bounds = text.getGlobalBounds();
+    sf::RenderTexture sfrt;
+    sfrt.create(bounds.width, bounds.height);
+    sfrt.clear (sf::Color::Transparent);
+    text.setFillColor (sf::Color (col.r, col.g, col.b, col.a));
+    text.setPosition (-bounds.left, -bounds.top);
+    sfrt.draw (text);
+    sfrt.display();
+
+    sf::Sprite sprite;
+    sprite.setTexture (sfrt.getTexture());
+
+    Rect txtrect (Vec2(), Vec2(bounds.width, bounds.height));
+    txtrect.Move (pos);
+
+    RegionSet newregset;
+    newregset.AddRegion (txtrect);
+    newregset ^= *to_draw;
+
+    ListNode<Rect>* end_of_list = newregset.regions.EndOfList();
+    ListNode<Rect>* node = newregset.regions.GetHead();
+
+    while (node != end_of_list) {
+        Rect region = node -> val;
+
+        double x = region.x - pos.x;
+        double y = region.y - pos.y;
+        double w = region.w;
+        double h = region.h;
+
+        sprite.setPosition (region.x, region.y);
+        sprite.setTextureRect (sf::IntRect(x, y, w, h));
+        screen.draw (sprite);
+        screen.display();
+
+        node = node -> next;
     }
 }

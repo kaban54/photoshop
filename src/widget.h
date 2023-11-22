@@ -150,7 +150,7 @@ class Widget : public WidgetI {
     void UpdateAllRegsets();
     void Show();
     virtual void GetMaxRegset (RegionSet* dst) const;
-    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const = 0;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) = 0;
 
     virtual bool MouseOnWidget (const Vec2& mousepos) const;
 

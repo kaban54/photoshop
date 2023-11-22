@@ -8,7 +8,7 @@ Window::Window (double x, double y, double w, double h, bool close_btn):
         if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
     }
 
-void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const {
+void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     Rect rect = GetBounds();
     rt.DrawRect_rs (rect, Color(0, 0, 0), to_draw);
     rect.x += 2;
@@ -20,6 +20,11 @@ void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const {
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(255, 0, 0, 128));
     #endif
+}
+
+void Window::render(RenderTargetI* rt) {
+    rt -> drawRect (getPos(), getSize(), Color(0, 0, 0));
+    rt -> drawRect (getPos() + Vec2(2, 20), getSize() + Vec2(4, 22), WINDOW_BG_COLOR);
 }
 
 bool Window::onMousePress (MouseContext context) {
@@ -78,12 +83,16 @@ Background::Background (double w_, double h_):
     Widget (0, 0, w_, h_)
     {}
 
-void Background::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) const {
+void Background::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs (GetBounds(), BG_COLOR, to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 0, 255, 128));
     #endif
+}
+
+void Background::render(RenderTargetI* rt) {
+    rt -> drawRect(getPos(), getSize(), BG_COLOR);
 }
 
 bool Background::onMousePress (MouseContext context) {
@@ -137,6 +146,6 @@ WindowCloseBtn::WindowCloseBtn (double x, double y, double w, double h, Window* 
     wclose_btn_args (win_)
     {}
 
-void WindowCloseBtn::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-    rt.DrawRect (GetBounds(), Color(255, 0, 0), to_draw);
+void WindowCloseBtn::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
+    rt.DrawRect_rs (GetBounds(), Color(255, 0, 0), to_draw);
 }
