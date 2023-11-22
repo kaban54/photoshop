@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 
 template <typename T>
@@ -18,7 +19,9 @@ class MyVector {
 
     explicit MyVector();
 
-    explicit MyVector (size_t size_, const T& val = T());
+    explicit MyVector(size_t size_, const T& val = T());
+
+    explicit MyVector(const std::vector<T>& vec);
 
     ~MyVector();
 
@@ -88,6 +91,16 @@ MyVector<T>::MyVector (size_t size_, const T& val):
         assert (data != nullptr);
 
         for (size_t i = 0; i < size; i++) data[i] = val;
+    }
+
+template <typename T>
+MyVector<T>::MyVector (const std::vector<T>& vec):
+    size (vec.size()),
+    capacity (vec.size())
+    {
+        data = (T*) calloc (size, sizeof(data[0]));
+        assert (data != nullptr);
+        memcpy (data, vec.data(), size * sizeof(T));
     }
 
 template <typename T>

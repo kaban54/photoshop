@@ -4,53 +4,9 @@
 #include "events.h"
 #include "rendertarget.h"
 #include "widget.h"
+#include "tool.h"
 
 namespace plugin {
-    enum class InterfaceType {
-        Tool,
-        Filter
-    };
-
-    struct Interface {
-        virtual Array<const char *> getParamNames() = 0;
-        
-        // в том же порядке, что getParamNames 
-        virtual Array<double> getParams() = 0;
-        virtual void setParams(Array<double> params) = 0;
-    };
-
-    struct Plugin {
-        /* где-то тут лежит App*, но это дело автора плагина */
-        uint64_t id;
-        const char *name;
-        InterfaceType type;
-
-        virtual Interface *getInterface() = 0;
-        virtual ~Plugin() = 0;
-    };
-
-    struct ToolI: public Interface {
-        virtual const Texture *getIcon() = 0;
-
-        virtual void paintOnPress(RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
-        virtual void paintOnRelease(RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
-        virtual void paintOnMove(RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
-        virtual void disable(RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
-    };
-
-    struct ToolManagerI {
-        virtual void setColor(Color color) = 0;
-        virtual void setTool(ToolI *tool) = 0;
-
-        virtual ToolI *getTool() = 0;
-        virtual Color  getColor() = 0;
-
-        virtual void paintOnMove(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void paintOnPress(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void paintOnRelease(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void disableTool(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-    };
-
     struct FilterI: public Interface {
         virtual void apply(RenderTargetI *data) = 0;
     };
