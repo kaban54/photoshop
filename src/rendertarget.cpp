@@ -124,6 +124,15 @@ void RenderTarget::Fill(Color col) {
     screen.display();
 }
 
+Vec2 RenderTarget::GetTxtSize (const char* str, size_t char_size, size_t len) const {
+    char substr[len + 1] = "";
+    strncpy(substr, str, len);
+    substr[len] = '\0';
+    sf::Text txt (substr, *font, char_size);
+    sf::FloatRect bounds = txt.getGlobalBounds();
+    return Vec2(bounds.width, bounds.height);
+}
+
 void RenderTarget::DrawRect_rs (const Rect& rect, Color col, const RegionSet* to_draw) {
     sf::RectangleShape rectshape;
     rectshape.setFillColor (sf::Color (col.r, col.g, col.b));

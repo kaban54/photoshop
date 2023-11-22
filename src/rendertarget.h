@@ -88,6 +88,8 @@ class RenderTarget : public RenderTargetI {
 
     void Fill(Color col);
 
+    Vec2 GetTxtSize (const char* str, size_t char_size, size_t len) const;
+
     void DrawRect_rs (const Rect& rect, Color col, const RegionSet* to_draw);
 
     void DrawText_rs (Vec2 pos, const char *content, uint16_t char_size, Color col, const RegionSet* to_draw);

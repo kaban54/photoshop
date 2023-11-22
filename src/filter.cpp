@@ -1,17 +1,20 @@
 #include "filter.h"
 
-extern Font GLOBAL_FONT;
+TestFilter::TestFilter () {
+    params[0] = 0;
+}
 
-void TestFilter::Apply (RenderTarget &rt) const {
+const char* const TestFilter::PARAM_NAMES[] = {"test param"};
+
+void TestFilter::apply (RenderTargetI *data) {
     
-    std::cout << "Applying TestFilter: param = " << test_param << "\n";
+    std::cout << "Applying TestFilter: param = " << params[0] << "\n";
 
-    Image img;
-    rt.GetImg(img);
+    Texture* img = data -> getTexture();
 
-    Color* pixels = img.GetPixels();
-    unsigned int w = img.GetWidth();
-    unsigned int h = img.GetHeight();
+    Color* pixels = img -> pixels;
+    unsigned int w = img -> width;
+    unsigned int h = img -> height;
 
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
@@ -20,15 +23,27 @@ void TestFilter::Apply (RenderTarget &rt) const {
         }
     }
 
-    rt.DrawImg(img, Vec(0, 0));
+    data -> drawTexture(Vec2(0, 0), Vec2(w, h), img);
+    delete img;
 }
 
-void TestFilter::SetParams (const std::vector<double>& params) {
-    assert (params.size == 1);
-    test_param = params[0];
+Array<const char *> TestFilter::getParamNames() {
+    MyVector<const char *> ret (NUM_OF_PARAMS);
+    for (size_t i = 0; i < NUM_OF_PARAMS; i++) ret[i] = PARAM_NAMES[i];
+    return Array<const char *> (ret);
+}
+
+Array<double> TestFilter::getParams() {
+    return Array<double> (NUM_OF_PARAMS, params);
+}
+
+void TestFilter::setParams(Array<double> new_params) {
+    assert(new_params.size == NUM_OF_PARAMS);
+    params[0] = new_params.data[0];
 }
 
 
+/*
 void ClearFilter::Apply (RenderTarget &rt) const {
     Image img;
     rt.GetImg(img);
@@ -66,55 +81,65 @@ void ClearFilter::SetParams (const std::vector<double>& params) {
 
 std::vector<const char*> ClearFilter::GetParamNames() const {
     return std::vector<const char*> {"Red", "Green", "Blue"};
-}
+}*/
 
 
 FilterManager::FilterManager ():
-    current (nullptr),
-    active (false)
-    {}
+    filter (nullptr),
+    rt (nullptr) {}
 
-void FilterManager::Apply(RenderTarget& rt) {
-    assert(current != nullptr);
-    current -> Apply (rt);
-    active = false;
+void FilterManager::setRenderTarget(RenderTargetI *target) {
+    rt = target;
 }
+
+void FilterManager::setFilter(FilterI *filt) {
+    filter = filt;
+}
+
+void FilterManager::applyFilter() {
+    assert(filter != nullptr);
+    if (rt == nullptr) return;
+    filter -> apply(rt);
+}
+
 
 //-----------------------------------------------------------------------------------------------------------
 
 SetFilterOkBtn::SetFilterOkBtn (double x, double y, double w, double h, SetFilterController* sfc_):
-    TxtButton (x, y, w, h, nullptr, nullptr, Text ("OK", GLOBAL_FONT, 30)),
+    TxtButton (x, y, w, h, nullptr, nullptr, "OK", 30),
     sfc (sfc_)
     {}
 
-void SetFilterOkBtn::MousePress (const MouseState& mstate) {
-    if (state == BTN_DISABLED) return;
+bool SetFilterOkBtn::onMousePress (MouseContext context) {
+    if (state == BTN_DISABLED) return false;
 
-    if (MouseOnWidget (mstate.pos)) {
+    if (MouseOnWidget (context.position)) {
         state = BTN_PRESSED;
         sfc -> OkBtnPress();
     }
+    return false;
 }
 
-SetFilterController::SetFilterController (FilterManager* fm, Filter* filt, EventManager* ev_man_, Widget* parent_wid_):
+SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, EventManager* ev_man_, Widget* parent_wid_):
     filter_man (fm),
     filter (filt),
     ev_man (ev_man_),
     parent_wid (parent_wid_),
     editboxes ()
     {
-        mw = new ModalWindow (150, 150, 400, 100 * (filter -> num_of_params) + 125, ev_man);
-        mw -> AddSubWidget (new SetFilterOkBtn (100, 100 * (filter -> num_of_params) + 50, 200, 50, this));
+        Array<const char*> param_names = filter -> getParamNames();
+        num_of_params = param_names.size;
 
-        std::vector<const char*> param_names = filter -> GetParamNames();
+        mw = new ModalWindow (150, 150, 400, 100 * (num_of_params) + 125, ev_man);
+        mw -> registerSubWidget (new SetFilterOkBtn (100, 100 * (num_of_params) + 50, 200, 50, this));
 
-        for (unsigned int i = 0; i < filter -> num_of_params; i++) {
-            editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, GLOBAL_FONT, 30));
-            mw -> AddSubWidget (editboxes.back());
+        for (unsigned int i = 0; i < num_of_params; i++) {
+            editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, 30));
+            mw -> registerSubWidget (editboxes.back());
             //mw -> AddSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names[i], GLOBAL_FONT, 30));
         }
 
-        parent_wid -> AddSubWidget (mw);
+        parent_wid -> registerSubWidget (mw);
     }
 
 SetFilterController::~SetFilterController() {
@@ -122,28 +147,28 @@ SetFilterController::~SetFilterController() {
 }
 
 void SetFilterController::OkBtnPress() {
-    std::vector<double> params;
-    for (int i = 0; i < filter -> num_of_params; i++) {
-        params.push_back(editboxes[i] -> TextToDouble());
+    MyVector<double> params;
+    for (int i = 0; i < num_of_params; i++) {
+        params.PushBack(editboxes[i] -> TextToDouble());
     }
-    filter -> SetParams (params);
-    filter_man -> SetFilter (filter);
-    filter_man -> Activate();
+    filter -> setParams (Array(params));
+    filter_man -> setFilter (filter);
+    filter_man -> applyFilter();
     delete this;
 }
 
 
 void filter_btn_action (BtnArgs* filter_btn_args) {
     FilterManager* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
-    Filter*        filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
+    FilterI*       filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
     EventManager*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
     Widget*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
 
     new SetFilterController (filter_man, filter, ev_man, parent_wid);
 }
 
-FilterBtn::FilterBtn (double x, double y, double w, double h, const Text& txt_,
-                      FilterManager* fm, Filter* filter_, EventManager* ev_man_, Widget* parent_wid_):
-    TxtButton (x, y, w, h, filter_btn_action, &filter_btn_args, txt_),
+FilterBtn::FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
+                      FilterManager* fm, FilterI* filter_, EventManager* ev_man_, Widget* parent_wid_):
+    TxtButton (x, y, w, h, filter_btn_action, &filter_btn_args, str, char_size_),
     filter_btn_args (fm, filter_, ev_man_, parent_wid_)
     {}

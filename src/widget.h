@@ -38,7 +38,7 @@ namespace plugin {
         virtual bool getAvailable() = 0;
         virtual void setAvailable(bool) = 0;
 
-        virtual void render(RenderTargetI* ) = 0;
+        virtual void render(RenderTargetI* rt) = 0;
         virtual void recalcRegion() = 0;
 
         virtual ~WidgetI() {};
