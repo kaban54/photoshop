@@ -150,5 +150,7 @@ bool EventLogger::onKeyboardRelease (KeyboardContext context) {
 }
 
 bool EventLogger::onClock (uint64_t delta) {
+    fprintf (logfile, "delta = %lu\n", delta);
+    fflush (logfile);
     return false;
 }

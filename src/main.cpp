@@ -36,8 +36,12 @@ int main() {
     Background* bg = new Background (W, H);
     bg -> SetRenderTarget (&rt);
     Window* mainwin = new Window (100, 100, 1920, 1080);
+    
+    std::cerr << "oks1\n";
     SetWidgets (*mainwin, event_man);
+    std::cerr << "oks2\n";
     bg -> registerSubWidget(mainwin);
+    std::cerr << "oks3\n";
 
     event_man.registerObject(bg);
     Vec2 mousepos (0, 0);
@@ -65,6 +69,7 @@ int main() {
             }
 
             if (event.type == sf::Event::MouseMoved) {
+                std::cerr << "a";
                 mousepos.x = event.mouseMove.x;
                 mousepos.y = event.mouseMove.y;
                 event_man.onMouseMove (MouseContext(mousepos, MouseButton::Left));
@@ -94,6 +99,7 @@ int main() {
         sfwindow.clear(sf::Color (192, 192, 192));
         rt.SfDisplay(sfwindow);
         sfwindow.display();
+        std::cerr << "!\n";
     }
 
     delete bg;

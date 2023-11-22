@@ -37,6 +37,7 @@ void Widget::registerSubWidget(WidgetI* wid) {
     wid -> move(getPos());
     wid -> setParent(this);
     subwidgets.AddWidget (wid);
+    if (!wid -> isExtern()) dynamic_cast<Widget*>(wid) -> SetRenderTarget(rt);
     UpdateAllRegsets();
 }
 

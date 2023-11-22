@@ -28,7 +28,7 @@ void Window::render(RenderTargetI* rt) {
 }
 
 bool Window::onMousePress (MouseContext context) {
-    if (!getAvailable()) return false;;
+    if (!getAvailable()) return false;
     if (MouseOnWidget(context.position)) {
         if (Rect(getPos().x, getPos().y, getSize().x, 20).Contains(context.position) &&
             context.button == MouseButton::Left) {
@@ -43,7 +43,7 @@ bool Window::onMousePress (MouseContext context) {
 }
 
 bool Window::onMouseRelease (MouseContext context) {
-    if (!getAvailable()) return false;;
+    if (!getAvailable()) return false;
     if (context.button == MouseButton::Left && is_moving) {
         is_moving = false;
         hold_pos = Vec2 (0, 0);
@@ -53,7 +53,7 @@ bool Window::onMouseRelease (MouseContext context) {
 }
 
 bool Window::onMouseMove (MouseContext context) {
-    if (!getAvailable()) return false;;
+    if (!getAvailable()) return false;
     if (is_moving) {
         Vec2 mousepos = context.position;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
