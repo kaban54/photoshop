@@ -132,19 +132,26 @@ void SetWidgets (Window& mainwin, EventManager& ev_man) {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, &tm, Color(255, 255, 255)));
 
+    static FilterManager fm;
+    static TestFilter test_filter;
+
+    VerticalMenu* filters_vm = new VerticalMenu (405, 265);
+    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, "test filter", 30, &fm, &test_filter, &ev_man, &mainwin));
 
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> registerSubWidget (tools_vm);
     vm -> registerSubWidget (cols_vm);
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  "tools", 30, tools_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors", 30,  cols_vm));
+    vm -> registerSubWidget (filters_vm);
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  "tools" , 30,   tools_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors" , 30,    cols_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
     mainwin.registerSubWidget (vm);
     mainwin.registerSubWidget (new MenuBtn (205, 25, 200, 80, "edit", 30, vm));
 
     Window* win = new Window (200, 200, 610, 630);
-    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.registerSubWidget (win);
     win = new Window (1000, 100, 610, 630);
-    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm));
+    win -> registerSubWidget (new Canvas (5, 25, 600, 600, &tm, &fm));
     mainwin.registerSubWidget (win);
 }

@@ -3,24 +3,25 @@
 
 #include "widget.h"
 #include "tool.h"
+#include "filter.h"
 
 class Canvas : public Widget {
     bool drawing;
     ToolManagerI* tool_man;
-    // FilterManager* filter_man;
+    FilterManagerI* filter_man;
     RenderTarget data;
     RenderTarget tmp;
 
     public:
 
-    explicit Canvas (double x, double y, double w, double h, ToolManagerI* tm);
+    explicit Canvas (double x, double y, double w, double h, ToolManagerI* tm, FilterManagerI* fm);
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
     virtual bool onMouseMove    (MouseContext context) override;
-    virtual bool onKeyboardPress   (KeyboardContext context) override {return false;};
-    virtual bool onKeyboardRelease (KeyboardContext context) override {return false;};
-    virtual bool onClock (uint64_t delta) override {return false;};
+    virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
+    virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
+    virtual bool onClock (uint64_t delta) override;
 
     virtual void render(RenderTargetI* rt) override;
 

@@ -100,6 +100,7 @@ void FilterManager::applyFilter() {
     assert(filter != nullptr);
     if (rt == nullptr) return;
     filter -> apply(rt);
+    rt -> display();
 }
 
 

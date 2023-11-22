@@ -37,7 +37,8 @@ RenderTarget::RenderTarget (uint64_t w, uint64_t h):
     width (w),
     height (h),
     screen (),
-    font ()
+    font (),
+    changed (false)
     {
         screen.create (w, h);
     }
@@ -111,6 +112,7 @@ Texture* RenderTarget::getTexture() {
 }
 
 void RenderTarget::display() {
+    changed = true;
     screen.display();
 }
 

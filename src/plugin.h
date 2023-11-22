@@ -5,18 +5,9 @@
 #include "rendertarget.h"
 #include "widget.h"
 #include "tool.h"
+#include "filter.h"
 
 namespace plugin {
-    struct FilterI: public Interface {
-        virtual void apply(RenderTargetI *data) = 0;
-    };
-
-    struct FilterManagerI {
-        virtual void setRenderTarget(RenderTargetI *target) = 0;
-        virtual void setFilter(FilterI *filter) = 0;
-        virtual void applyFilter() = 0;
-    };
-
     struct GuiI {
         virtual Vec2 getSize() = 0; // размер доступной для рисования площади (которую можно запросить)
 

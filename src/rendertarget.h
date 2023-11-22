@@ -59,8 +59,8 @@ class RenderTarget : public RenderTargetI {
     sf::RenderTexture screen;
     sf::Font* font;
     Texture* texture;
-
     public:
+    bool changed;
 
     explicit RenderTarget (uint64_t w, uint64_t h);
 
