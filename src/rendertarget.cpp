@@ -70,7 +70,11 @@ void RenderTarget::drawTexture(Vec2 pos, Vec2 size, const Texture *texture) {
 }
 
 void RenderTarget::drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) {
-
+    sf::Text text (content, *font, char_size);
+    text.setPosition (pos.x, pos.y);
+    text.setFillColor (color.GetSfColor());
+    screen.draw (text);
+    screen.display();
 }
 
 Texture* RenderTarget::getTexture() {
@@ -147,7 +151,7 @@ void RenderTarget::DrawText_rs (Vec2 pos, const char *content, uint16_t char_siz
     sf::Sprite sprite;
     sprite.setTexture (sfrt.getTexture());
 
-    Rect txtrect (Vec2(), Vec2(bounds.width, bounds.height));
+    Rect txtrect (bounds.left, bounds.top, bounds.width, bounds.height);
     txtrect.Move (pos);
 
     RegionSet newregset;
@@ -160,8 +164,8 @@ void RenderTarget::DrawText_rs (Vec2 pos, const char *content, uint16_t char_siz
     while (node != end_of_list) {
         Rect region = node -> val;
 
-        double x = region.x - pos.x;
-        double y = region.y - pos.y;
+        double x = region.x - txtrect.Left();
+        double y = region.y - txtrect.Top();
         double w = region.w;
         double h = region.h;
 
