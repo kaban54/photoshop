@@ -41,7 +41,7 @@ namespace plugin {
         virtual void render(RenderTargetI* rt) = 0;
         virtual void recalcRegion() = 0;
 
-        virtual ~WidgetI() {};
+        virtual ~WidgetI() = default;
     };
 }
 

@@ -17,13 +17,13 @@ namespace plugin {
         InterfaceType type;
 
         virtual Interface *getInterface() = 0;
-        virtual ~Plugin() = 0;
+        virtual ~Plugin() = default;
     };
 
     struct GuiI {
         virtual Vec2 getSize() = 0;
         virtual RenderTargetI* getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) = 0;
-        virtual void createParamWindow(Array<const char *> param_names, Interface * self) = 0;
+        virtual void createParamWindow(Array<const char *> param_names, Interface* self) = 0;
         virtual WidgetI* getRoot() = 0;
     };
 
@@ -32,15 +32,6 @@ namespace plugin {
         EventManagerI *event_manager; 
         ToolManagerI *tool_manager;
         FilterManagerI *filter_manager;
-
-        MyVector<ToolI*> tools;
-        MyVector<FilterI*> filters;
-
-        explicit App (unsigned int w, unsigned int h, EventManagerI* event_man, RenderTarget* rt_);
-
-        ~App();
-
-        void SetWidgets();
     };
 }
 
@@ -63,6 +54,25 @@ struct Gui : public GuiI {
     virtual void createParamWindow(Array<const char *> param_names, Interface * self) override;
 
     virtual WidgetI* getRoot() override;
+};
+
+class MyApp : public App {
+    MyVector<ToolI*> tools;
+    MyVector<FilterI*> filters;
+    MyVector<Plugin*> plugins;
+
+    VerticalMenu* tools_vm;
+    VerticalMenu* filters_vm;
+
+    public:
+
+    explicit MyApp (unsigned int w, unsigned int h, EventManagerI* event_man, RenderTarget* rt_);
+
+    ~MyApp();
+
+    void SetupWidgets();
+
+    void AddPlugin(Plugin* plug);
 };
 
 

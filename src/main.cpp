@@ -3,8 +3,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
-#include "rendertarget.h"
 #include <unistd.h>
+#include <dlfcn.h>
 #include "app.h"
 
 const char* FONT_FILENAME = "fonts/font2.ttf";
@@ -13,6 +13,7 @@ const char* EVENTLOG_FILENAME = "logs/eventlog";
 const int W = 2000;
 const int H = 1200;
 
+typedef plugin::Plugin* (*getInstance_t)(plugin::App *app);
 
 int main() {
     sf::Font fnt;
@@ -29,9 +30,22 @@ int main() {
     sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
-    App app (W, H, &event_man, &rt);
-    app.SetWidgets();
-    
+    MyApp app (W, H, &event_man, &rt);
+    app.SetupWidgets();
+
+
+    void *lib = dlopen("plugins/Lol.so", RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
+	fprintf(stderr, "dll = %p\n", lib);
+
+    if (!lib) {
+        fputs (dlerror(), stderr);
+        return 1;
+    }
+
+    getInstance_t get_inst = (getInstance_t) dlsym (lib, "getInstance");
+    fprintf(stderr, "get = %p\n", get_inst);
+    app.AddPlugin(get_inst(&app));
+
     Vec2 mousepos (0, 0);
     sf::Clock clk;
     uint64_t last_time = 0;

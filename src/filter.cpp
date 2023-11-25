@@ -1,5 +1,7 @@
 #include "filter.h"
 
+//--------------------------------------------------------------------------------------------------
+
 TestFilter::TestFilter () {
     params[0] = 0;
 }
@@ -42,15 +44,23 @@ void TestFilter::setParams(Array<double> new_params) {
     params[0] = new_params.data[0];
 }
 
+//--------------------------------------------------------------------------------------------------
 
-/*
-void ClearFilter::Apply (RenderTarget &rt) const {
-    Image img;
-    rt.GetImg(img);
+ClearFilter::ClearFilter () {
+    params[0] = 255;
+    params[1] = 255;
+    params[2] = 255;
+}
 
-    Color* pixels = img.GetPixels();
-    unsigned int w = img.GetWidth();
-    unsigned int h = img.GetHeight();
+const char* const ClearFilter::PARAM_NAMES[] = {"red", "green", "blue"};
+
+void ClearFilter::apply (RenderTargetI *data) {
+    Texture* img = data -> getTexture();
+
+    Color* pixels = img -> pixels;
+    unsigned int w = img -> width;
+    unsigned int h = img -> height;
+    Color col(params[0], params[1], params[2]);
 
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
@@ -59,29 +69,30 @@ void ClearFilter::Apply (RenderTarget &rt) const {
         }
     }
 
-    rt.DrawImg(img, Vec(0, 0));
+    data -> drawTexture(Vec2(0, 0), Vec2(w, h), img);
+    delete img;
 }
 
-void ClearFilter::SetParams (const std::vector<double>& params) {
-    assert (params.size() == 3);
-    double red   = params[0];
-    double green = params[1];
-    double blue  = params[2];
-
-    if (red < 0) red = 0;
-    else if (red > 255) red = 255;
-    if (green < 0) green = 0;
-    else if (green > 255) green = 255;
-    if (blue < 0) blue = 0;
-    else if (blue > 255) blue = 255;
-
-    col = Color (red, green, blue);
-
+Array<const char *> ClearFilter::getParamNames() {
+    MyVector<const char *> ret (NUM_OF_PARAMS);
+    for (size_t i = 0; i < NUM_OF_PARAMS; i++) ret[i] = PARAM_NAMES[i];
+    return Array<const char *> (ret);
 }
 
-std::vector<const char*> ClearFilter::GetParamNames() const {
-    return std::vector<const char*> {"Red", "Green", "Blue"};
-}*/
+Array<double> ClearFilter::getParams() {
+    return Array<double> (NUM_OF_PARAMS, params);
+}
+
+void ClearFilter::setParams(Array<double> new_params) {
+    assert(new_params.size == NUM_OF_PARAMS);
+    for (size_t i = 0; i < NUM_OF_PARAMS; i++) {
+        params[i] = new_params.data[i];
+        if      (params[i] <   0) params[i] = 0;
+        else if (params[i] > 255) params[i] = 255;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 
 
 FilterManager::FilterManager ():
@@ -165,7 +176,12 @@ void filter_btn_action (BtnArgs* filter_btn_args) {
     EventManagerI*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
     WidgetI*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
 
-    new SetFilterController (filter_man, filter, ev_man, parent_wid);
+    if (filter -> getParamNames().size != 0)
+        new SetFilterController (filter_man, filter, ev_man, parent_wid);
+    else {
+        filter_man -> setFilter (filter);
+        filter_man -> applyFilter();
+    }
 }
 
 FilterBtn::FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,

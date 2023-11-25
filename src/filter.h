@@ -11,6 +11,7 @@
 namespace plugin {
     struct FilterI: public Interface {
         virtual void apply(RenderTargetI *data) = 0;
+        virtual ~FilterI() = default;
     };
 
     struct FilterManagerI {
@@ -54,7 +55,6 @@ class ClearFilter : public FilterI {
     virtual Array<const char *> getParamNames() override;
     virtual Array<double> getParams() override;
     virtual void setParams(Array<double> new_params) override;
-
 };
 
 
@@ -99,7 +99,7 @@ class SetFilterController {
 
     ~SetFilterController();
 
-    void OkBtnPress ();
+    void OkBtnPress();
 };
 
 struct FilterBtnArgs : public BtnArgs {

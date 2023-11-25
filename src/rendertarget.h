@@ -1,37 +1,13 @@
 #ifndef RENDERTARGET_H
 #define RENDERTARGET_H
 
-#include <SFML/Graphics.hpp>
 #include <cinttypes>
 #include <cstring>
 #include "region.h"
 #include "vec2.h"
+#include "texture.h"
 
 namespace plugin {
-    struct Color {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-        uint8_t a;
-
-        explicit Color(uint8_t r_, uint8_t g_, uint8_t b_, uint8_t a_ = 255);
-
-        explicit Color();
-
-        sf::Color GetSfColor() const;
-    };
-
-    struct Texture {
-        uint64_t height;
-        uint64_t width;
-
-        Color *pixels;
-
-        explicit Texture(uint64_t w, uint64_t h, const Color* pix = nullptr);
-
-        ~Texture();
-    };
-
     struct RenderTargetI {
         virtual void setPixel(Vec2 pos, Color color) = 0;
         virtual void drawLine(Vec2 pos, Vec2 point1, Color color) = 0;

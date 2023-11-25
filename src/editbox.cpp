@@ -4,10 +4,10 @@ EditBox::EditBox (double x, double y, double w, double h, size_t char_size_):
     Widget (x, y, w, h),
     txt (),
     char_size (char_size_),
-    editing (false),
     cursor_pos (0),
-    cursor_visible (false),
-    timer (0)
+    timer (0),
+    editing (false),
+    cursor_visible (false)
     {}
 
 
@@ -87,9 +87,9 @@ bool EditBox::onKeyboardPress (KeyboardContext context) {
 bool EditBox::onClock (uint64_t delta) {
     if (!editing) return false;
     timer += delta;
-    timer %= 1000000;
+    timer %= 2000000;
 
-    if (timer < 500000) {
+    if (timer < 1000000) {
         if (cursor_visible) {
             cursor_visible = false;
             DrawCursor_rs (*GetRendertarget(), GetRegset());
