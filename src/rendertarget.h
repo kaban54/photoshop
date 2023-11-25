@@ -6,6 +6,7 @@
 #include "region.h"
 #include "vec2.h"
 #include "texture.h"
+#include <SFML/Graphics.hpp>
 
 namespace plugin {
     struct RenderTargetI {

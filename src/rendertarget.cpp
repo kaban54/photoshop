@@ -23,8 +23,8 @@ void RenderTarget::SfDisplay (sf::RenderWindow& sfwindow) const {
 
 void RenderTarget::drawLine(Vec2 p1, Vec2 p2, Color color) {
     sf::Vertex line[] = {
-        sf::Vertex (sf::Vector2f (p1.x, p1.y), color.GetSfColor()),
-        sf::Vertex (sf::Vector2f (p2.x, p2.y), color.GetSfColor())
+        sf::Vertex (sf::Vector2f (p1.x, p1.y), sf::Color(color.r, color.g, color.b, color.a)),
+        sf::Vertex (sf::Vector2f (p2.x, p2.y), sf::Color(color.r, color.g, color.b, color.a))
     };
     screen.draw (line, 2, sf::Lines);
     screen.display();
@@ -32,7 +32,7 @@ void RenderTarget::drawLine(Vec2 p1, Vec2 p2, Color color) {
 
 void RenderTarget::drawRect(Vec2 pos, Vec2 size, Color color) {
     sf::RectangleShape rectshape;
-    rectshape.setFillColor (color.GetSfColor());
+    rectshape.setFillColor (sf::Color(color.r, color.g, color.b, color.a));
 
     rectshape.setSize (sf::Vector2f(size.x, size.y));
     rectshape.setPosition (pos.x, pos.y);
@@ -42,7 +42,7 @@ void RenderTarget::drawRect(Vec2 pos, Vec2 size, Color color) {
 
 void RenderTarget::setPixel(Vec2 pos, Color color) {
     sf::Vertex pixel[] = {
-        sf::Vertex (sf::Vector2f(pos.x, pos.y), color.GetSfColor())
+        sf::Vertex (sf::Vector2f(pos.x, pos.y), sf::Color(color.r, color.g, color.b, color.a))
     };
     screen.draw (pixel, 1, sf::Points);
     screen.display();
@@ -52,7 +52,7 @@ void RenderTarget::drawEllipse(Vec2 pos, Vec2 size, Color color) {
     sf::CircleShape ellipse (size.x / 2);
     ellipse.setPosition (pos.x, pos.y);
     ellipse.setScale (1, size.y / size.x);
-    ellipse.setFillColor (color.GetSfColor());
+    ellipse.setFillColor (sf::Color(color.r, color.g, color.b, color.a));
     screen.draw (ellipse);
     screen.display();
 }
@@ -72,7 +72,7 @@ void RenderTarget::drawTexture(Vec2 pos, Vec2 size, const Texture *texture) {
 void RenderTarget::drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) {
     sf::Text text (content, *font, char_size);
     text.setPosition (pos.x, pos.y);
-    text.setFillColor (color.GetSfColor());
+    text.setFillColor (sf::Color(color.r, color.g, color.b, color.a));
     screen.draw (text);
     screen.display();
 }
@@ -93,7 +93,7 @@ void RenderTarget::clear() {
 }
 
 void RenderTarget::Fill(Color col) {
-    screen.clear(col.GetSfColor());
+    screen.clear(sf::Color(col.r, col.g, col.b, col.a));
     screen.display();
 }
 

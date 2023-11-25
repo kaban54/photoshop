@@ -3,7 +3,7 @@
 
 #include <cinttypes>
 #include <cstring>
-#include <SFML/Graphics.hpp>
+// #include <SFML/Graphics.hpp>
 
 namespace plugin {
     struct Color {
@@ -16,12 +16,12 @@ namespace plugin {
 
         explicit Color();
 
-        sf::Color GetSfColor() const;
+        // sf::Color GetSfColor() const;
     };
 
     struct Texture {
-        uint64_t width;
         uint64_t height;
+        uint64_t width;
 
         Color *pixels;
 

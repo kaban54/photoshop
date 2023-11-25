@@ -2,16 +2,16 @@
 
 //--------------------------------------------------------------------------------------------------
 
-TestFilter::TestFilter () {
+InvFilter::InvFilter () {
     params[0] = 0;
-    for (size_t i = 0; i < NUM_OF_PARAMS; i++) p_names.PushBack(PARAM_NAMES[i]);
+    // for (size_t i = 0; i < NUM_OF_PARAMS; i++) p_names.PushBack(PARAM_NAMES[i]);
 }
 
-const char* const TestFilter::PARAM_NAMES[] = {"test param"};
+// const char* const InvFilter::PARAM_NAMES[] = {""};
 
-void TestFilter::apply (RenderTargetI *data) {
+void InvFilter::apply (RenderTargetI *data) {
     
-    std::cout << "Applying TestFilter: param = " << params[0] << "\n";
+    // std::cout << "Applying InvFilter: param = " << params[0] << "\n";
 
     Texture* img = data -> getTexture();
 
@@ -30,17 +30,16 @@ void TestFilter::apply (RenderTargetI *data) {
     delete img;
 }
 
-Array<const char *> TestFilter::getParamNames() {
-    return Array<const char *> (p_names);
+Array<const char *> InvFilter::getParamNames() {
+    return Array<const char *> (NUM_OF_PARAMS, nullptr);
 }
 
-Array<double> TestFilter::getParams() {
-    return Array<double> (NUM_OF_PARAMS, params);
+Array<double> InvFilter::getParams() {
+    return Array<double> (NUM_OF_PARAMS, nullptr);
 }
 
-void TestFilter::setParams(Array<double> new_params) {
+void InvFilter::setParams(Array<double> new_params) {
     assert(new_params.size == NUM_OF_PARAMS);
-    params[0] = new_params.data[0];
 }
 
 //--------------------------------------------------------------------------------------------------

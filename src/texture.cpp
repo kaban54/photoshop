@@ -13,13 +13,13 @@ namespace plugin {
         b (0),
         a (0) {}
 
-    sf::Color Color::GetSfColor() const {
-        return sf::Color(r, g, b, a);
-    }
+    // sf::Color Color::GetSfColor() const {
+    //     return sf::Color(r, g, b, a);
+    // }
 
     Texture::Texture(uint64_t w, uint64_t h, const Color* pix):
-        width (w),
         height (h),
+        width (w),
         pixels (new Color[w * h])
         {
             if (pix != nullptr) {

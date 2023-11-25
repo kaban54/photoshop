@@ -44,20 +44,25 @@ MyApp::~MyApp() {
     delete filter_manager;
 
     
-    for (size_t i = 0; i < tools  .GetSize(); i++) delete tools  [i];
-    for (size_t i = 0; i < filters.GetSize(); i++) delete filters[i];
-    for (size_t i = 0; i < plugins.GetSize(); i++) delete plugins[i];
+    for (size_t i = 0; i < tools   .GetSize(); i++) delete tools   [i];
+    for (size_t i = 0; i < filters .GetSize(); i++) delete filters [i];
+    for (size_t i = 0; i < textures.GetSize(); i++) delete textures[i];
+    // for (size_t i = 0; i < plugins.GetSize(); i++) delete plugins[i];
 }
 
 void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
 
-    tools.PushBack(new Brush(25));
+    Brush* brush = new Brush(25);
+    brush -> SetIcon(LoadFromFile("textures/brush_icon.png"));
+
+    tools.PushBack(brush);
     tool_manager -> setTool(tools[0]);
     tool_manager -> setColor(Color(255, 0, 128));
 
     tools_vm = new VerticalMenu (405, 105);
     tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
+    // mainwin -> registerSubWidget (new ToolBtn (10, 200, 100, 100, ));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 185);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 0, 0)));
@@ -69,12 +74,12 @@ void MyApp::SetupWidgets() {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 255, 255)));
     
-    filters.PushBack (new TestFilter);
+    filters.PushBack (new InvFilter);
     filters.PushBack (new ClearFilter);
     filters_vm = new VerticalMenu (405, 265);
-    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, "test filter", 30,
+    filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "inversion", 30,
                                             filter_manager, filters[0], event_manager, mainwin));
-    filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, "clear filter", 30,
+    filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "clear", 30,
                                             filter_manager, filters[1], event_manager, mainwin));
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> registerSubWidget (tools_vm);
@@ -102,7 +107,14 @@ void MyApp::AddPlugin(Plugin* plug) {
     }
     else if (plug -> type == InterfaceType::Filter) {
         FilterI* filter = dynamic_cast<FilterI*>(plug -> getInterface());
-        filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, plug -> name, 30, filter_manager,
+        filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, plug -> name, 30, filter_manager,
                                                 filter, event_manager, gui -> getRoot()));
     }
+}
+
+plugin::Texture* LoadFromFile(const char* filename) {
+    sf::Texture sft;
+    sft.loadFromFile("textures/brush_icon.png");
+    sf::Image sfimg = sft.copyToImage();
+    return new Texture (sfimg.getSize().x, sfimg.getSize().y, (Color*)sfimg.getPixelsPtr());
 }

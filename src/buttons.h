@@ -36,17 +36,14 @@ class Button : public Widget {
 };
 
 
-// class ImgButton : public Button {
-//     public:
+class ImgButton : public Button {
+    Texture* texture;
+    public:
 
-//     Texture textures[4];
+    explicit ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, Texture* texture_);
 
-//     explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_);
-
-//     void SetTextures (const Texture* textures_);
-
-//     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-// };
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+};
 
 
 class TxtButton : public Button {

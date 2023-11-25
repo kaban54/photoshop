@@ -53,32 +53,17 @@ void Button::render(RenderTargetI*) {
 }
 
 
-// ImgButton::ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_):
-//     Button (x, y, w, h)
-//     {
-//         if (textures_ != nullptr) {
-//             textures[0] = textures_[0];
-//             textures[1] = textures_[1];
-//             textures[2] = textures_[2];
-//             textures[3] = textures_[3];
-//         }
-//     }
+ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, Texture* texture_):
+    Button (x, y, w, h, action_, action_args_),
+    texture (texture_)
+    {}
 
-// void ImgButton::SetTextures (const Texture* textures_) {
-//     assert (textures != nullptr);
-//     textures[0] = textures_[0];
-//     textures[1] = textures_[1];
-//     textures[2] = textures_[2];
-//     textures[3] = textures_[3];
-// }
 
-// void ImgButton::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-//     rt.DrawTexture (textures[state], GetPos(), GetSize(), to_draw);
+void ImgButton::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
+    DrawButton (rt, GetBounds(), state, to_draw);
+    rt.DrawTexture_rs (GetBounds().GetPos() + Vec2(8, 8), GetBounds().GetSize() - Vec2(16, 16), texture, to_draw);
+}
 
-//     #ifdef REGDEBUG
-//     rt.DrawRegset(*to_draw, Color(0, rand() % 128 + 128, 0));
-//     #endif
-// }
 
 
 TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_,

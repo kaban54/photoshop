@@ -15,7 +15,9 @@ class BlackAndWhiteFilter : public FilterI {
     virtual void apply(RenderTargetI *data) override;
 
     virtual Array<const char *> getParamNames() override;
+
     virtual Array<double> getParams() override;
+
     virtual void setParams(Array<double> new_params) override;
 };
 

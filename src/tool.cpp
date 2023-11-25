@@ -7,7 +7,7 @@ Tool::Tool (Texture* icon_):
     icon (icon_) {}
 
 
-inline void Tool::SetIcon (Texture* icon_) {
+void Tool::SetIcon (Texture* icon_) {
     icon = icon_;
 }
 

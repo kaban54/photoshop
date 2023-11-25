@@ -60,6 +60,7 @@ class MyApp : public App {
     MyVector<ToolI*> tools;
     MyVector<FilterI*> filters;
     MyVector<Plugin*> plugins;
+    MyVector<Texture*> textures;
 
     VerticalMenu* tools_vm;
     VerticalMenu* filters_vm;
@@ -75,6 +76,8 @@ class MyApp : public App {
     void AddPlugin(Plugin* plug);
 };
 
+
+plugin::Texture* LoadFromFile(const char* filename);
 
 extern "C" plugin::Plugin* getInstance(plugin::App *app);
 

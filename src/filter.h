@@ -23,16 +23,14 @@ namespace plugin {
 
 using namespace plugin;
 
-class TestFilter : public FilterI {
-    static const size_t NUM_OF_PARAMS = 1;
-    static const char* const PARAM_NAMES[];
-    MyVector<const char*> p_names;
+class InvFilter : public FilterI {
+    static const size_t NUM_OF_PARAMS = 0;
 
     double params[1];
 
     public:
 
-    explicit TestFilter();
+    explicit InvFilter();
 
     virtual void apply(RenderTargetI *data) override;
 

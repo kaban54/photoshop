@@ -34,16 +34,16 @@ int main() {
     app.SetupWidgets();
 
 
-    void *lib = dlopen("plugins/monoParam.so", RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
-	fprintf(stderr, "dll = %p\n", lib);
+    void *lib1 = dlopen("plugins/ilya.so", RTLD_NOW | RTLD_LOCAL);
+    getInstance_t get_inst = (getInstance_t) dlsym (lib1, "getInstance");
+    app.AddPlugin(get_inst(&app));
 
-    if (!lib) {
-        fputs (dlerror(), stderr);
-        return 1;
-    }
+    void *lib2 = dlopen("plugins/monoParam.so", RTLD_NOW | RTLD_LOCAL);
+    get_inst = (getInstance_t) dlsym (lib2, "getInstance");
+    app.AddPlugin(get_inst(&app));
 
-    getInstance_t get_inst = (getInstance_t) dlsym (lib, "getInstance");
-    fprintf(stderr, "get = %p\n", get_inst);
+    void *lib3 = dlopen("plugins/plug1.so", RTLD_NOW | RTLD_LOCAL);
+    get_inst = (getInstance_t) dlsym (lib3, "getInstance");
     app.AddPlugin(get_inst(&app));
 
     Vec2 mousepos (0, 0);
@@ -100,6 +100,10 @@ int main() {
         rt.SfDisplay(sfwindow);
         sfwindow.display();
     }
+
+    dlclose(lib1);
+    dlclose(lib2);
+    dlclose(lib3);
 
     fclose (eventlogfile);
     return 0;
