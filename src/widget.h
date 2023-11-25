@@ -167,9 +167,12 @@ class Widget : public WidgetI {
 class TxtWidget : public Widget{
     const char* txt;
     size_t char_size;
+    Color fill_col;
+    Color bg_col;
     public:
 
-    TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_);
+    TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_,
+               Color fill_col_, Color bg_color_);
 
     virtual void render (RenderTargetI* rt) override;
 

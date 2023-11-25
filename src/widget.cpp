@@ -336,10 +336,13 @@ void WidgetManager::GetMaxRegset (RegionSet* dst) const {
 }
 
 
-TxtWidget::TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_):
+TxtWidget::TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_,
+                      Color fill_col_, Color bg_col_):
     Widget (x, y, w, h),
     txt (txt_),
-    char_size (char_size_)
+    char_size (char_size_),
+    fill_col (fill_col_),
+    bg_col (bg_col_)
     {}
 
 void TxtWidget::render (RenderTargetI* rt) {
@@ -347,6 +350,6 @@ void TxtWidget::render (RenderTargetI* rt) {
 }
 
 void TxtWidget::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
-    rt.DrawRect_rs(Rect(getPos(), getPos() + getSize()), Color(255, 0, 255), to_draw);
-    rt.DrawText_rs(getPos(), txt, char_size, Color(0, 0, 0), to_draw);
+    rt.DrawRect_rs(Rect(getPos(), getPos() + getSize()), bg_col, to_draw);
+    rt.DrawText_rs(getPos(), txt, char_size, fill_col, to_draw);
 }

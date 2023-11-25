@@ -146,8 +146,8 @@ SetFilterController::SetFilterController (FilterManagerI* fm, FilterI* filt, Eve
         for (unsigned int i = 0; i < num_of_params; i++) {
             editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, 30));
             mw -> registerSubWidget (editboxes.back());
-            mw -> registerSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names.data[i], 30));
-            std::cerr << param_names.data[i] << "\n";
+            mw -> registerSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names.data[i], 30,
+                                                    Color(0, 0, 0), Color(128, 128, 128)));
         }
 
         parent_wid -> registerSubWidget (mw);
