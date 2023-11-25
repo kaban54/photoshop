@@ -164,13 +164,23 @@ class Widget : public WidgetI {
     virtual uint8_t getPriority() const override {return 0;}
 };
 
-// class TxtWidget : public Widget{
-//     public:
-//     Text txt;
+class TxtWidget : public Widget{
+    const char* txt;
+    size_t char_size;
+    public:
 
-//     TxtWidget (double x, double y, double w, double h, const std::string& str_, const Font& fnt_, size_t char_size_);
+    TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_);
 
-//     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-// };
+    virtual void render (RenderTargetI* rt) override;
+
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+
+    virtual bool onMousePress   (MouseContext context) override {return false;}
+    virtual bool onMouseRelease (MouseContext context) override {return false;}
+    virtual bool onMouseMove    (MouseContext context) override {return false;}
+    virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
+    virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
+    virtual bool onClock (uint64_t delta) override {return false;}
+};
 
 #endif

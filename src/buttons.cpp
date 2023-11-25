@@ -2,9 +2,9 @@
 
 Button::Button (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_):
     Widget (x, y, w, h),
-    state (BTN_NORMAL),
     action (action_),
-    action_args (action_args_)
+    action_args (action_args_),
+    state (BTN_NORMAL)
     {}
 
 bool Button::onMousePress (MouseContext context) {
@@ -95,7 +95,10 @@ void TxtButton::SetText (const char *str, uint16_t char_size_) {
 
 void TxtButton::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     DrawButton (rt, GetBounds(), state, to_draw);
-    rt.DrawText_rs (getPos() + Vec2 (40, 18), txt, char_size, Color (0, 0, 0), to_draw);
+
+    // rt.drawRect (getPos() + Vec2 (40, (getSize().y - char_size) / 2), Vec2(100, char_size), Color(0, 255, 0));
+
+    rt.DrawText_rs (getPos() + Vec2 (40, (getSize().y - char_size) / 2 - 8), txt, char_size, Color (0, 0, 0), to_draw);
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 0, 128));

@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS += -DNDEBUG -fPIC -Wall
+CFLAGS += -fPIC -Wall
 LDFLAGS += -lstdc++
 SFMLFLAGS += -lsfml-graphics -lsfml-window -lsfml-system
 OBJDIR = obj/

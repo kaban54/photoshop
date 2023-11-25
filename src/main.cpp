@@ -34,7 +34,7 @@ int main() {
     app.SetupWidgets();
 
 
-    void *lib = dlopen("plugins/Lol.so", RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
+    void *lib = dlopen("plugins/monoParam.so", RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
 	fprintf(stderr, "dll = %p\n", lib);
 
     if (!lib) {

@@ -80,8 +80,10 @@ void RegionSet::MergeRegions() {
                 continue;
             }
             if (r2.Contains(r1)) {
+                ListNode<Rect>* to_remove = node1;
                 node1 = node1 -> prev;
-                regions.Remove (node1 -> next);
+                if (node1 == regions.EndOfList()) node1 = nullptr;
+                regions.Remove (to_remove);
                 break;
             }
             if (HaveCommonSide(r1, r2)) {

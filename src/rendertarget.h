@@ -72,7 +72,9 @@ class RenderTarget : public RenderTargetI {
 
     void DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, const RegionSet* to_draw);
 
-    void DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* regset);
+    void DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* to_draw);
+
+    void DrawLine_rs (Vec2 p1, Vec2 p2, double thikness, Color col, const RegionSet* to_draw);
 };
 
 #endif

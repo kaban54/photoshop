@@ -8,18 +8,18 @@ WidgetShell::WidgetShell(WidgetI* wid):
 
 Widget::Widget():
     bounds (),
-    parent (nullptr),
     subwidgets (),
     regset (),
+    parent (nullptr),
     rt (nullptr),
     visible (true)
     {}
 
 Widget::Widget (double x, double y, double w, double h):
     bounds (x, y, w, h),
-    parent (nullptr),
     subwidgets (),
     regset (),
+    parent (nullptr),
     rt (nullptr),
     visible (true)
     {}
@@ -336,12 +336,17 @@ void WidgetManager::GetMaxRegset (RegionSet* dst) const {
 }
 
 
-// TxtWidget::TxtWidget (double x, double y, double w, double h,
-//                       const std::string& str_, const Font& fnt_, size_t char_size_):
-//     Widget (x, y, w, h),
-//     txt (str_, fnt_, char_size_)
-//     {}
+TxtWidget::TxtWidget (double x, double y, double w, double h, const char* txt_, size_t char_size_):
+    Widget (x, y, w, h),
+    txt (txt_),
+    char_size (char_size_)
+    {}
 
-// void TxtWidget::Render (RenderTarget& rt, const RegionSet* to_draw) const {
-//     rt.DrawText (txt, GetPos(), Color (0, 0, 0), to_draw);
-// }
+void TxtWidget::render (RenderTargetI* rt) {
+    rt -> drawText (getPos(), txt, char_size, Color(0, 0, 0));
+}
+
+void TxtWidget::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
+    rt.DrawRect_rs(Rect(getPos(), getPos() + getSize()), Color(255, 0, 255), to_draw);
+    rt.DrawText_rs(getPos(), txt, char_size, Color(0, 0, 0), to_draw);
+}

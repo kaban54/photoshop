@@ -4,6 +4,7 @@
 
 TestFilter::TestFilter () {
     params[0] = 0;
+    for (size_t i = 0; i < NUM_OF_PARAMS; i++) p_names.PushBack(PARAM_NAMES[i]);
 }
 
 const char* const TestFilter::PARAM_NAMES[] = {"test param"};
@@ -18,8 +19,8 @@ void TestFilter::apply (RenderTargetI *data) {
     unsigned int w = img -> width;
     unsigned int h = img -> height;
 
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
+    for (unsigned int x = 0; x < w; x++) {
+        for (unsigned int y = 0; y < h; y++) {
             Color* pix = pixels + y * w + x;
             *pix = Color(~pix -> r, ~pix -> g, ~pix -> b, pix -> a);
         }
@@ -30,9 +31,7 @@ void TestFilter::apply (RenderTargetI *data) {
 }
 
 Array<const char *> TestFilter::getParamNames() {
-    MyVector<const char *> ret (NUM_OF_PARAMS);
-    for (size_t i = 0; i < NUM_OF_PARAMS; i++) ret[i] = PARAM_NAMES[i];
-    return Array<const char *> (ret);
+    return Array<const char *> (p_names);
 }
 
 Array<double> TestFilter::getParams() {
@@ -50,6 +49,7 @@ ClearFilter::ClearFilter () {
     params[0] = 255;
     params[1] = 255;
     params[2] = 255;
+    for (size_t i = 0; i < NUM_OF_PARAMS; i++) p_names.PushBack(PARAM_NAMES[i]);
 }
 
 const char* const ClearFilter::PARAM_NAMES[] = {"red", "green", "blue"};
@@ -62,8 +62,8 @@ void ClearFilter::apply (RenderTargetI *data) {
     unsigned int h = img -> height;
     Color col(params[0], params[1], params[2]);
 
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
+    for (unsigned int x = 0; x < w; x++) {
+        for (unsigned int y = 0; y < h; y++) {
             Color* pix = pixels + y * w + x;
             *pix = col;
         }
@@ -74,9 +74,7 @@ void ClearFilter::apply (RenderTargetI *data) {
 }
 
 Array<const char *> ClearFilter::getParamNames() {
-    MyVector<const char *> ret (NUM_OF_PARAMS);
-    for (size_t i = 0; i < NUM_OF_PARAMS; i++) ret[i] = PARAM_NAMES[i];
-    return Array<const char *> (ret);
+    return Array<const char *> (p_names);
 }
 
 Array<double> ClearFilter::getParams() {
@@ -148,7 +146,8 @@ SetFilterController::SetFilterController (FilterManagerI* fm, FilterI* filt, Eve
         for (unsigned int i = 0; i < num_of_params; i++) {
             editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, 30));
             mw -> registerSubWidget (editboxes.back());
-            //mw -> AddSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names[i], GLOBAL_FONT, 30));
+            mw -> registerSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names.data[i], 30));
+            std::cerr << param_names.data[i] << "\n";
         }
 
         parent_wid -> registerSubWidget (mw);
@@ -160,7 +159,7 @@ SetFilterController::~SetFilterController() {
 
 void SetFilterController::OkBtnPress() {
     MyVector<double> params;
-    for (int i = 0; i < num_of_params; i++) {
+    for (size_t i = 0; i < num_of_params; i++) {
         params.PushBack(editboxes[i] -> TextToDouble());
     }
     filter -> setParams (Array(params));

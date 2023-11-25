@@ -2,9 +2,9 @@
 
 Tool::Tool (Texture* icon_):
     drawing (false),
-    icon (icon_),
     start_pos (),
-    last_pos () {}
+    last_pos (),
+    icon (icon_) {}
 
 
 inline void Tool::SetIcon (Texture* icon_) {
@@ -70,7 +70,8 @@ void Brush::paintOnMove (RenderTargetI *data, RenderTargetI *tmp, MouseContext c
     if (!drawing) return;
     double radius = params[0];
     data -> drawEllipse (context.position - Vec2(radius, radius), Vec2(radius * 2, radius * 2), color);
-    //data -> drawLine (last_pos, pos, radius * 2, col);
+    RenderTarget* data_rt = dynamic_cast<RenderTarget*> (data);
+    if (data_rt != nullptr) data_rt -> DrawLine_rs (last_pos, context.position, radius * 2, color, nullptr);
     last_pos = context.position;
 }
 

@@ -26,6 +26,7 @@ using namespace plugin;
 class TestFilter : public FilterI {
     static const size_t NUM_OF_PARAMS = 1;
     static const char* const PARAM_NAMES[];
+    MyVector<const char*> p_names;
 
     double params[1];
 
@@ -43,6 +44,7 @@ class TestFilter : public FilterI {
 class ClearFilter : public FilterI {
     static const size_t NUM_OF_PARAMS = 3;
     static const char* const PARAM_NAMES[];
+    MyVector<const char*> p_names;
 
     double params[3];
 

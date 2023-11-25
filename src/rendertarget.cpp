@@ -241,3 +241,29 @@ void RenderTarget::DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos,
         node = node -> next;
     }
 }
+
+void RenderTarget::DrawLine_rs (Vec2 p1, Vec2 p2, double thikness, Color col, const RegionSet* to_draw) {
+    sf::Color color (col.r, col.g, col.b, col.a);
+    if (thikness == 1) {
+        sf::Vertex line[] = {
+            sf::Vertex (sf::Vector2f (p1.x, p1.y), color),
+            sf::Vertex (sf::Vector2f (p2.x, p2.y), color)
+        };
+        screen.draw (line, 2, sf::Lines);
+    }
+    else {
+        Vec2 dir = p2 - p1;
+        Vec2 normal (-dir.y, dir.x);
+        normal = !normal * thikness / 2;
+
+        sf::ConvexShape polygon;
+        polygon.setFillColor (color);
+        polygon.setPointCount (4);
+        polygon.setPoint (0, sf::Vector2f(p1.x + normal.x, p1.y + normal.y));
+        polygon.setPoint (1, sf::Vector2f(p1.x - normal.x, p1.y - normal.y));
+        polygon.setPoint (2, sf::Vector2f(p2.x - normal.x, p2.y - normal.y));
+        polygon.setPoint (3, sf::Vector2f(p2.x + normal.x, p2.y + normal.y));
+        screen.draw(polygon);
+    }
+    screen.display();
+}

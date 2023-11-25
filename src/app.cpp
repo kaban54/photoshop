@@ -50,7 +50,7 @@ MyApp::~MyApp() {
 }
 
 void MyApp::SetupWidgets() {
-    Window *mainwin = new Window (100, 100, 1920, 1080);
+    Window *mainwin = new Window (50, 50, 1920, 1080);
 
     tools.PushBack(new Brush(25));
     tool_manager -> setTool(tools[0]);
@@ -76,7 +76,6 @@ void MyApp::SetupWidgets() {
                                             filter_manager, filters[0], event_manager, mainwin));
     filters_vm -> AddButton (new FilterBtn (0, 0, 200, 80, "clear filter", 30,
                                             filter_manager, filters[1], event_manager, mainwin));
-
     VerticalMenu* vm = new VerticalMenu (205, 105);
     vm -> registerSubWidget (tools_vm);
     vm -> registerSubWidget (cols_vm);
@@ -86,14 +85,12 @@ void MyApp::SetupWidgets() {
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
     mainwin -> registerSubWidget (vm);
     mainwin -> registerSubWidget (new MenuBtn (205, 25, 200, 80, "edit", 30, vm));
-
-    Window* win = new Window (200, 200, 610, 630);
-    win -> registerSubWidget (new Canvas (5, 25, 600, 600, tool_manager, filter_manager));
+    Window* win = new Window (150, 140, 870, 930);
+    win -> registerSubWidget (new Canvas (5, 25, 860, 900, tool_manager, filter_manager));
     mainwin -> registerSubWidget (win);
-    win = new Window (1000, 100, 610, 630);
-    win -> registerSubWidget (new Canvas (5, 25, 600, 600, tool_manager, filter_manager));
+    win = new Window (1030, 140, 870, 930);
+    win -> registerSubWidget (new Canvas (5, 25, 860, 900, tool_manager, filter_manager));
     mainwin -> registerSubWidget (win);
-
     gui -> getRoot() -> registerSubWidget(mainwin);
 }
 
