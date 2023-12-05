@@ -16,22 +16,25 @@ namespace plugin {
         const char *name;
         InterfaceType type;
 
-        virtual Interface *getInterface() = 0;
+        virtual Interface *getInterface() const = 0;
+
+        // плагин выбрали (недо apply)
+        virtual void selectPlugin() = 0;
+
         virtual ~Plugin() = default;
     };
 
     struct GuiI {
-        virtual Vec2 getSize() = 0;
-        virtual RenderTargetI* getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) = 0;
-        virtual void createParamWindow(Array<const char *> param_names, Interface* self) = 0;
-        virtual WidgetI* getRoot() = 0;
+        virtual WidgetI* getRoot() const = 0;
+        virtual void createWidgetI(PluginWidgetI* widget) = 0;
+        virtual Plugin *queryPlugin(uint64_t id) = 0;
+        virtual Texture *loadTextureFromFile(const char *filename) = 0;
+        virtual ~GuiI() = default;
     };
 
     struct App {
         GuiI *gui;
-        EventManagerI *event_manager; 
-        ToolManagerI *tool_manager;
-        FilterManagerI *filter_manager;
+        EventManagerI *event_manager;
     };
 }
 
@@ -47,13 +50,10 @@ struct Gui : public GuiI {
 
     ~Gui();
 
-    virtual Vec2 getSize() override;
-
-    virtual RenderTargetI* getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) override;
-
-    virtual void createParamWindow(Array<const char *> param_names, Interface * self) override;
-
-    virtual WidgetI* getRoot() override;
+    virtual WidgetI* getRoot() const override;
+    virtual void createWidgetI(PluginWidgetI* widget) = 0;
+    virtual Plugin *queryPlugin(uint64_t id) = 0;
+    virtual Texture *loadTextureFromFile(const char *filename) = 0;
 };
 
 class MyApp : public App {

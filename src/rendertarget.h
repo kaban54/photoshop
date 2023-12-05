@@ -17,13 +17,18 @@ namespace plugin {
         virtual void drawTexture(Vec2 pos, Vec2 size, const Texture *texture) = 0;
         virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) = 0;
 
-        virtual Texture *getTexture() = 0;
+        virtual Texture *getTexture() const = 0;
 
         /// как в RenderTexture::display
         virtual void display() = 0;
 
         /// clear
         virtual void clear() = 0;
+    };
+
+    struct RenderableI {
+        virtual void render(RenderTargetI* texture);
+        virtual ~RenderableI() = default;
     };
 }
 
@@ -59,7 +64,7 @@ class RenderTarget : public RenderTargetI {
 
     virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) override;
 
-    virtual Texture *getTexture() override;
+    virtual Texture *getTexture() const override;
 
     virtual void display() override;
 

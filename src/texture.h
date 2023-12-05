@@ -27,7 +27,9 @@ namespace plugin {
 
         explicit Texture(uint64_t w, uint64_t h, const Color* pix = nullptr);
 
-        ~Texture() {delete[] pixels;}
+        virtual ~Texture() {
+            delete[] pixels;
+        };
     };
 }
 

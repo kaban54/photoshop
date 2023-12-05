@@ -13,12 +13,6 @@ namespace plugin {
         virtual void apply(RenderTargetI *data) = 0;
         virtual ~FilterI() = default;
     };
-
-    struct FilterManagerI {
-        virtual void setRenderTarget(RenderTargetI *target) = 0;
-        virtual void setFilter(FilterI *filter) = 0;
-        virtual void applyFilter() = 0;
-    };
 }
 
 using namespace plugin;

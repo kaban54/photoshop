@@ -77,7 +77,7 @@ void RenderTarget::drawText(Vec2 pos, const char *content, uint16_t char_size, C
     screen.display();
 }
 
-Texture* RenderTarget::getTexture() {
+Texture* RenderTarget::getTexture() const {
     sf::Image sfimg = screen.getTexture().copyToImage();
     return new Texture(sfimg.getSize().x, sfimg.getSize().y, (Color *)sfimg.getPixelsPtr());
 }

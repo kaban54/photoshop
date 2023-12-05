@@ -18,8 +18,6 @@ class Window : public Widget {
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
-    virtual void render(RenderTargetI* rt) override;
-
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
     virtual bool onMouseMove    (MouseContext context) override;
@@ -37,8 +35,6 @@ class Background : public Widget {
     explicit Background (double w_, double h_);
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
-
-    virtual void render(RenderTargetI* rt) override;
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;

@@ -13,22 +13,26 @@ Gui::~Gui() {
     delete root;
 }
 
-Vec2 Gui::getSize() {
-    return Vec2(width, height);
-}
 
-RenderTargetI* Gui::getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) {
-    return rt;
-}
-
-void Gui::createParamWindow(Array<const char *> param_names, Interface* self) {
-    
-}
-
-WidgetI* Gui::getRoot() {
+WidgetI* Gui::getRoot() const {
     return root;
 }
 
+
+void Gui::createWidgetI(PluginWidgetI* widget) {
+    // widget -> host = new Widget;
+}
+
+Plugin* Gui::queryPlugin(uint64_t id) {
+
+}
+
+Texture* Gui::loadTextureFromFile(const char *filename) {
+    sf::Texture sft;
+    sft.loadFromFile(filename);
+    sf::Image sfimg = sft.copyToImage();
+    return new Texture (sfimg.getSize().x, sfimg.getSize().y, (Color*)sfimg.getPixelsPtr());
+}
 
 MyApp::MyApp(unsigned int w, unsigned int h, EventManagerI* event_man, RenderTarget* rt_) {
     gui = new Gui (w, h, rt_);
@@ -75,7 +79,7 @@ void MyApp::SetupWidgets() {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 255, 255)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 255, 255)));
-    
+
     filters.PushBack (new InvFilter);
     filters.PushBack (new ClearFilter);
     filters_vm = new VerticalMenu (405, 265);
@@ -115,8 +119,5 @@ void MyApp::AddPlugin(Plugin* plug) {
 }
 
 plugin::Texture* LoadFromFile(const char* filename) {
-    sf::Texture sft;
-    sft.loadFromFile(filename);
-    sf::Image sfimg = sft.copyToImage();
-    return new Texture (sfimg.getSize().x, sfimg.getSize().y, (Color*)sfimg.getPixelsPtr());
+    
 }
