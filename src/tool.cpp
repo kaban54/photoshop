@@ -102,9 +102,15 @@ void tool_btn_action (BtnArgs* tool_btn_args) {
     tool_man -> setTool (tool);
 }
 
-ToolBtn::ToolBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
+ToolTxtBtn::ToolTxtBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
                   ToolManagerI* tm, ToolI* tool_):
     TxtButton (x, y, w, h, tool_btn_action, &tool_btn_args, str, char_size_),
+    tool_btn_args (tm, tool_)
+    {}
+
+ToolImgBtn::ToolImgBtn (double x, double y, double w, double h, const Texture* texture,
+                      ToolManagerI* tm, ToolI* tool_):
+    ImgButton (x, y, w, h, tool_btn_action, &tool_btn_args, texture),
     tool_btn_args (tm, tool_)
     {}
 

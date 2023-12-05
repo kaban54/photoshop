@@ -41,6 +41,8 @@ class RenderTarget : public RenderTargetI {
 
     explicit RenderTarget (uint64_t w, uint64_t h);
 
+    Vec2 GetSize() const {return Vec2(width, height);}
+
     void SetFont(sf::Font* fnt);
 
     void SfDisplay (sf::RenderWindow& sfwindow) const;

@@ -10,8 +10,8 @@
 const char* FONT_FILENAME = "fonts/font2.ttf";
 const char* EVENTLOG_FILENAME = "logs/eventlog";
 
-const int W = 2000;
-const int H = 1200;
+const int W = 2160;
+const int H = 1440;
 
 typedef plugin::Plugin* (*getInstance_t)(plugin::App *app);
 
@@ -26,8 +26,8 @@ int main() {
     EventManager event_man;
     event_man.registerObject (&eventlogger);
 
-    // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
+    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
+    // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
     MyApp app (W, H, &event_man, &rt);

@@ -218,12 +218,18 @@ void RenderTarget::DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, 
     }
 }
 
-void RenderTarget::DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* regset) {
+void RenderTarget::DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* to_draw) {
     sf::Sprite sprite;
     sprite.setTexture (rt.screen.getTexture());
 
-    ListNode<Rect>* end_of_list = regset -> regions.EndOfList();
-    ListNode<Rect>* node = regset -> regions.GetHead();
+    // std::cerr << rt.width << " " << rt.height << "\n";
+
+    RegionSet tmp, rects;
+    tmp.AddRegion (Rect(pos, pos + Vec2(rt.width, rt.height)));
+    IntersectRegsets (tmp, *to_draw, rects);
+    ListNode<Rect>* end_of_list = rects.regions.EndOfList();
+    ListNode<Rect>* node = rects.regions.GetHead();
+
 
     while (node != end_of_list) {
         Rect region = node -> val;

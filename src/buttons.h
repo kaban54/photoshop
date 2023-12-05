@@ -37,10 +37,11 @@ class Button : public Widget {
 
 
 class ImgButton : public Button {
-    Texture* texture;
+    const Texture* texture;
+    RenderTarget render_target;
     public:
 
-    explicit ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, Texture* texture_);
+    explicit ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Texture* texture_);
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };

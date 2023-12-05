@@ -54,15 +54,17 @@ void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
 
     Brush* brush = new Brush(25);
-    brush -> SetIcon(LoadFromFile("textures/brush_icon.png"));
+    textures.PushBack(LoadFromFile("textures/brush_icon.png"));
+    brush -> SetIcon(textures.Back());
 
     tools.PushBack(brush);
     tool_manager -> setTool(tools[0]);
     tool_manager -> setColor(Color(255, 0, 128));
 
     tools_vm = new VerticalMenu (405, 105);
-    tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
-    // mainwin -> registerSubWidget (new ToolBtn (10, 200, 100, 100, ));
+    tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
+    mainwin -> registerSubWidget (new ToolImgBtn (5, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
+    // mainwin -> registerSubWidget (new ToolImgBtn (75, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 185);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 0, 0)));
@@ -103,7 +105,7 @@ void MyApp::AddPlugin(Plugin* plug) {
     plugins.PushBack(plug);
     if (plug -> type == InterfaceType::Tool) {
         ToolI* tool = dynamic_cast<ToolI*>(plug -> getInterface());
-        tools_vm -> AddButton (new ToolBtn (0, 0, 200, 80, plug -> name, 30, tool_manager, tool));
+        tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, plug -> name, 30, tool_manager, tool));
     }
     else if (plug -> type == InterfaceType::Filter) {
         FilterI* filter = dynamic_cast<FilterI*>(plug -> getInterface());
@@ -114,7 +116,7 @@ void MyApp::AddPlugin(Plugin* plug) {
 
 plugin::Texture* LoadFromFile(const char* filename) {
     sf::Texture sft;
-    sft.loadFromFile("textures/brush_icon.png");
+    sft.loadFromFile(filename);
     sf::Image sfimg = sft.copyToImage();
     return new Texture (sfimg.getSize().x, sfimg.getSize().y, (Color*)sfimg.getPixelsPtr());
 }

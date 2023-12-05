@@ -94,12 +94,21 @@ struct ToolBtnArgs : public BtnArgs {
         tool (tool_) {}
 };
 
-class ToolBtn : public TxtButton {
+class ToolTxtBtn : public TxtButton {
     ToolBtnArgs tool_btn_args;
 
     public:
 
-    explicit ToolBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
+    explicit ToolTxtBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
+                      ToolManagerI* tm, ToolI* tool_);
+};
+
+class ToolImgBtn : public ImgButton {
+    ToolBtnArgs tool_btn_args;
+
+    public:
+
+    explicit ToolImgBtn (double x, double y, double w, double h, const Texture* texture,
                       ToolManagerI* tm, ToolI* tool_);
 };
 

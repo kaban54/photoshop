@@ -53,17 +53,20 @@ void Button::render(RenderTargetI*) {
 }
 
 
-ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, Texture* texture_):
+ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Texture* texture_):
     Button (x, y, w, h, action_, action_args_),
-    texture (texture_)
-    {}
+    texture (texture_),
+    render_target (w - 16, h - 16)
+    {
+        render_target.drawRect (Vec2(0, 0), Vec2(w - 16, h - 16), Color(0, 0, 0, 0));
+        render_target.drawTexture (Vec2(0, 0), Vec2(w - 16, h - 16), texture);
+    }
 
 
 void ImgButton::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     DrawButton (rt, GetBounds(), state, to_draw);
-    rt.DrawTexture_rs (GetBounds().GetPos() + Vec2(8, 8), GetBounds().GetSize() - Vec2(16, 16), texture, to_draw);
+    rt.DrawRenderTarget_rs (render_target, GetBounds().GetPos() + Vec2(8, 8), to_draw);
 }
-
 
 
 TxtButton::TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_,
