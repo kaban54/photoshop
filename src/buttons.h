@@ -23,58 +23,42 @@ class Button : public Widget {
 
     explicit Button (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_);
 
-    virtual void MousePress (const MouseState& mstate) override;
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
+    virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
+    virtual bool onClock (uint64_t delta) override {return false;}
 
-    virtual void MouseRelease (const MouseState& mstate) override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
-    virtual void MouseMove (const MouseState& mstate) override;
-
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
+    virtual void render(RenderTargetI*) override;
 };
 
 
-// class ImgButton : public Button {
-//     public:
+class ImgButton : public Button {
+    const Texture* texture;
+    RenderTarget render_target;
+    public:
 
-//     Texture textures[4];
+    explicit ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Texture* texture_);
 
-//     explicit ImgButton (double x, double y, size_t w, size_t h, const Texture* textures_);
-
-//     void SetTextures (const Texture* textures_);
-
-//     virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-// };
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+};
 
 
 class TxtButton : public Button {
-    Text txt;
+    const char *txt;
+    uint16_t char_size;
+    static const uint16_t DEFAULT_CHAR_SIZE = 30;
     public:
 
-    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Text& txt_);
+    explicit TxtButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_,
+                        const char *str = "", uint16_t char_size_ = DEFAULT_CHAR_SIZE);
 
-    void SetText (const Text& txt);
+    void SetText (const char *str, uint16_t char_size_ = DEFAULT_CHAR_SIZE);
 
-    virtual void Render (RenderTarget& rt, const RegionSet* to_draw) const override;
-};
-
-
-class BtnChooseMenu : public TxtButton {
-    double nextbtn_y;
-    public:
-
-    explicit BtnChooseMenu (double x, double y, double w, double h, const Text& txt_);
-
-    void AddButton (Button* btn);
-
-    virtual void GetMaxRegset (RegionSet* dst) const override;
-
-    virtual void MousePress (const MouseState& mstate) override;
-
-    virtual void MouseRelease (const MouseState& mstate) override;
-
-    virtual void MouseMove (const MouseState& mstate) override;
-
-    virtual bool MouseOnWidget (const Vec& mousepos) const override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };
 
 

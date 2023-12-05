@@ -1,85 +1,83 @@
 #ifndef RENDERTARGET_H
 #define RENDERTARGET_H
 
-#include <SFML/Graphics.hpp>
+#include <cinttypes>
+#include <cstring>
 #include "region.h"
-#include "vec.h"
-#include "color.h"
-#include "string"
-#include "string.h"
+#include "vec2.h"
+#include "texture.h"
+#include <SFML/Graphics.hpp>
 
-struct Image {
-    sf::Image sfimg;
+namespace plugin {
+    struct RenderTargetI {
+        virtual void setPixel(Vec2 pos, Color color) = 0;
+        virtual void drawLine(Vec2 pos, Vec2 point1, Color color) = 0;
+        virtual void drawRect(Vec2 pos, Vec2 size, Color color) = 0;
+        virtual void drawEllipse(Vec2 pos, Vec2 size, Color color) = 0;
+        virtual void drawTexture(Vec2 pos, Vec2 size, const Texture *texture) = 0;
+        virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) = 0;
 
-    explicit Image() {}
+        virtual Texture *getTexture() = 0;
 
-    unsigned int GetWidth() const {return sfimg.getSize().x;}
+        /// как в RenderTexture::display
+        virtual void display() = 0;
 
-    unsigned int GetHeight() const {return sfimg.getSize().y;}
+        /// clear
+        virtual void clear() = 0;
+    };
+}
 
-    Color* GetPixels() const;
-};
 
-struct Texture {
-    sf::Texture* sftexture;
+using namespace plugin;
 
-    explicit Texture() {}
-
-    explicit Texture (sf::Texture* sftexture_): sftexture (sftexture_) {}
-};
-
-struct Font {
-    sf::Font* sffont;
-
-    explicit Font (): sffont (nullptr) {}
-
-    explicit Font (sf::Font* fnt_): sffont (fnt_) {}
-};
-
-struct Text {
-    std::string str;
-    Font fnt;
-    size_t char_size;
-
-    explicit Text (const std::string& str_, const Font& fnt_, size_t char_size_);
-
-    Vec GetSize(size_t len) const;
-};
-
-class RenderTarget {
-    unsigned int width;
-    unsigned int height;
+class RenderTarget : public RenderTargetI {
+    uint64_t width;
+    uint64_t height;
     sf::RenderTexture screen;
-
+    sf::Font* font;
+    Texture* texture;
     public:
+    bool changed;
 
-    RenderTarget (unsigned int w, unsigned int h);
+    explicit RenderTarget (uint64_t w, uint64_t h);
 
-    void GetImg (Image& img) const;
+    Vec2 GetSize() const {return Vec2(width, height);}
 
-    void Display (sf::RenderWindow& window) const;
+    void SetFont(sf::Font* fnt);
 
-    void ClearScreen (const Color& col);
+    void SfDisplay (sf::RenderWindow& sfwindow) const;
 
-    void DrawRect (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual void setPixel(Vec2 pos, Color color) override;
 
-    void DrawLine (const Vec& p1, const Vec& p2, double thikness, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual void drawLine(Vec2 p1, Vec2 p2, Color color) override;
 
-    void SetPixel (const Vec& point, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual void drawRect(Vec2 pos, Vec2 size, Color color) override;
 
-    void DrawTexture (const Texture& texture, const Vec& pos, const Vec& size, const RegionSet* to_draw = nullptr);
+    virtual void drawEllipse(Vec2 pos, Vec2 size, Color color) override;
 
-    void DrawText (const Text& txt, const Vec& pos, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual void drawTexture(Vec2 pos, Vec2 size, const Texture *texture) override;
 
-    void DrawRenderTarget (const RenderTarget& rt, const Vec& pos, const RegionSet* to_draw = nullptr);
+    virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) override;
 
-    void DrawCircle (const Vec& pos, double radius, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual Texture *getTexture() override;
 
-    void DrawEllipse (const Rect& rect, const Color& col, const RegionSet* to_draw = nullptr);
+    virtual void display() override;
 
-    void DrawImg (const Image& img, const Vec& pos, const RegionSet* to_draw = nullptr);
+    virtual void clear() override;
 
-    void DrawRegset (const RegionSet& regset, const Color& col, bool fill = false);
+    void Fill(Color col);
+
+    Vec2 GetTxtSize (const char* str, size_t char_size, size_t len) const;
+
+    void DrawRect_rs (const Rect& rect, Color col, const RegionSet* to_draw);
+
+    void DrawText_rs (Vec2 pos, const char *content, uint16_t char_size, Color col, const RegionSet* to_draw);
+
+    void DrawTexture_rs (Vec2 pos, Vec2 size, const Texture *texture, const RegionSet* to_draw);
+
+    void DrawRenderTarget_rs (const RenderTarget& rt, const Vec2& pos, const RegionSet* to_draw);
+
+    void DrawLine_rs (Vec2 p1, Vec2 p2, double thikness, Color col, const RegionSet* to_draw);
 };
 
 #endif

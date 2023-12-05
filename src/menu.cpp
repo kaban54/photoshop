@@ -1,78 +1,84 @@
 #include "menu.h"
 
 
-void Menu::MousePress (const MouseState& mstate) {
-    if (visible) GetSubwidgets() -> MousePress (mstate);
+bool Menu::onMousePress (MouseContext context) {
+    if (getAvailable()) GetSubwidgets() -> onMousePress (context);
+    return false;
 }
 
-void Menu::MouseRelease (const MouseState& mstate) {
-    if (visible) GetSubwidgets() -> MouseRelease (mstate);
+bool Menu::onMouseRelease (MouseContext context) {
+    if (getAvailable()) GetSubwidgets() -> onMouseRelease (context);
+    return false;
 }
 
-void Menu::MouseMove (const MouseState& mstate) {
-    if (visible) GetSubwidgets() -> MouseMove (mstate);
+bool Menu::onMouseMove (MouseContext context) {
+    if (getAvailable()) GetSubwidgets() -> onMouseMove (context);
+    return false;
 }
 
-bool Menu::MouseOnWidget (const Vec& mousepos) const {
+bool Menu::MouseOnWidget (const Vec2& mousepos) const {
     return MouseOnSubwidgets(mousepos);
+    return false;
 }
 
 
-MenuBtn::MenuBtn (double x, double y, double w, double h, const Text& txt_, Menu* menu_):
-    TxtButton (x, y, w, h, nullptr, nullptr, txt_),
+MenuBtn::MenuBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_, Menu* menu_):
+    TxtButton (x, y, w, h, nullptr, nullptr, str, char_size_),
     menu (menu_)
     {}
 
-void MenuBtn::MousePress (const MouseState& mstate) {
-    if (!visible) return;
-    if (state == BTN_DISABLED) return;
+bool MenuBtn::onMousePress (MouseContext context) {
+    if (!getAvailable()) return false;
+    if (state == BTN_DISABLED) return false;
 
-    if (MouseOnWidget (mstate.pos) && state != BTN_PRESSED) {
+    if (MouseOnWidget (context.position) && state != BTN_PRESSED) {
         state = BTN_PRESSED;
-        Render (*GetRendertarget(), GetRegset());
-        menu -> visible = true;
+        RenderInRegset (*GetRendertarget(), GetRegset());
+        menu -> setAvailable(true);
         menu -> Show();
     }
+    return false;
 }
 
-void MenuBtn::MouseRelease (const MouseState& mstate) {}
+bool MenuBtn::onMouseRelease (MouseContext context) {return false;}
 
-void MenuBtn::MouseMove (const MouseState& mstate) {
-    if (!visible) return;
-    if (state == BTN_DISABLED) return;
+bool MenuBtn::onMouseMove (MouseContext context) {
+    if (!getAvailable()) return false;
+    if (state == BTN_DISABLED) return false;
 
-    GetSubwidgets() -> MouseMove(mstate);
-    menu -> MouseMove(mstate);
+    GetSubwidgets() -> onMouseMove(context);
+    menu -> onMouseMove(context);
 
-    if (MouseOnWidget (mstate.pos)) {
+    if (MouseOnWidget (context.position)) {
         if (state == BTN_NORMAL) {
             state = BTN_FOCUSED;
-            Render (*GetRendertarget(), GetRegset());
+            RenderInRegset (*GetRendertarget(), GetRegset());
         }
     }
     else if (state == BTN_FOCUSED) {
         state = BTN_NORMAL;
-        Render (*GetRendertarget(), GetRegset());
+        RenderInRegset (*GetRendertarget(), GetRegset());
     }
     else if (state == BTN_PRESSED) {
-        if (menu -> MouseOnWidget(mstate.pos)) return;
+        if (menu -> MouseOnWidget(context.position)) return false;
         else {
-            menu -> visible = false;
+            menu -> setAvailable(false);
             state = BTN_NORMAL;
-            Render (*GetRendertarget(), GetRegset());
+            RenderInRegset (*GetRendertarget(), GetRegset());
             menu -> Show();
         }
     }
+    return false;
 }
 
 
 VerticalMenu::VerticalMenu (double x, double y):
-    pos (Vec(x, y)),
+    pos (Vec2(x, y)),
     nextbtn_y (y)
     {}
 
 void VerticalMenu::AddButton (Button* btn) {
-    btn -> SetBounds (Rect(pos.x, nextbtn_y, btn -> GetSize().x, btn -> GetSize().y));
-    nextbtn_y += btn -> GetSize().y;
-    AddSubWidget (btn);
+    btn -> SetBounds (Rect(pos.x, nextbtn_y, btn -> getSize().x, btn -> getSize().y));
+    nextbtn_y += btn -> getSize().y;
+    registerSubWidget (btn);
 }

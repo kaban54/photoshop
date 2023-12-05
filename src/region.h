@@ -1,10 +1,12 @@
 #ifndef REGION_H
 #define REGION_H
 
-#include "vec.h"
+#include "vec2.h"
 #include "mylist.h"
 #include <algorithm>
 #include <cmath>
+
+using namespace plugin;
 
 struct Rect {
     double x;
@@ -16,13 +18,13 @@ struct Rect {
 
     explicit Rect (double x_, double y_, double w_, double h_);
 
-    explicit Rect (const Vec& p1, const Vec& p2);
+    explicit Rect (const Vec2& p1, const Vec2& p2);
 
-    Vec GetPos() const {return Vec (x, y);}
+    Vec2 GetPos() const {return Vec2 (x, y);}
 
-    Vec GetSize() const {return Vec (w, h);}
+    Vec2 GetSize() const {return Vec2 (w, h);}
 
-    Vec GetCenter() const {return Vec (x + w / 2, y + h / 2);}
+    Vec2 GetCenter() const {return Vec2 (x + w / 2, y + h / 2);}
 
     double Left() const {return x;}
 
@@ -34,11 +36,11 @@ struct Rect {
 
     bool Contains (const Rect& rect) const;
 
-    bool Contains (const Vec& vec) const;
+    bool Contains (const Vec2& vec) const;
 
     void Print() const;
 
-    void Move(const Vec& vec);
+    void Move(const Vec2& vec);
 };
 
 bool Intersect (const Rect& rect1, const Rect& rect2);
@@ -63,9 +65,9 @@ class RegionSet {
 
     void operator^= (const RegionSet& regset2);
 
-    void Move (const Vec& vec);
+    void Move (const Vec2& vec);
 
-    bool Contains (const Vec& vec) const;
+    bool Contains (const Vec2& vec) const;
 
     void Print() const;
 };

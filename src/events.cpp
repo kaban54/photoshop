@@ -1,104 +1,110 @@
 #include "events.h"
 
-MouseState::MouseState():
-    pos (0, 0),
-    btn (MOUSE_NOBTN)
-    {}
-
-MouseState::MouseState (const Vec& pos_, MouseButton btn_):
-    pos (pos_),
-    btn (btn_)
-    {}
-
-EventProcessable::EventProcessable():
-    priority (0)
-    {}
+using namespace plugin;
 
 EventManager::EventManager():
     objects (),
     min_priorities {0}
     {}
 
-void EventManager::AddObject(EventProcessable* obj) {
-    objects.InsertTail(obj);
+void EventManager::registerObject(EventProcessableI* object) {
+    objects.InsertTail(object);
 }
 
-void EventManager::RemoveObject (EventProcessable* obj) {
-    objects.Remove(objects.GetNode(obj));
+void EventManager::unregisterObject(EventProcessableI* object) {
+    objects.Remove(objects.GetNode(object));
+}
+
+void EventManager::setPriority(EventType event, uint8_t priority) {
+    min_priorities[(int)event] = priority;
 }
 
 void EventManager::ResetPriorities() {
-    memset (min_priorities, 0, NUM_OF_EVENTS * sizeof(min_priorities[0]));
+    memset (min_priorities, 0, (int)EventType::NumOfEvents * sizeof(min_priorities[0]));
 }
 
-void EventManager::SetMinPriorities (const std::vector<Events>& events, uint8_t new_priority) {
-    for (size_t i = 0; i < events.size(); i++) {
-        min_priorities[events[i]] = new_priority;
+void EventManager::SetMinPriorities (const MyVector<EventType>& events, uint8_t new_priority) {
+    for (size_t i = 0; i < events.GetSize(); i++) {
+        min_priorities[(int)events[i]] = new_priority;
     }
 }
 
-void EventManager::MousePress (const MouseState& mstate) {
-    ListNode<EventProcessable*>* node = nullptr;
+inline uint8_t EventManager::getPriority() const {
+    return UINT8_MAX;
+}
+
+bool EventManager::onMousePress (MouseContext context) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        ListNode<EventProcessable*>* nextnode = node;
+        ListNode<EventProcessableI*>* nextnode = node;
         objects.Iterate (nextnode);
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[MOUSE_PRESS]) obj -> MousePress (mstate);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::MousePress]) obj -> onMousePress (context);
         node = nextnode;
     }
+    return false;
 }
 
-void EventManager::MouseRelease (const MouseState& mstate) {
-    ListNode<EventProcessable*>* node = nullptr;
+bool EventManager::onMouseRelease (MouseContext context) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[MOUSE_RELEASE]) obj -> MouseRelease (mstate);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::MouseRelease]) obj -> onMouseRelease (context);
         objects.Iterate(node);
     }
+    return false;
 }
 
-void EventManager::MouseMove (const MouseState& mstate) {
-    ListNode<EventProcessable*>* node = nullptr;
+bool EventManager::onMouseMove (MouseContext context) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[MOUSE_MOVE]) obj -> MouseMove (mstate);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::MouseMove]) obj -> onMouseMove (context);
         objects.Iterate(node);
     }
+    return false;
 }
 
-void EventManager::KeyboardPress (const KeyboardState& kstate) {
-    ListNode<EventProcessable*>* node = nullptr;
+bool EventManager::onKeyboardPress (KeyboardContext context) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        ListNode<EventProcessable*>* nextnode = node;
+        ListNode<EventProcessableI*>* nextnode = node;
         objects.Iterate (nextnode);
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[KEYBOARD_PRESS]) obj -> KeyboardPress (kstate);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::KeyPress]) obj -> onKeyboardPress (context);
         node = nextnode;
     }
+    return false;
 }
 
-void EventManager::KeyboardRelease (const KeyboardState& kstate) {
-    ListNode<EventProcessable*>* node = nullptr;
+bool EventManager::onKeyboardRelease (KeyboardContext context) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[KEYBOARD_RELEASE]) obj -> KeyboardRelease (kstate);
-        objects.Iterate(node);
+        ListNode<EventProcessableI*>* nextnode = node;
+        objects.Iterate (nextnode);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::KeyRelease]) obj -> onKeyboardRelease (context);
+        node = nextnode;
     }
+    return false;
 }
 
-void EventManager::TimerEvent (double time) {
-    ListNode<EventProcessable*>* node = nullptr;
+bool EventManager::onClock (uint64_t delta) {
+    ListNode<EventProcessableI*>* node = nullptr;
     objects.Iterate (node);
     while (node != nullptr) {
-        EventProcessable* obj = node -> val;
-        if (obj -> GetPriority() >= min_priorities[TIMER_EVENT]) obj -> TimerEvent (time);
-        objects.Iterate(node);
+        ListNode<EventProcessableI*>* nextnode = node;
+        objects.Iterate (nextnode);
+        EventProcessableI* obj = node -> val;
+        if (obj -> getPriority() >= min_priorities[(int)EventType::Clock]) obj -> onClock (delta);
+        node = nextnode;
     }
+    return false;
 }
 
 
@@ -107,30 +113,44 @@ EventLogger::EventLogger (FILE* logfile_):
     logfile (logfile_)
     {
         assert (logfile != nullptr);
-        SetPriority (UINT8_MAX);
     }
 
-void EventLogger::MousePress (const MouseState& mstate) {
-    fprintf (logfile, "MOUSE_PRESS\t\t(%d, %d)\t\t%d\n", (int)mstate.pos.x, (int)mstate.pos.y, mstate.btn);
-    fflush (logfile);
+inline uint8_t EventLogger::getPriority() const {
+    return UINT8_MAX;
 }
 
-void EventLogger::MouseRelease (const MouseState& mstate) {
-    fprintf (logfile, "MOUSE_RELEASE\t(%d, %d)\t\t%d\n", (int)mstate.pos.x, (int)mstate.pos.y, mstate.btn);
+bool EventLogger::onMousePress (MouseContext context) {
+    fprintf (logfile, "MOUSE_PRESS\t\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, (int)context.button);
     fflush (logfile);
+    return false;
 }
 
-void EventLogger::MouseMove (const MouseState& mstate) {
-    fprintf (logfile, "MOUSE_MOVE\t\t(%d, %d)\n", (int)mstate.pos.x, (int)mstate.pos.y);
+bool EventLogger::onMouseRelease (MouseContext context) {
+    fprintf (logfile, "MOUSE_RELEASE\t(%d, %d)\t\t%d\n", (int)context.position.x, (int)context.position.y, (int)context.button);
     fflush (logfile);
+    return false;
 }
 
-void EventLogger::KeyboardPress (const KeyboardState& kstate) {
-    fprintf (logfile, "KEYBOARD_PRESS\t\t%d\n", kstate.key);
+bool EventLogger::onMouseMove (MouseContext context) {
+    fprintf (logfile, "MOUSE_MOVE\t\t(%d, %d)\n", (int)context.position.x, (int)context.position.y);
     fflush (logfile);
+    return false;
 }
 
-void EventLogger::KeyboardRelease (const KeyboardState& kstate) {
-    fprintf (logfile, "KEYBOARD_RELEASE\t\t%d\n", kstate.key);
+bool EventLogger::onKeyboardPress (KeyboardContext context) {
+    fprintf (logfile, "KEYBOARD_PRESS\t\t%d\n", (int)context.key);
     fflush (logfile);
+    return false;
+}
+
+bool EventLogger::onKeyboardRelease (KeyboardContext context) {
+    fprintf (logfile, "KEYBOARD_RELEASE\t\t%d\n", (int)context.key);
+    fflush (logfile);
+    return false;
+}
+
+bool EventLogger::onClock (uint64_t delta) {
+    fprintf (logfile, "delta = %lu\n", delta);
+    fflush (logfile);
+    return false;
 }
