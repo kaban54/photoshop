@@ -48,4 +48,16 @@ class VerticalMenu : public Menu {
     void AddButton (Button* btn);
 };
 
+class TwoColMenu : public Menu {
+    Vec2 pos;
+    Vec2 btn_size;
+    Vec2 nextbtn_pos;
+
+    public:
+
+    explicit TwoColMenu (double x, double y, double w, double h);
+
+    void AddButton (Button* btn);
+};
+
 #endif

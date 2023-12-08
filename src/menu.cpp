@@ -82,3 +82,20 @@ void VerticalMenu::AddButton (Button* btn) {
     nextbtn_y += btn -> getSize().y;
     registerSubWidget (btn);
 }
+
+
+TwoColMenu::TwoColMenu (double x, double y, double w, double h):
+    pos (x, y),
+    btn_size (w, h),
+    nextbtn_pos (x, y)
+    {}
+
+void TwoColMenu::AddButton (Button* btn) {
+    btn -> SetBounds(Rect(nextbtn_pos, nextbtn_pos + btn_size));
+    if (nextbtn_pos.x == pos.x) nextbtn_pos.x += btn_size.x;
+    else {
+        nextbtn_pos.x -= btn_size.x;
+        nextbtn_pos.y += btn_size.y;
+    }
+    registerSubWidget (btn);
+}

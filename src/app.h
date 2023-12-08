@@ -64,6 +64,7 @@ class MyApp : public App {
 
     VerticalMenu* tools_vm;
     VerticalMenu* filters_vm;
+    TwoColMenu* tools_tcm;
 
     public:
 
