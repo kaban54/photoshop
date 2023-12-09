@@ -101,14 +101,15 @@ void FilterManager::applyFilter() {
 //-----------------------------------------------------------------------------------------------------------
 
 
-SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_):
-    MWController (ev_man_, parent_wid_, Vec2(150, 150), Vec2(400, 400)),
+SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, size_t num_of_params_,
+                                          EventManagerI* ev_man_, WidgetI* parent_wid_):
+    MWController (ev_man_, parent_wid_, Vec2(150, 150), Vec2(400, 100 * (num_of_params_) + 125)),
     filter_man (fm),
     filter (filt),
-    editboxes ()
+    editboxes (),
+    num_of_params (num_of_params_)
     {
         Array<const char*> param_names = filter -> getParamNames();
-        num_of_params = param_names.size;
 
         ModalWindow* mw = GetMW();
         mw -> setSize (Vec2(400, 100 * (num_of_params) + 125));
@@ -141,7 +142,7 @@ void filter_btn_action (BtnArgs* filter_btn_args) {
     WidgetI*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
 
     if (filter -> getParamNames().size != 0)
-        new SetFilterController (filter_man, filter, ev_man, parent_wid);
+        new SetFilterController (filter_man, filter, filter -> getParamNames().size,ev_man, parent_wid);
     else {
         filter_man -> setFilter (filter);
         filter_man -> applyFilter();

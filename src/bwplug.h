@@ -7,10 +7,14 @@
 using namespace plugin;
 
 class BlackAndWhiteFilter : public FilterI {
-    static const size_t NUM_OF_PARAMS = 0;
+    static const size_t NUM_OF_PARAMS = 1;
+    static const char* const PARAM_NAMES[];
+    MyVector<const char*> p_names;
+    double params[1];
+
     public:
 
-    explicit BlackAndWhiteFilter() = default;
+    explicit BlackAndWhiteFilter();
 
     virtual void apply(RenderTargetI *data) override;
 

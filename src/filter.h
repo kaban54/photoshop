@@ -72,7 +72,8 @@ class SetFilterController : public MWController{
 
     public:
 
-    explicit SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
+    explicit SetFilterController (FilterManager* fm, FilterI* filt, size_t num_of_params_,
+                                  EventManagerI* ev_man_, WidgetI* parent_wid_);
 
     virtual ~SetFilterController() = default;
 
