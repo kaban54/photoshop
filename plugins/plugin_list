@@ -1,3 +1,4 @@
 rect_tool.so
 bwplug.so
-libsphere_filter.soaaa
+libsphere_filter.so
+libfill_tool_plugin.so
