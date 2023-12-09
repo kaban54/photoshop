@@ -18,12 +18,14 @@ WidgetI* Gui::getRoot() const {
     return root;
 }
 
-
 void Gui::createWidgetI(PluginWidgetI* widget) {
     // widget -> host = new Widget;
 }
 
 Plugin* Gui::queryPlugin(uint64_t id) {
+    for (size_t i = 0; i < plugins.GetSize(); i++) {
+        if (plugins[i] -> id == id) return plugins[i];
+    }
     return nullptr;
 }
 
@@ -37,7 +39,8 @@ Texture* Gui::loadTextureFromFile(const char *filename) {
 }
 
 MyApp::MyApp(unsigned int w, unsigned int h, EventManagerI* event_man, RenderTarget* rt_) {
-    gui = new Gui (w, h, rt_);
+    mygui = new Gui(w, h, rt_);
+    gui = mygui;
     event_manager = event_man;
     tool_manager = new ToolManager;
     image_manager = new ImageManager;
@@ -129,10 +132,13 @@ void MyApp::SetupWidgets() {
 }
 
 void MyApp::AddPlugin(Plugin* plug) {
+    if (mygui -> queryPlugin(plug -> id) != nullptr) return;
     plugins.PushBack(plug);
+    mygui -> plugins.PushBack(plug);
     if (plug -> type == InterfaceType::Tool) {
         ToolI* tool = dynamic_cast<ToolI*>(plug -> getInterface());
         tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, plug -> name, 30, tool_manager, tool));
+        tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tool -> getIcon(), tool_manager, tool));
     }
     else if (plug -> type == InterfaceType::Filter) {
         FilterI* filter = dynamic_cast<FilterI*>(plug -> getInterface());

@@ -48,6 +48,7 @@ struct Gui : public GuiI {
     const unsigned int height;
     RenderTarget* rt;
     Background *root;
+    MyVector<Plugin*> plugins;
 
     explicit Gui(unsigned int w, unsigned int h, RenderTarget* rt_);
 
@@ -60,6 +61,8 @@ struct Gui : public GuiI {
 };
 
 class MyApp : public App {
+    Gui* mygui;
+
     ToolManager* tool_manager;
     FilterManager* filter_manager;
     ImageManager* image_manager;
