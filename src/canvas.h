@@ -3,7 +3,6 @@
 
 #include "widget.h"
 #include "tool.h"
-#include "filter.h"
 #include "window.h"
 
 class CanvasWindow;
@@ -11,7 +10,6 @@ class CanvasWindow;
 class Canvas : public Widget {
     bool drawing;
     ToolManager* tool_man;
-    FilterManager* filter_man;
     CanvasWindow* win;
     RenderTarget data;
     RenderTarget tmp;
@@ -19,7 +17,9 @@ class Canvas : public Widget {
     public:
 
     explicit Canvas (double x, double y, double w, double h,
-                     ToolManager* tm, FilterManager* fm, CanvasWindow* win = nullptr);
+                     ToolManager* tm, CanvasWindow* win = nullptr);
+
+    RenderTarget* GetData() {return &data;}
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
@@ -54,7 +54,9 @@ class CanvasWindow : public Window {
     public:
 
     explicit CanvasWindow (double x, double y, double w, double h,
-                           ImageManager* image_man_, ToolManager* tool_man, FilterManager* filter_man);
+                           ImageManager* image_man_, ToolManager* tool_man);
+
+    Canvas* GetCanvas() {return canvas;}
 
     void SetActive();
 

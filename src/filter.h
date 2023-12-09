@@ -6,6 +6,7 @@
 #include "window.h"
 #include "editbox.h"
 #include "interface.h"
+#include "canvas.h"
 
 
 namespace plugin {
@@ -52,13 +53,12 @@ class ClearFilter : public FilterI {
 
 class FilterManager {
     FilterI* filter;
-    RenderTargetI* rt;
+    ImageManager* image_manager;
 
     public:
 
-    explicit FilterManager();
+    explicit FilterManager(ImageManager* img_man);
 
-    void setRenderTarget(RenderTargetI *target);
     void setFilter(FilterI *filter);
     void applyFilter();
 };

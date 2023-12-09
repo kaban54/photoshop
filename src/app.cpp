@@ -38,7 +38,8 @@ MyApp::MyApp(unsigned int w, unsigned int h, EventManagerI* event_man, RenderTar
     gui = new Gui (w, h, rt_);
     event_manager = event_man;
     tool_manager = new ToolManager;
-    filter_manager = new FilterManager;
+    image_manager = new ImageManager;
+    filter_manager = new FilterManager (image_manager);
     event_manager -> registerObject (dynamic_cast<EventProcessableI*>(gui -> getRoot()));
 }
 
@@ -113,9 +114,8 @@ void MyApp::SetupWidgets() {
     mainwin -> registerSubWidget (vm);
     mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "edit", 30, vm));
 
-    image_manager = new ImageManager;
-    mainwin -> registerSubWidget (new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager, filter_manager));
-    mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager, filter_manager));
+    mainwin -> registerSubWidget (new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager));
+    mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager));
 
     gui -> getRoot() -> registerSubWidget(mainwin);
 }

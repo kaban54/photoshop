@@ -1,10 +1,9 @@
 #include "canvas.h"
 
-Canvas::Canvas(double x, double y, double w, double h, ToolManager* tm, FilterManager* fm, CanvasWindow* win_):
+Canvas::Canvas(double x, double y, double w, double h, ToolManager* tm, CanvasWindow* win_):
     Widget (x, y, w, h), 
     drawing (false),
     tool_man (tm),
-    filter_man (fm),
     win (win_),
     data (w, h),
     tmp (w, h)
@@ -17,7 +16,6 @@ bool Canvas::onMousePress (MouseContext context) {
     if (MouseOnWidget(context.position)) {
         if (win != nullptr) win -> SetActive();
         Show();
-        filter_man -> setRenderTarget(&data);
         drawing = true;
         tool_man -> paintOnPress (&data, &tmp, MouseContext(context.position - getPos(), context.button));
         RenderInRegset (*GetRendertarget(), GetRegset());
@@ -65,10 +63,10 @@ void Canvas::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
 
 
 CanvasWindow::CanvasWindow(double x, double y, double w, double h,
-                           ImageManager* image_man_, ToolManager* tool_man, FilterManager* filter_man):
+                           ImageManager* image_man_, ToolManager* tool_man):
     Window (x, y, w, h),
     image_man (image_man_),
-    canvas (new Canvas(5, 35, w - 10, h - 40, tool_man, filter_man, this))
+    canvas (new Canvas(5, 35, w - 10, h - 40, tool_man, this))
     {
         registerSubWidget(canvas);
         image_man -> AddWindow(this);

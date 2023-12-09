@@ -82,13 +82,9 @@ void ClearFilter::setParams(Array<double> new_params) {
 //--------------------------------------------------------------------------------------------------
 
 
-FilterManager::FilterManager ():
+FilterManager::FilterManager (ImageManager* img_man):
     filter (nullptr),
-    rt (nullptr) {}
-
-void FilterManager::setRenderTarget(RenderTargetI *target) {
-    rt = target;
-}
+    image_manager (img_man) {}
 
 void FilterManager::setFilter(FilterI *filt) {
     filter = filt;
@@ -96,7 +92,7 @@ void FilterManager::setFilter(FilterI *filt) {
 
 void FilterManager::applyFilter() {
     assert(filter != nullptr);
-    if (rt == nullptr) return;
+    RenderTarget* rt = image_manager -> GetActive() -> GetCanvas() -> GetData();
     filter -> apply(rt);
     rt -> display();
 }
