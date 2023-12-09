@@ -20,11 +20,9 @@ using namespace plugin;
 class InvFilter : public FilterI {
     static const size_t NUM_OF_PARAMS = 0;
 
-    double params[1];
-
     public:
 
-    explicit InvFilter();
+    explicit InvFilter() {}
 
     virtual void apply(RenderTargetI *data) override;
 

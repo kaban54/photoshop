@@ -2,17 +2,7 @@
 
 //--------------------------------------------------------------------------------------------------
 
-InvFilter::InvFilter () {
-    params[0] = 0;
-    // for (size_t i = 0; i < NUM_OF_PARAMS; i++) p_names.PushBack(PARAM_NAMES[i]);
-}
-
-// const char* const InvFilter::PARAM_NAMES[] = {""};
-
 void InvFilter::apply (RenderTargetI *data) {
-    
-    // std::cout << "Applying InvFilter: param = " << params[0] << "\n";
-
     Texture* img = data -> getTexture();
 
     Color* pixels = img -> pixels;

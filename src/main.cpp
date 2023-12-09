@@ -33,7 +33,7 @@ int main() {
     MyApp app (W, H, &event_man, &rt);
     app.SetupWidgets();
 
-
+    /*
     void *lib1 = dlopen("plugins/ilya.so", RTLD_NOW | RTLD_LOCAL);
     getInstance_t get_inst = (getInstance_t) dlsym (lib1, "getInstance");
     app.AddPlugin(get_inst(&app));
@@ -45,6 +45,7 @@ int main() {
     void *lib3 = dlopen("plugins/plug1.so", RTLD_NOW | RTLD_LOCAL);
     get_inst = (getInstance_t) dlsym (lib3, "getInstance");
     app.AddPlugin(get_inst(&app));
+    */
 
     Vec2 mousepos (0, 0);
     sf::Clock clk;
@@ -101,9 +102,9 @@ int main() {
         sfwindow.display();
     }
 
-    dlclose(lib1);
-    dlclose(lib2);
-    dlclose(lib3);
+    // dlclose(lib1);
+    // dlclose(lib2);
+    // dlclose(lib3);
 
     fclose (eventlogfile);
     return 0;

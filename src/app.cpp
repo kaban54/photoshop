@@ -85,6 +85,18 @@ void MyApp::SetupWidgets() {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 255, 255)));
 
+    TwoColMenu* cols_tcm = new TwoColMenu (5, 610, 70, 70);
+    cols_tcm -> setAvailable (true);
+    mainwin -> registerSubWidget (cols_tcm);
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 0, 0)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 255, 0)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 0, 255)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 0, 255)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 255, 0)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 255, 255)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 0, 0)));
+    cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 255, 255)));
+
     filters.PushBack (new InvFilter);
     filters.PushBack (new ClearFilter);
     filters_vm = new VerticalMenu (405, 265);
