@@ -9,6 +9,7 @@ SaveFileController::SaveFileController(CanvasWindow* win_, EventManagerI* event_
         edit_box = new EditBox (50, 90, 500, 50, 30);
         mw -> registerSubWidget(edit_box);
         edit_box -> SetText(win -> GetName());
+        mw -> RenderInRegset(*(mw -> GetRendertarget()), mw -> GetRegset());
     }
 
 void SaveFileController::OkBtnPress() {
@@ -56,6 +57,7 @@ OpenFileController::OpenFileController(ImageManager* image_man_, ToolManager* to
         mw -> SetName("Open file");
         edit_box = new EditBox (50, 90, 500, 50, 30);
         mw -> registerSubWidget(edit_box);
+        mw -> RenderInRegset(*(mw -> GetRendertarget()), mw -> GetRegset());
     }
 
 void OpenFileController::OkBtnPress() {
