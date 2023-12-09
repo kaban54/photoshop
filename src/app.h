@@ -59,6 +59,7 @@ struct Gui : public GuiI {
 class MyApp : public App {
     ToolManager* tool_manager;
     FilterManager* filter_manager;
+    ImageManager* image_manager;
 
     MyVector<ToolI*> tools;
     MyVector<FilterI*> filters;

@@ -46,7 +46,7 @@ MyApp::~MyApp() {
     delete gui;
     delete tool_manager;
     delete filter_manager;
-
+    delete image_manager;
     
     for (size_t i = 0; i < tools   .GetSize(); i++) delete tools   [i];
     for (size_t i = 0; i < filters .GetSize(); i++) delete filters [i];
@@ -73,8 +73,6 @@ void MyApp::SetupWidgets() {
     mainwin -> registerSubWidget (tools_tcm);
     tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
     tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
-    // mainwin -> registerSubWidget (new ToolImgBtn (5, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
-    // mainwin -> registerSubWidget (new ToolImgBtn (75, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 195);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 0, 0)));
@@ -114,12 +112,11 @@ void MyApp::SetupWidgets() {
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
     mainwin -> registerSubWidget (vm);
     mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "edit", 30, vm));
-    Window* win = new Window (150, 140, 870, 930);
-    win -> registerSubWidget (new Canvas (5, 35, 860, 890, tool_manager, filter_manager));
-    mainwin -> registerSubWidget (win);
-    win = new Window (1030, 140, 870, 930);
-    win -> registerSubWidget (new Canvas (5, 35, 860, 890, tool_manager, filter_manager));
-    mainwin -> registerSubWidget (win);
+
+    image_manager = new ImageManager;
+    mainwin -> registerSubWidget (new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager, filter_manager));
+    mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager, filter_manager));
+
     gui -> getRoot() -> registerSubWidget(mainwin);
 }
 
