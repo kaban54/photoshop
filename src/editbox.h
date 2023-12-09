@@ -20,8 +20,6 @@ struct EditBox : public Widget {
 
     ~EditBox() {};
 
-    virtual void render(RenderTargetI* rt) override;
-
     virtual void RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) override;
 
     void DrawCursor_rs (RenderTarget& rt, const RegionSet* to_draw);

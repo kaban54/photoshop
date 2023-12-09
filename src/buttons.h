@@ -31,8 +31,6 @@ class Button : public Widget {
     virtual bool onClock (uint64_t delta) override {return false;}
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
-
-    virtual void render(RenderTargetI*) override;
 };
 
 

@@ -48,10 +48,6 @@ void Button::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     DrawButton (rt, GetBounds(), state, to_draw);
 }
 
-void Button::render(RenderTargetI*) {
-    
-}
-
 
 ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Texture* texture_):
     Button (x, y, w, h, action_, action_args_),

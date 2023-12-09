@@ -1,6 +1,6 @@
 #include "canvas.h"
 
-Canvas::Canvas(double x, double y, double w, double h, ToolManagerI* tm, FilterManagerI* fm):
+Canvas::Canvas(double x, double y, double w, double h, ToolManager* tm, FilterManager* fm):
     Widget (x, y, w, h), 
     drawing (false),
     tool_man (tm),
@@ -50,15 +50,6 @@ bool Canvas::onClock (uint64_t delta) {
         RenderInRegset(*GetRendertarget(), GetRegset());
     }
     return false;
-}
-
-void Canvas::render(RenderTargetI* rt) {
-    Texture* data_texture = data.getTexture();
-    Texture*  tmp_texture =  tmp.getTexture();
-    rt -> drawTexture(getPos(), getSize(), data_texture);
-    rt -> drawTexture(getPos(), getSize(),  tmp_texture);
-    delete data_texture;
-    delete  tmp_texture;
 }
 
 void Canvas::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {

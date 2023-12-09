@@ -26,8 +26,8 @@ int main() {
     EventManager event_man;
     event_man.registerObject (&eventlogger);
 
-    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
-    // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
+    // sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228", sf::Style::Fullscreen);
+    sf::RenderWindow sfwindow (sf::VideoMode (W, H), "PHOTOSHOP228");
     sfwindow.setFramerateLimit (120);
 
     MyApp app (W, H, &event_man, &rt);

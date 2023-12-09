@@ -97,7 +97,7 @@ class WidgetManager : public EventProcessableI {
     virtual bool onClock (uint64_t delta) override;
 };
 
-class Widget : public WidgetI, public EventProcessableI{
+class Widget : public WidgetI, public EventProcessableI {
     Rect bounds;
     WidgetManager subwidgets;
     RegionSet regset;

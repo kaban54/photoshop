@@ -51,12 +51,15 @@ struct Gui : public GuiI {
     ~Gui();
 
     virtual WidgetI* getRoot() const override;
-    virtual void createWidgetI(PluginWidgetI* widget) = 0;
-    virtual Plugin *queryPlugin(uint64_t id) = 0;
-    virtual Texture *loadTextureFromFile(const char *filename) = 0;
+    virtual void createWidgetI(PluginWidgetI* widget) override;
+    virtual Plugin *queryPlugin(uint64_t id) override;
+    virtual Texture *loadTextureFromFile(const char *filename) override;
 };
 
 class MyApp : public App {
+    ToolManager* tool_manager;
+    FilterManager* filter_manager;
+
     MyVector<ToolI*> tools;
     MyVector<FilterI*> filters;
     MyVector<Plugin*> plugins;
@@ -64,6 +67,7 @@ class MyApp : public App {
 
     VerticalMenu* tools_vm;
     VerticalMenu* filters_vm;
+    TwoColMenu* tools_tcm;
 
     public:
 
@@ -76,8 +80,6 @@ class MyApp : public App {
     void AddPlugin(Plugin* plug);
 };
 
-
-plugin::Texture* LoadFromFile(const char* filename);
 
 extern "C" plugin::Plugin* getInstance(plugin::App *app);
 

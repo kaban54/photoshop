@@ -28,8 +28,8 @@ class InvFilter : public FilterI {
 
     virtual void apply(RenderTargetI *data) override;
 
-    virtual Array<const char *> getParamNames() override;
-    virtual Array<double> getParams() override;
+    virtual Array<const char *> getParamNames() const override;
+    virtual Array<double> getParams() const override;
     virtual void setParams(Array<double> new_params) override;
 };
 
@@ -46,13 +46,13 @@ class ClearFilter : public FilterI {
 
     virtual void apply(RenderTargetI *data) override;
     
-    virtual Array<const char *> getParamNames() override;
-    virtual Array<double> getParams() override;
+    virtual Array<const char *> getParamNames() const override;
+    virtual Array<double> getParams() const override;
     virtual void setParams(Array<double> new_params) override;
 };
 
 
-class FilterManager : public FilterManagerI {
+class FilterManager {
     FilterI* filter;
     RenderTargetI* rt;
 
@@ -60,9 +60,9 @@ class FilterManager : public FilterManagerI {
 
     explicit FilterManager();
 
-    virtual void setRenderTarget(RenderTargetI *target) override;
-    virtual void setFilter(FilterI *filter) override;
-    virtual void applyFilter() override;
+    void setRenderTarget(RenderTargetI *target);
+    void setFilter(FilterI *filter);
+    void applyFilter();
 };
 
 
@@ -79,7 +79,7 @@ class SetFilterOkBtn : public TxtButton {
 };
 
 class SetFilterController {
-    FilterManagerI* filter_man;
+    FilterManager* filter_man;
     FilterI* filter;
     EventManagerI* ev_man;
     WidgetI* parent_wid;
@@ -89,7 +89,7 @@ class SetFilterController {
 
     public:
 
-    explicit SetFilterController (FilterManagerI* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
+    explicit SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
 
     ~SetFilterController();
 
@@ -97,11 +97,11 @@ class SetFilterController {
 };
 
 struct FilterBtnArgs : public BtnArgs {
-    FilterManagerI* filter_man;
+    FilterManager* filter_man;
     FilterI* filter;
     EventManagerI* ev_man;
     WidgetI* parent_wid;
-    explicit FilterBtnArgs (FilterManagerI* filter_man_, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
+    explicit FilterBtnArgs (FilterManager* filter_man_, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
         filter_man (filter_man_),
         filter (filter_),
         ev_man (ev_man_),
@@ -114,7 +114,7 @@ class FilterBtn : public TxtButton {
     public:
 
     explicit FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                        FilterManagerI* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_);
+                        FilterManager* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_);
 };
 
 #endif

@@ -7,14 +7,14 @@
 
 class Canvas : public Widget {
     bool drawing;
-    ToolManagerI* tool_man;
-    FilterManagerI* filter_man;
+    ToolManager* tool_man;
+    FilterManager* filter_man;
     RenderTarget data;
     RenderTarget tmp;
 
     public:
 
-    explicit Canvas (double x, double y, double w, double h, ToolManagerI* tm, FilterManagerI* fm);
+    explicit Canvas (double x, double y, double w, double h, ToolManager* tm, FilterManager* fm);
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
@@ -22,8 +22,6 @@ class Canvas : public Widget {
     virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
     virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
     virtual bool onClock (uint64_t delta) override;
-
-    virtual void render(RenderTargetI* rt) override;
 
     virtual void RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) override;
 };

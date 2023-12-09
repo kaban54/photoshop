@@ -19,8 +19,6 @@ class Menu : public Widget {
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override {};
 
-    virtual void render(RenderTargetI*) override {};
-
     virtual bool MouseOnWidget (const Vec2& mousepos) const override;
 };
 
@@ -44,6 +42,18 @@ class VerticalMenu : public Menu {
     public:
 
     explicit VerticalMenu (double x, double y);
+
+    void AddButton (Button* btn);
+};
+
+class TwoColMenu : public Menu {
+    Vec2 pos;
+    Vec2 btn_size;
+    Vec2 nextbtn_pos;
+
+    public:
+
+    explicit TwoColMenu (double x, double y, double w, double h);
 
     void AddButton (Button* btn);
 };

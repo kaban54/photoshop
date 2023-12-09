@@ -33,7 +33,7 @@ class MyVector {
         return capacity;
     }
 
-    T* GetData() {
+    T* GetData() const {
         return data;
     }
 
@@ -174,13 +174,23 @@ namespace plugin {
         uint64_t size;
         T* data;
 
-        explicit Array (uint64_t size_, T* data_):
+        explicit Array (uint64_t size_, const T* data_):
             size (size_),
-            data (data_) {}
+            data (new T[size])
+            {
+                for (size_t i = 0; i < size; i++) data[i] = data_[i];
+            }
 
-        explicit Array (MyVector<T>& myvec):
+        explicit Array (const MyVector<T>& myvec):
             size (myvec.GetSize()),
-            data (myvec.GetData()) {}
+            data (new T[size])
+            {
+                for (size_t i = 0; i < size; i++) data[i] = myvec[i];
+            }
+        
+        ~Array() {
+            delete[] data;
+        }
     };
 }
 

@@ -22,11 +22,6 @@ void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     #endif
 }
 
-void Window::render(RenderTargetI* rt) {
-    rt -> drawRect (getPos(), getSize(), Color(0, 0, 0));
-    rt -> drawRect (getPos() + Vec2(2, 20), getSize() + Vec2(4, 22), WINDOW_BG_COLOR);
-}
-
 bool Window::onMousePress (MouseContext context) {
     if (!getAvailable()) return false;
     if (MouseOnWidget(context.position)) {
@@ -95,10 +90,6 @@ void Background::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 0, 255, 128));
     #endif
-}
-
-void Background::render(RenderTargetI* rt) {
-    rt -> drawRect(getPos(), getSize(), BG_COLOR);
 }
 
 bool Background::onMousePress (MouseContext context) {

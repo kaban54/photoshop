@@ -24,7 +24,7 @@ void Gui::createWidgetI(PluginWidgetI* widget) {
 }
 
 Plugin* Gui::queryPlugin(uint64_t id) {
-
+    return nullptr;
 }
 
 Texture* Gui::loadTextureFromFile(const char *filename) {
@@ -39,7 +39,7 @@ MyApp::MyApp(unsigned int w, unsigned int h, EventManagerI* event_man, RenderTar
     event_manager = event_man;
     tool_manager = new ToolManager;
     filter_manager = new FilterManager;
-    event_manager -> registerObject (gui->getRoot());
+    event_manager -> registerObject (dynamic_cast<EventProcessableI*>(gui -> getRoot()));
 }
 
 MyApp::~MyApp() {
@@ -58,7 +58,7 @@ void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
 
     Brush* brush = new Brush(25);
-    textures.PushBack(LoadFromFile("textures/brush_icon.png"));
+    textures.PushBack(gui -> loadTextureFromFile("textures/brush_icon.png"));
     brush -> SetIcon(textures.Back());
 
     tools.PushBack(brush);
@@ -66,8 +66,13 @@ void MyApp::SetupWidgets() {
     tool_manager -> setColor(Color(255, 0, 128));
 
     tools_vm = new VerticalMenu (405, 105);
+
+    tools_tcm = new TwoColMenu (5, 140, 70, 70);
+    tools_tcm -> setAvailable (true);
+    mainwin -> registerSubWidget (tools_tcm);
     tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
-    mainwin -> registerSubWidget (new ToolImgBtn (5, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
+    tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
+    // mainwin -> registerSubWidget (new ToolImgBtn (5, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
     // mainwin -> registerSubWidget (new ToolImgBtn (75, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
 
     VerticalMenu* cols_vm = new VerticalMenu (405, 185);
@@ -116,8 +121,4 @@ void MyApp::AddPlugin(Plugin* plug) {
         filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, plug -> name, 30, filter_manager,
                                                 filter, event_manager, gui -> getRoot()));
     }
-}
-
-plugin::Texture* LoadFromFile(const char* filename) {
-    
 }

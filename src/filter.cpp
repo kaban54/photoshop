@@ -30,11 +30,11 @@ void InvFilter::apply (RenderTargetI *data) {
     delete img;
 }
 
-Array<const char *> InvFilter::getParamNames() {
+Array<const char *> InvFilter::getParamNames() const {
     return Array<const char *> (NUM_OF_PARAMS, nullptr);
 }
 
-Array<double> InvFilter::getParams() {
+Array<double> InvFilter::getParams() const {
     return Array<double> (NUM_OF_PARAMS, nullptr);
 }
 
@@ -72,11 +72,11 @@ void ClearFilter::apply (RenderTargetI *data) {
     delete img;
 }
 
-Array<const char *> ClearFilter::getParamNames() {
+Array<const char *> ClearFilter::getParamNames() const {
     return Array<const char *> (p_names);
 }
 
-Array<double> ClearFilter::getParams() {
+Array<double> ClearFilter::getParams() const {
     return Array<double> (NUM_OF_PARAMS, params);
 }
 
@@ -129,7 +129,7 @@ bool SetFilterOkBtn::onMousePress (MouseContext context) {
     return false;
 }
 
-SetFilterController::SetFilterController (FilterManagerI* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_):
+SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_):
     filter_man (fm),
     filter (filt),
     ev_man (ev_man_),
@@ -169,7 +169,7 @@ void SetFilterController::OkBtnPress() {
 
 
 void filter_btn_action (BtnArgs* filter_btn_args) {
-    FilterManagerI* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
+    FilterManager* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
     FilterI*        filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
     EventManagerI*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
     WidgetI*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
@@ -183,7 +183,7 @@ void filter_btn_action (BtnArgs* filter_btn_args) {
 }
 
 FilterBtn::FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                      FilterManagerI* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
+                      FilterManager* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
     TxtButton (x, y, w, h, filter_btn_action, &filter_btn_args, str, char_size_),
     filter_btn_args (fm, filter_, ev_man_, parent_wid_)
     {}
