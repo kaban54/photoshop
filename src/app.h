@@ -40,6 +40,8 @@ namespace plugin {
 
 using namespace plugin;
 
+const char* const TEXTURES_FOLDER_NAME = "textures/";
+
 struct Gui : public GuiI {
     const unsigned int width;
     const unsigned int height;

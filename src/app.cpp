@@ -28,8 +28,10 @@ Plugin* Gui::queryPlugin(uint64_t id) {
 }
 
 Texture* Gui::loadTextureFromFile(const char *filename) {
+    char full_name[128] = "";
+    sprintf(full_name, "%s%s", TEXTURES_FOLDER_NAME, filename);
     sf::Texture sft;
-    sft.loadFromFile(filename);
+    sft.loadFromFile(full_name);
     sf::Image sfimg = sft.copyToImage();
     return new Texture (sfimg.getSize().x, sfimg.getSize().y, (Color*)sfimg.getPixelsPtr());
 }
@@ -60,7 +62,7 @@ void MyApp::SetupWidgets() {
     mainwin->SetName ("Test");
 
     Brush* brush = new Brush(25);
-    textures.PushBack(gui -> loadTextureFromFile("textures/brush_icon.png"));
+    textures.PushBack(gui -> loadTextureFromFile("brush_icon.png"));
     brush -> SetIcon(textures.Back());
 
     tools.PushBack(brush);
