@@ -2,8 +2,7 @@
 #define FILTER_H
 
 #include "rendertarget.h"
-#include "buttons.h"
-#include "window.h"
+#include "controller.h"
 #include "editbox.h"
 #include "interface.h"
 #include "canvas.h"
@@ -64,24 +63,10 @@ class FilterManager {
 };
 
 
-class SetFilterController;
 
-class SetFilterOkBtn : public TxtButton {
-    SetFilterController* sfc;
-
-    public:
-
-    SetFilterOkBtn (double x, double y, double w, double h, SetFilterController* sfc_);
-
-    virtual bool onMousePress (MouseContext context) override;
-};
-
-class SetFilterController {
+class SetFilterController : public MWController{
     FilterManager* filter_man;
     FilterI* filter;
-    EventManagerI* ev_man;
-    WidgetI* parent_wid;
-    ModalWindow* mw;
     std::vector<FloatNumEditBox*> editboxes;
     size_t num_of_params;
 
@@ -89,9 +74,9 @@ class SetFilterController {
 
     explicit SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
 
-    ~SetFilterController();
+    virtual ~SetFilterController() = default;
 
-    void OkBtnPress();
+    virtual void OkBtnPress() override;
 };
 
 struct FilterBtnArgs : public BtnArgs {

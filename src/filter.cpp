@@ -100,33 +100,18 @@ void FilterManager::applyFilter() {
 
 //-----------------------------------------------------------------------------------------------------------
 
-SetFilterOkBtn::SetFilterOkBtn (double x, double y, double w, double h, SetFilterController* sfc_):
-    TxtButton (x, y, w, h, nullptr, nullptr, "OK", 30),
-    sfc (sfc_)
-    {}
-
-bool SetFilterOkBtn::onMousePress (MouseContext context) {
-    if (state == BTN_DISABLED) return false;
-
-    if (MouseOnWidget (context.position)) {
-        state = BTN_PRESSED;
-        sfc -> OkBtnPress();
-    }
-    return false;
-}
 
 SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_):
+    MWController (ev_man_, parent_wid_, Vec2(150, 150), Vec2(400, 400)),
     filter_man (fm),
     filter (filt),
-    ev_man (ev_man_),
-    parent_wid (parent_wid_),
     editboxes ()
     {
         Array<const char*> param_names = filter -> getParamNames();
         num_of_params = param_names.size;
 
-        mw = new ModalWindow (150, 150, 400, 100 * (num_of_params) + 125, ev_man);
-        mw -> registerSubWidget (new SetFilterOkBtn (100, 100 * (num_of_params) + 50, 200, 50, this));
+        ModalWindow* mw = GetMW();
+        mw -> setSize (Vec2(400, 100 * (num_of_params) + 125));
 
         for (unsigned int i = 0; i < num_of_params; i++) {
             editboxes.push_back(new FloatNumEditBox (200, 50 + 100 * i, 180, 50, 30));
@@ -134,13 +119,8 @@ SetFilterController::SetFilterController (FilterManager* fm, FilterI* filt, Even
             mw -> registerSubWidget (new TxtWidget (20, 50 + 100 * i, 180, 50, param_names.data[i], 30,
                                                     Color(0, 0, 0), Color(128, 128, 128)));
         }
-
-        parent_wid -> registerSubWidget (mw);
+        mw -> Show();
     }
-
-SetFilterController::~SetFilterController() {
-    mw -> need_to_close = true;
-}
 
 void SetFilterController::OkBtnPress() {
     MyVector<double> params;
