@@ -118,6 +118,7 @@ MyVector<void*> OpenPlugins(const char* filename, MyApp& app) {
         full_name += plugin_name;
         void *lib = dlopen(full_name.c_str(), RTLD_NOW | RTLD_LOCAL);
         getInstance_t get_inst = (getInstance_t) dlsym (lib, "getInstance");
+        std::cerr << full_name << ": " << get_inst << "\n";
         if (get_inst) {
             app.AddPlugin(get_inst(&app));
             ret.PushBack(lib);

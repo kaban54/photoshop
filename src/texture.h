@@ -15,8 +15,6 @@ namespace plugin {
         explicit Color(uint8_t r_, uint8_t g_, uint8_t b_, uint8_t a_ = 255);
 
         explicit Color();
-
-        // sf::Color GetSfColor() const;
     };
 
     struct Texture {

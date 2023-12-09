@@ -82,6 +82,10 @@ Texture* RenderTarget::getTexture() const {
     return new Texture(sfimg.getSize().x, sfimg.getSize().y, (Color *)sfimg.getPixelsPtr());
 }
 
+void RenderTarget::setTexture(Texture *texture) {
+    drawTexture(Vec2(0, 0), Vec2(screen.getSize().x, screen.getSize().y), texture);
+}
+
 void RenderTarget::display() {
     changed = true;
     screen.display();
@@ -89,6 +93,11 @@ void RenderTarget::display() {
 
 void RenderTarget::clear() {
     screen.clear();
+    screen.display();
+}
+
+void RenderTarget::clear(Color color) {
+    screen.clear(sf::Color(color.r, color.g, color.b, color.a));
     screen.display();
 }
 

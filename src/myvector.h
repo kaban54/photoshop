@@ -188,6 +188,13 @@ namespace plugin {
                 for (size_t i = 0; i < size; i++) data[i] = myvec[i];
             }
         
+        explicit Array (const Array<T>& arr):
+            size (arr.size),
+            data (new T[size])
+            {
+                for (size_t i = 0; i < size; i++) data[i] = arr.data[i];
+            }
+        
         ~Array() {
             delete[] data;
         }

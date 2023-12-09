@@ -17,6 +17,10 @@ bwplug: obj/texture.o obj/vec2.o src/test_plugin.cpp
 	g++ -c -o obj/bwplug.o src/bwplug.cpp $(CFLAGS)
 	gcc -shared -o plugins/bwplug.so obj/texture.o obj/vec2.o obj/bwplug.o $(LDFLAGS)
 
+rect_tool: obj/texture.o obj/vec2.o src/rect_tool.cpp
+	g++ -c -o obj/rect_tool.o src/rect_tool.cpp $(CFLAGS)
+	gcc -shared -o plugins/rect_tool.so obj/texture.o obj/vec2.o obj/rect_tool.o $(LDFLAGS)
+
 
 $(OBJDIR)%.o: $(SRCDIR)%.cpp
 	$(CC) -c $(CFLAGS) $< -o $@

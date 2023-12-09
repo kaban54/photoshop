@@ -46,7 +46,7 @@ void BlackAndWhiteFilter::setParams(Array<double> new_params) {
 
 TestPlugin::TestPlugin() {
     id = 1ull << 54;
-    name = "plugin228";
+    name = "BlackWhite";
     type = InterfaceType::Filter;
     filter = new BlackAndWhiteFilter;
 }
