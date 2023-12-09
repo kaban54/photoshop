@@ -13,9 +13,9 @@ app: obj/main.o obj/vec2.o obj/widget.o obj/rendertarget.o obj/region.o obj/butt
 	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o obj/files.o $(SFMLFLAGS) $(LDFLAGS)
 
 
-plug1: obj/texture.o obj/vec2.o src/test_plugin.cpp
-	g++ -c -o obj/plug1.o src/test_plugin.cpp $(CFLAGS)
-	gcc -shared -o plugins/plug1.so obj/texture.o obj/vec2.o obj/plug1.o $(LDFLAGS)
+bwplug: obj/texture.o obj/vec2.o src/test_plugin.cpp
+	g++ -c -o obj/bwplug.o src/bwplug.cpp $(CFLAGS)
+	gcc -shared -o plugins/bwplug.so obj/texture.o obj/vec2.o obj/bwplug.o $(LDFLAGS)
 
 
 $(OBJDIR)%.o: $(SRCDIR)%.cpp

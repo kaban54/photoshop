@@ -1,19 +1,27 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
 #include <dlfcn.h>
 #include "app.h"
 
-const char* FONT_FILENAME = "fonts/font2.ttf";
-const char* EVENTLOG_FILENAME = "logs/eventlog";
+const char* const FONT_FILENAME = "fonts/font2.ttf";
+const char* const EVENTLOG_FILENAME = "logs/eventlog";
+const char* const PLUGINLIST_FILENAME = "plugins/plugin_list";
+const char* const PLUGIN_FOLDER_NAME = "plugins/";
 
 const int W = 2160;
 const int H = 1440;
 
 typedef plugin::Plugin* (*getInstance_t)(plugin::App *app);
+
+
+MyVector<void*> OpenPlugins(const char* filename, MyApp& app);
+
+void ClosePlugins(MyVector<void*> libs);
 
 int main() {
     sf::Font fnt;
@@ -33,19 +41,7 @@ int main() {
     MyApp app (W, H, &event_man, &rt);
     app.SetupWidgets();
 
-    /*
-    void *lib1 = dlopen("plugins/ilya.so", RTLD_NOW | RTLD_LOCAL);
-    getInstance_t get_inst = (getInstance_t) dlsym (lib1, "getInstance");
-    app.AddPlugin(get_inst(&app));
-
-    void *lib2 = dlopen("plugins/monoParam.so", RTLD_NOW | RTLD_LOCAL);
-    get_inst = (getInstance_t) dlsym (lib2, "getInstance");
-    app.AddPlugin(get_inst(&app));
-
-    void *lib3 = dlopen("plugins/plug1.so", RTLD_NOW | RTLD_LOCAL);
-    get_inst = (getInstance_t) dlsym (lib3, "getInstance");
-    app.AddPlugin(get_inst(&app));
-    */
+    MyVector<void*> libs = OpenPlugins(PLUGINLIST_FILENAME, app);
 
     Vec2 mousepos (0, 0);
     sf::Clock clk;
@@ -102,10 +98,35 @@ int main() {
         sfwindow.display();
     }
 
-    // dlclose(lib1);
-    // dlclose(lib2);
-    // dlclose(lib3);
+    // ClosePlugins(libs);
 
     fclose (eventlogfile);
     return 0;
+}
+
+MyVector<void*> OpenPlugins(const char* filename, MyApp& app) {
+    MyVector<void*> ret;
+    std::fstream file;
+    file.open(filename);
+    if (!file.is_open()) return ret;
+
+    std::string plugin_name;
+    std::string full_name;
+    
+    while (std::getline(file, plugin_name)) {
+        full_name.assign(PLUGIN_FOLDER_NAME);
+        full_name += plugin_name;
+        void *lib = dlopen(full_name.c_str(), RTLD_NOW | RTLD_LOCAL);
+        getInstance_t get_inst = (getInstance_t) dlsym (lib, "getInstance");
+        if (get_inst) {
+            app.AddPlugin(get_inst(&app));
+            ret.PushBack(lib);
+        }
+    }
+
+    return ret;
+}
+
+void ClosePlugins(MyVector<void*> libs) {
+    for (size_t i = 0; i < libs.GetSize(); i++) dlclose(libs[i]);
 }
