@@ -25,9 +25,9 @@ void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs (rect, BG_COLOR, to_draw);
 
     if (name[0] != '\0') {
-        Vec2 txt_size = rt.GetTxtSize (name, 25, strlen(name));
+        Vec2 txt_size = rt.GetTxtSize (name.c_str(), 25, name.size());
         Vec2 txt_pos (getPos().x + (getSize().x - txt_size.x ) / 2, getPos().y + 2);
-        rt.DrawText_rs(txt_pos, name, 25, Color(255, 255, 255), to_draw);
+        rt.DrawText_rs(txt_pos, name.c_str(), 25, Color(255, 255, 255), to_draw);
     }
 
     #ifdef REGDEBUG

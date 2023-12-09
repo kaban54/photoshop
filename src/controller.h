@@ -17,6 +17,7 @@ class MWController {
     virtual ~MWController();
 
     ModalWindow* GetMW() {return mw;}
+    WidgetI* GetParent() {return parent_wid;}
 
     virtual void OkBtnPress();
     virtual void CloseBtnPress();

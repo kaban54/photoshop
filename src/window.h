@@ -13,15 +13,15 @@ class Window : public Widget {
 
     Vec2 hold_pos;
     bool is_moving;
-    const char* name;
+    std::string name;
 
     public:
     bool need_to_close;
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
 
-    void SetName(const char* name_) {name = name_;}
-    const char* GetName() {return name;}
+    void SetName(const char* name_) {name.assign(name_);}
+    const char* GetName() {return name.c_str();}
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 

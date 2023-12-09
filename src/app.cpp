@@ -120,6 +120,7 @@ void MyApp::SetupWidgets() {
     mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager));
 
     VerticalMenu* file_vm = new VerticalMenu (5, 115);
+    file_vm -> AddButton (new OpenBtn (0, 0, 200, 80, 30, image_manager, tool_manager, event_manager, mainwin));
     file_vm -> AddButton (new SaveBtn (0, 0, 200, 80, 30, image_manager, event_manager, mainwin));
     mainwin -> registerSubWidget (file_vm);
     mainwin -> registerSubWidget (new MenuBtn (5, 35, 200, 80, "File", 30, file_vm));
