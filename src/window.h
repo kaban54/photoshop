@@ -4,17 +4,24 @@
 #include "widget.h"
 #include "buttons.h"
 
-const Color WINDOW_BG_COLOR = Color (128, 128, 128);
-const Color BG_COLOR = Color (192, 192, 192);
 
 class Window : public Widget {
+
+    static const Color BG_COLOR;
+    static const Color BAR_COLOR;
+    static const double BAR_HEIGHT;
+
     Vec2 hold_pos;
     bool is_moving;
+    const char* name;
 
     public:
     bool need_to_close;
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
+
+    void SetName(const char* name_) {name = name_;}
+    const char* GetName() {return name;}
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
@@ -30,6 +37,9 @@ class Window : public Widget {
 
 
 class Background : public Widget {
+    
+    static const Color BG_COLOR;
+
     public:
 
     explicit Background (double w_, double h_);

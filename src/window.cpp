@@ -1,21 +1,34 @@
 #include "window.h"
 
+const Color Window::BG_COLOR  = Color (128, 128, 128);
+const Color Window::BAR_COLOR = Color (0, 0, 0);
+const double Window::BAR_HEIGHT = 30;
+
+const Color Background::BG_COLOR = Color (192, 192, 192);
+
 Window::Window (double x, double y, double w, double h, bool close_btn):
     Widget (x, y, w, h),
     is_moving (false),
+    name (""),
     need_to_close (false)
     {
-        if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
+        if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, BAR_HEIGHT, this));
     }
 
 void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     Rect rect = GetBounds();
-    rt.DrawRect_rs (rect, Color(0, 0, 0), to_draw);
+    rt.DrawRect_rs (rect, BAR_COLOR, to_draw);
     rect.x += 2;
-    rect.y += 20;
+    rect.y += BAR_HEIGHT;
     rect.w -= 4;
-    rect.h -= 22;
-    rt.DrawRect_rs (rect, WINDOW_BG_COLOR, to_draw);
+    rect.h -= BAR_HEIGHT + 2;
+    rt.DrawRect_rs (rect, BG_COLOR, to_draw);
+
+    if (name[0] != '\0') {
+        Vec2 txt_size = rt.GetTxtSize (name, 25, strlen(name));
+        Vec2 txt_pos (getPos().x + (getSize().x - txt_size.x ) / 2, getPos().y + 2);
+        rt.DrawText_rs(txt_pos, name, 25, Color(255, 255, 255), to_draw);
+    }
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(255, 0, 0, 128));
@@ -25,7 +38,7 @@ void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
 bool Window::onMousePress (MouseContext context) {
     if (!getAvailable()) return false;
     if (MouseOnWidget(context.position)) {
-        if (Rect(getPos().x, getPos().y, getSize().x, 20).Contains(context.position) &&
+        if (Rect(getPos().x, getPos().y, getSize().x, BAR_HEIGHT).Contains(context.position) &&
             context.button == MouseButton::Left) {
                 is_moving = true;
                 hold_pos = context.position;

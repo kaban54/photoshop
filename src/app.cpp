@@ -56,6 +56,7 @@ MyApp::~MyApp() {
 
 void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
+    mainwin->SetName ("Test");
 
     Brush* brush = new Brush(25);
     textures.PushBack(gui -> loadTextureFromFile("textures/brush_icon.png"));
@@ -65,7 +66,7 @@ void MyApp::SetupWidgets() {
     tool_manager -> setTool(tools[0]);
     tool_manager -> setColor(Color(255, 0, 128));
 
-    tools_vm = new VerticalMenu (405, 105);
+    tools_vm = new VerticalMenu (405, 115);
 
     tools_tcm = new TwoColMenu (5, 140, 70, 70);
     tools_tcm -> setAvailable (true);
@@ -75,7 +76,7 @@ void MyApp::SetupWidgets() {
     // mainwin -> registerSubWidget (new ToolImgBtn (5, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
     // mainwin -> registerSubWidget (new ToolImgBtn (75, 140, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
 
-    VerticalMenu* cols_vm = new VerticalMenu (405, 185);
+    VerticalMenu* cols_vm = new VerticalMenu (405, 195);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 255, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 0, 255)));
@@ -99,12 +100,12 @@ void MyApp::SetupWidgets() {
 
     filters.PushBack (new InvFilter);
     filters.PushBack (new ClearFilter);
-    filters_vm = new VerticalMenu (405, 265);
+    filters_vm = new VerticalMenu (405, 275);
     filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "inversion", 30,
                                             filter_manager, filters[0], event_manager, mainwin));
     filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "clear", 30,
                                             filter_manager, filters[1], event_manager, mainwin));
-    VerticalMenu* vm = new VerticalMenu (205, 105);
+    VerticalMenu* vm = new VerticalMenu (205, 115);
     vm -> registerSubWidget (tools_vm);
     vm -> registerSubWidget (cols_vm);
     vm -> registerSubWidget (filters_vm);
@@ -112,12 +113,12 @@ void MyApp::SetupWidgets() {
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors" , 30,    cols_vm));
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
     mainwin -> registerSubWidget (vm);
-    mainwin -> registerSubWidget (new MenuBtn (205, 25, 200, 80, "edit", 30, vm));
+    mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "edit", 30, vm));
     Window* win = new Window (150, 140, 870, 930);
-    win -> registerSubWidget (new Canvas (5, 25, 860, 900, tool_manager, filter_manager));
+    win -> registerSubWidget (new Canvas (5, 35, 860, 890, tool_manager, filter_manager));
     mainwin -> registerSubWidget (win);
     win = new Window (1030, 140, 870, 930);
-    win -> registerSubWidget (new Canvas (5, 25, 860, 900, tool_manager, filter_manager));
+    win -> registerSubWidget (new Canvas (5, 35, 860, 890, tool_manager, filter_manager));
     mainwin -> registerSubWidget (win);
     gui -> getRoot() -> registerSubWidget(mainwin);
 }
