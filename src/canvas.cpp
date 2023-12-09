@@ -96,7 +96,7 @@ void ImageManager::RemoveWindow(CanvasWindow* win) {
     if (node != nullptr) windows.Remove(node);
 }
 
-CanvasWindow* ImageManager::GetActive() {
+CanvasWindow* ImageManager::GetActive() const {
     if (windows.GetSize() == 0) return nullptr;
     else return windows.GetTail() -> val;
 }

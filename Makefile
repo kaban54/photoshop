@@ -8,9 +8,9 @@ SRCDIR = src/
 all: app
 
 app: obj/main.o obj/vec2.o obj/widget.o obj/rendertarget.o obj/region.o obj/buttons.o obj/app.o obj/controller.o\
-	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o
+	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o obj/files.o
 	$(CC) -o app obj/main.o obj/vec2.o obj/widget.o obj/rendertarget.o obj/region.o obj/buttons.o obj/app.o obj/controller.o\
-	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o $(SFMLFLAGS) $(LDFLAGS)
+	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o obj/files.o $(SFMLFLAGS) $(LDFLAGS)
 
 
 plug1: obj/texture.o obj/vec2.o src/test_plugin.cpp

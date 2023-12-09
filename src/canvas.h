@@ -42,9 +42,11 @@ class ImageManager {
 
     void RemoveWindow(CanvasWindow* win);
 
-    CanvasWindow* GetActive();
+    CanvasWindow* GetActive() const;
 
     void SetActive(CanvasWindow* win);
+
+    size_t GetSize() const {return windows.GetSize();}
 };
 
 class CanvasWindow : public Window {

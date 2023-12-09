@@ -114,10 +114,15 @@ void MyApp::SetupWidgets() {
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors" , 30,    cols_vm));
     vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
     mainwin -> registerSubWidget (vm);
-    mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "edit", 30, vm));
+    mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "Edit", 30, vm));
 
     mainwin -> registerSubWidget (new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager));
     mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager));
+
+    VerticalMenu* file_vm = new VerticalMenu (5, 115);
+    file_vm -> AddButton (new SaveBtn (0, 0, 200, 80, 30, image_manager, event_manager, mainwin));
+    mainwin -> registerSubWidget (file_vm);
+    mainwin -> registerSubWidget (new MenuBtn (5, 35, 200, 80, "File", 30, file_vm));
 
     gui -> getRoot() -> registerSubWidget(mainwin);
 }

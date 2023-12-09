@@ -11,6 +11,12 @@ EditBox::EditBox (double x, double y, double w, double h, size_t char_size_):
     {}
 
 
+void EditBox::SetText(const char* str) {
+    txt.assign(str);
+    cursor_pos = txt.size();
+    RenderInRegset (*GetRendertarget(), GetRegset());
+}
+
 void EditBox::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs (GetBounds(), Color(255, 255, 255), to_draw);
     if (txt.size() > 0) rt.DrawText_rs (getPos() + Vec2(10, 10), txt.c_str(), char_size, Color(0, 0, 0), to_draw);

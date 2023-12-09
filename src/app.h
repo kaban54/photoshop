@@ -7,6 +7,7 @@
 #include "filter.h"
 #include "menu.h"
 #include "canvas.h"
+#include "files.h"
 
 
 namespace plugin {
