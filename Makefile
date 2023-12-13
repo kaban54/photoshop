@@ -12,6 +12,10 @@ app: obj/main.o obj/vec2.o obj/widget.o obj/rendertarget.o obj/region.o obj/butt
 	$(CC) -o app obj/main.o obj/vec2.o obj/widget.o obj/rendertarget.o obj/region.o obj/buttons.o obj/app.o obj/controller.o\
 	  obj/canvas.o obj/events.o obj/window.o obj/menu.o obj/tool.o obj/filter.o obj/editbox.o obj/texture.o obj/files.o $(SFMLFLAGS) $(LDFLAGS)
 
+appv1: obj/stdv1/main.o obj/stdv1/vec2.o obj/stdv1/widget.o obj/stdv1/rendertarget.o obj/stdv1/region.o obj/stdv1/buttons.o obj/stdv1/app.o obj/stdv1/controller.o\
+	  obj/stdv1/canvas.o obj/stdv1/events.o obj/stdv1/window.o obj/stdv1/menu.o obj/stdv1/tool.o obj/stdv1/filter.o obj/stdv1/editbox.o obj/stdv1/texture.o obj/stdv1/files.o
+	$(CC) -o appv1 obj/stdv1/main.o obj/stdv1/vec2.o obj/stdv1/widget.o obj/stdv1/rendertarget.o obj/stdv1/region.o obj/stdv1/buttons.o obj/stdv1/app.o obj/stdv1/controller.o\
+	  obj/stdv1/canvas.o obj/stdv1/events.o obj/stdv1/window.o obj/stdv1/menu.o obj/stdv1/tool.o obj/stdv1/filter.o obj/stdv1/editbox.o obj/stdv1/texture.o obj/stdv1/files.o $(SFMLFLAGS) $(LDFLAGS)
 
 bwplug: obj/texture.o obj/vec2.o src/test_plugin.cpp
 	g++ -c -o obj/bwplug.o src/bwplug.cpp $(CFLAGS)
