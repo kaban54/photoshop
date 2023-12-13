@@ -67,6 +67,11 @@ void Widget::Move_noupdate(Vec2 shift) {
     if (rt != nullptr) RenderInRegset(*rt, &regset);
 }
 
+void Widget::setAvailable(bool vis_) {
+    visible = vis_;
+    UpdateAllRegsets();
+}
+
 void Widget::SetRenderTarget (RenderTarget *rt_) {
     rt = rt_;
     subwidgets.SetRenderTarget(rt_);
@@ -133,7 +138,7 @@ void Widget::UpdateRegset(const RegionSet& regs) {
         newregs += to_draw;
         to_draw -= regset;
 
-        if (to_draw.regions.GetSize() > 0) RenderInRegset(*rt, &to_draw);
+        if (to_draw.regions.GetSize() > 0 || IsExtern()) RenderInRegset(*rt, &to_draw);
     }
     regset.regions.Clear();
     regset += newregs;

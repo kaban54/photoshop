@@ -3,3 +3,4 @@ bwplug.so
 libsphere_filter.so
 libfill_tool_plugin.so
 spline_tool.so
+libtrip_filter_plugin.so

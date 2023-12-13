@@ -115,7 +115,7 @@ class Widget : public WidgetI, public EventProcessableI {
     virtual void move(Vec2 shift);
 
     virtual bool getAvailable() const override {return visible;}
-    virtual void setAvailable(bool vis_) override {visible = vis_;}
+    virtual void setAvailable(bool vis_) override;
 
     void Move_noupdate(Vec2 shift);
 
@@ -142,6 +142,8 @@ class Widget : public WidgetI, public EventProcessableI {
     void RenderSubWidgets (RenderTarget& rt) const;
 
     virtual uint8_t getPriority() const override {return 0;}
+
+    virtual bool IsExtern() const {return false;}
 };
 
 class TxtWidget : public Widget{
@@ -182,6 +184,8 @@ class ExternWidget : public Widget {
     virtual bool onClock (uint64_t delta) override;
 
     virtual uint8_t getPriority() const override;
+
+    virtual bool IsExtern() const override {return true;}
 };
 
 #endif
