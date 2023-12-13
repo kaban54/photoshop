@@ -66,9 +66,6 @@ bool Window::onMouseMove (MouseContext context) {
         Vec2 mousepos = context.position;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
             move (mousepos - hold_pos);
-            Show();
-            RenderInRegset(*GetRendertarget(), GetRegset());
-            RenderSubWidgets(*GetRendertarget());
             hold_pos = mousepos;
         }
     }

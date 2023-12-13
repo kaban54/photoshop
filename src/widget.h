@@ -62,7 +62,7 @@ class WidgetManager : public EventProcessableI {
 
     void Render (RenderTarget& rt) const;
 
-    void Move (const Vec2& vec);
+    void Move_noupdate(const Vec2& vec);
 
     void SetRenderTarget (RenderTarget *rt_);
 
@@ -117,6 +117,7 @@ class Widget : public WidgetI, public EventProcessableI {
     virtual bool getAvailable() const override {return visible;}
     virtual void setAvailable(bool vis_) override {visible = vis_;}
 
+    void Move_noupdate(Vec2 shift);
 
     const Rect& GetBounds() const {return bounds;}
     void SetBounds (const Rect& bounds_) {bounds = bounds_;}

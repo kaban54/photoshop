@@ -21,31 +21,34 @@ Widget::Widget (double x, double y, double w, double h):
 Widget::~Widget() {
     if (parent != nullptr) {
         parent -> unregisterSubWidget(this);
-        parent -> UpdateAllRegsets();
     }
 }
 
 void Widget::registerSubWidget(WidgetI* wid_i) {
     Widget* wid = dynamic_cast<Widget*>(wid_i);
-    wid -> move(getPos());
-    wid -> setParent(this);
-    subwidgets.AddWidget (wid);
     wid -> SetRenderTarget(rt);
-    UpdateAllRegsets();
+    wid -> setParent(this);
+    subwidgets.AddWidget(wid);
+    wid -> move(getPos());
 }
 
 void Widget::unregisterSubWidget(WidgetI* wid) {
     subwidgets.RemoveWidget(dynamic_cast<Widget*>(wid));
+    UpdateAllRegsets();
 }
 
 void Widget::setSize(Vec2 new_size) {
     bounds.w = new_size.x;
     bounds.h = new_size.y;
+    regset.regions.Clear();
+    UpdateAllRegsets();
 }
 
 void Widget::setPos(Vec2 new_pos) {
     bounds.x = new_pos.x;
     bounds.y = new_pos.y;
+    regset.regions.Clear();
+    UpdateAllRegsets();
 }
 
 void Widget::setParent(WidgetI *root) {
@@ -53,9 +56,15 @@ void Widget::setParent(WidgetI *root) {
 }
 
 void Widget::move(Vec2 shift) {
+    Move_noupdate(shift);
+    UpdateAllRegsets();
+}
+
+void Widget::Move_noupdate(Vec2 shift) {
     bounds.Move(shift);
     regset.Move(shift);
-    subwidgets.Move(shift);
+    subwidgets.Move_noupdate(shift);
+    if (rt != nullptr) RenderInRegset(*rt, &regset);
 }
 
 void Widget::SetRenderTarget (RenderTarget *rt_) {
@@ -173,11 +182,11 @@ void WidgetManager::Render (RenderTarget& rt) const {
     }
 }
 
-void WidgetManager::Move (const Vec2& vec) {
+void WidgetManager::Move_noupdate (const Vec2& vec) {
     ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val -> move(vec);
+        node -> val -> Move_noupdate(vec);
         widgets.Iterate(node);
     }
 }
