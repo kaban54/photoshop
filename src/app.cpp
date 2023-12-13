@@ -54,7 +54,7 @@ MyApp::~MyApp() {
 
 void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
-    mainwin -> SetName ("Test");
+    mainwin -> SetName ("PHOTOSHOP EEEE!");
 
     Brush* brush = new Brush(25);
     textures.PushBack(gui -> loadTextureFromFile("brush_icon.png"));
@@ -94,25 +94,30 @@ void MyApp::SetupWidgets() {
     cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 0, 0)));
     cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 255, 255)));
 
+    VerticalMenu* vm = new VerticalMenu (205, 115);
+    vm -> registerSubWidget (tools_vm);
+    vm -> registerSubWidget (cols_vm);
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  "tools" , 30,   tools_vm));
+    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors" , 30,    cols_vm));
+    mainwin -> registerSubWidget (vm);
+    mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "Edit", 30, vm));
+
     filters.PushBack (new InvFilter);
     filters.PushBack (new ClearFilter);
-    filters_vm = new VerticalMenu (405, 275);
+    filters_vm = new VerticalMenu (405, 115);
     filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "inversion", 30,
                                             filter_manager, filters[0], event_manager, mainwin));
     filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "clear", 30,
                                             filter_manager, filters[1], event_manager, mainwin));
-    VerticalMenu* vm = new VerticalMenu (205, 115);
-    vm -> registerSubWidget (tools_vm);
-    vm -> registerSubWidget (cols_vm);
-    vm -> registerSubWidget (filters_vm);
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80,  "tools" , 30,   tools_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "colors" , 30,    cols_vm));
-    vm -> AddButton (new MenuBtn (0, 0, 200, 80, "filters", 30, filters_vm));
-    mainwin -> registerSubWidget (vm);
-    mainwin -> registerSubWidget (new MenuBtn (205, 35, 200, 80, "Edit", 30, vm));
+    mainwin -> registerSubWidget (filters_vm);
+    mainwin -> registerSubWidget (new MenuBtn (405, 35, 300, 80, "filters", 30, filters_vm));
 
-    mainwin -> registerSubWidget (new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager));
-    mainwin -> registerSubWidget (new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager));
+    CanvasWindow* cw = new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager);
+    cw -> SetName("untitled1.png");
+    mainwin -> registerSubWidget(cw);
+    cw = new CanvasWindow (1030, 140, 870, 930, image_manager, tool_manager);
+    cw -> SetName("untitled2.png");
+    mainwin -> registerSubWidget(cw);
 
     VerticalMenu* file_vm = new VerticalMenu (5, 115);
     file_vm -> AddButton (new OpenBtn (0, 0, 200, 80, 30, image_manager, tool_manager, event_manager, mainwin));
