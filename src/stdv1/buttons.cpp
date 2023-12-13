@@ -59,7 +59,7 @@ ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, 
     render_target (w - 16, h - 16)
     {
         render_target.drawRect (Vec2(0, 0), Vec2(w - 16, h - 16), Color(0, 0, 0, 0));
-        render_target.drawTexture (Vec2(0, 0), Vec2(w - 16, h - 16), texture);
+        if (texture != nullptr) render_target.drawTexture (Vec2(0, 0), Vec2(w - 16, h - 16), texture);
     }
 
 

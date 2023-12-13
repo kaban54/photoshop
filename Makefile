@@ -35,6 +35,7 @@ $(OBJDIR)%.o: $(SRCDIR)%.cpp
 
 clean:
 	rm obj/*.o -f
+	rm obj/stdv1/*.o -f
 	clear
 	
 .PHONY: clean

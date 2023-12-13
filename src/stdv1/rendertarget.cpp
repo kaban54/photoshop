@@ -88,7 +88,7 @@ void RenderTarget::display() {
 }
 
 void RenderTarget::clear() {
-    screen.clear();
+    screen.clear(sf::Color(0, 0, 0, 0));
     screen.display();
 }
 
