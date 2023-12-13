@@ -174,12 +174,30 @@ namespace plugin {
         uint64_t size;
         T* data;
 
-        explicit Array (uint64_t size_, const T* data_):
-            size (size_),
-            data (new T[size])
-            {
-                for (size_t i = 0; i < size; i++) data[i] = data_[i];
-            }
+        Array(uint64_t _size, const T* _data): size(_size), data(new T[_size]) {
+            std::copy(_data, _data + _size, data);
+        }
+
+        Array(const Array<T>& other): Array(other.size, other.data) {}
+        
+        Array& operator=(const Array<T>& other) {
+            size = other.size;
+            delete data;
+            data = new T[other.size];
+            std::copy(other.data, other.data + other.size, data);
+	        return *this;
+        }
+
+        Array(Array<T>&& other) {
+            std::swap(size, other.size);
+            std::swap(data, other.data);
+        }
+
+        Array& operator=(Array<T>&& other) {
+            std::swap(size, other.size);
+            std::swap(data, other.data);
+	        return *this;
+        }
 
         explicit Array (const MyVector<T>& myvec):
             size (myvec.GetSize()),
@@ -187,14 +205,7 @@ namespace plugin {
             {
                 for (size_t i = 0; i < size; i++) data[i] = myvec[i];
             }
-        
-        explicit Array (const Array<T>& arr):
-            size (arr.size),
-            data (new T[size])
-            {
-                for (size_t i = 0; i < size; i++) data[i] = arr.data[i];
-            }
-        
+
         ~Array() {
             delete[] data;
         }

@@ -21,6 +21,10 @@ rect_tool: obj/texture.o obj/vec2.o src/rect_tool.cpp
 	g++ -c -o obj/rect_tool.o src/rect_tool.cpp $(CFLAGS)
 	gcc -shared -o plugins/rect_tool.so obj/texture.o obj/vec2.o obj/rect_tool.o $(LDFLAGS)
 
+spline_tool: obj/texture.o obj/vec2.o obj/catmullrom.o src/spline_tool.cpp
+	g++ -c -o obj/spline_tool.o src/spline_tool.cpp $(CFLAGS)
+	gcc -shared -o plugins/spline_tool.so obj/texture.o obj/vec2.o obj/catmullrom.o obj/spline_tool.o $(LDFLAGS)
+
 
 $(OBJDIR)%.o: $(SRCDIR)%.cpp
 	$(CC) -c $(CFLAGS) $< -o $@

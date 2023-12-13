@@ -89,6 +89,10 @@ namespace plugin {
         return Vec2(vec1.x * vec2.x, vec1.y * vec2.y);
     }
 
+    bool operator== (const Vec2& vec1, const Vec2& vec2) {
+        return vec1.x == vec2.x && vec1.y == vec2.y;
+    }
+
     double GetRandAngle () {
         return std::rand() / (RAND_MAX / (M_PI * 2));
     }

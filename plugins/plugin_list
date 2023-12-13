@@ -1,4 +1,5 @@
 rect_tool.so
 bwplug.so
 libsphere_filter.so
-libfill_tool_plugin_dbg.so
+libfill_tool_plugin.so
+spline_tool.so
