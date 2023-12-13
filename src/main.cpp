@@ -10,7 +10,7 @@
 
 const char* const FONT_FILENAME = "fonts/font2.ttf";
 const char* const EVENTLOG_FILENAME = "logs/eventlog";
-const char* const PLUGINLIST_FILENAME = "plugins/plugin_list";
+const char* const PLUGINLIST_FILENAME = "plugin_list";
 const char* const PLUGIN_FOLDER_NAME = "plugins/";
 
 const int W = 2160;

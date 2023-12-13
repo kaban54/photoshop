@@ -34,15 +34,15 @@ int main() {
     app.SetupWidgets();
 
 
-    void *lib1 = dlopen("plugins/ilya.so", RTLD_NOW | RTLD_LOCAL);
+    void *lib1 = dlopen("plugins/stdv1/ilya.so", RTLD_NOW | RTLD_LOCAL);
     getInstance_t get_inst = (getInstance_t) dlsym (lib1, "getInstance");
     app.AddPlugin(get_inst(&app));
 
-    void *lib2 = dlopen("plugins/monoParam.so", RTLD_NOW | RTLD_LOCAL);
+    void *lib2 = dlopen("plugins/stdv1/monoParam.so", RTLD_NOW | RTLD_LOCAL);
     get_inst = (getInstance_t) dlsym (lib2, "getInstance");
     app.AddPlugin(get_inst(&app));
 
-    void *lib3 = dlopen("plugins/plug1.so", RTLD_NOW | RTLD_LOCAL);
+    void *lib3 = dlopen("plugins/stdv1/plug1.so", RTLD_NOW | RTLD_LOCAL);
     get_inst = (getInstance_t) dlsym (lib3, "getInstance");
     app.AddPlugin(get_inst(&app));
 
