@@ -1,11 +1,5 @@
 #include "widget.h"
 
-// WidgetShell::WidgetShell() {};
-
-// WidgetShell::WidgetShell(WidgetI* wid):
-//         external (wid),
-//         internal (dynamic_cast<Widget*>(wid)) {}
-
 Widget::Widget():
     bounds (),
     subwidgets (),
@@ -75,14 +69,16 @@ void Widget::RenderSubWidgets (RenderTarget& rt) const {
 
 void Widget::UpdateAllRegsets() {
     if (rt == nullptr) return;
-    Widget* w_ptr = this;
-    while (w_ptr -> parent != nullptr) {w_ptr = w_ptr -> parent;}
-    RegionSet regs;
-    GetMaxRegset(&regs);
-    UpdateRegset(regs);
+    if (parent != nullptr) parent -> UpdateAllRegsets();
+    else {
+        RegionSet regs;
+        GetMaxRegset(&regs);
+        UpdateRegset(regs);
+    }
 }
 
 void Widget::Show() {
+    if (rt == nullptr) return;
     if (parent != nullptr) {
         parent -> subwidgets.MoveToTail(this);
         parent -> Show();
@@ -128,13 +124,7 @@ void Widget::UpdateRegset(const RegionSet& regs) {
         newregs += to_draw;
         to_draw -= regset;
 
-        #ifndef REGDEBUG
         if (to_draw.regions.GetSize() > 0) RenderInRegset(*rt, &to_draw);
-        #else
-        Render (*rt, &newregs);
-        // rt -> DrawRegset (regset, Color (0, 0, 255, 128));
-        rt -> DrawRegset (to_draw, Color (255, 0, 0, 128), true);
-        #endif
     }
     regset.regions.Clear();
     regset += newregs;
@@ -334,4 +324,40 @@ TxtWidget::TxtWidget (double x, double y, double w, double h, const char* txt_, 
 void TxtWidget::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs(Rect(getPos(), getPos() + getSize()), bg_col, to_draw);
     rt.DrawText_rs(getPos(), txt, char_size, fill_col, to_draw);
+}
+
+
+ExternWidget::ExternWidget(PluginWidgetI* plug_wid_):
+    plug_wid (plug_wid_) {}
+
+void ExternWidget::RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) {
+    plug_wid -> render(&rt);
+}
+
+bool ExternWidget::onMousePress(MouseContext context) {
+    return plug_wid -> onMousePress(context);
+}
+
+bool ExternWidget::onMouseRelease(MouseContext context) {
+    return plug_wid -> onMouseRelease(context);
+}
+
+bool ExternWidget::onMouseMove(MouseContext context) {
+    return plug_wid -> onMouseMove(context);
+}
+
+bool ExternWidget::onKeyboardPress(KeyboardContext context) {
+    return plug_wid -> onKeyboardPress(context);
+}
+
+bool ExternWidget::onKeyboardRelease(KeyboardContext context) {
+    return plug_wid -> onKeyboardRelease(context);
+}
+
+bool ExternWidget::onClock(uint64_t delta) {
+    return plug_wid -> onClock(delta);
+}
+
+uint8_t ExternWidget::getPriority() const {
+    return plug_wid -> getPriority();
 }

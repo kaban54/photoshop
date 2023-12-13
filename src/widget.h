@@ -45,19 +45,6 @@ using namespace plugin;
 
 class Widget;
 
-// struct WidgetShell {
-//     WidgetI* external;
-//     Widget*  internal;
-
-//     explicit WidgetShell();
-
-//     explicit WidgetShell(WidgetI* wid);
-// };
-
-// inline bool operator== (const WidgetShell& w1, const WidgetShell& w2) {
-//     return w1.external == w2.external;
-// }
-
 class WidgetManager : public EventProcessableI {
     public:
 
@@ -174,6 +161,26 @@ class TxtWidget : public Widget{
     virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
     virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
     virtual bool onClock (uint64_t delta) override {return false;}
+};
+
+
+class ExternWidget : public Widget {
+    PluginWidgetI* plug_wid;
+
+    public:
+
+    explicit ExternWidget(PluginWidgetI* plug_wid);
+
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+
+    virtual bool onMousePress   (MouseContext context) override;
+    virtual bool onMouseRelease (MouseContext context) override;
+    virtual bool onMouseMove    (MouseContext context) override;
+    virtual bool onKeyboardPress   (KeyboardContext context) override;
+    virtual bool onKeyboardRelease (KeyboardContext context) override;
+    virtual bool onClock (uint64_t delta) override;
+
+    virtual uint8_t getPriority() const override;
 };
 
 #endif
