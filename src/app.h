@@ -44,15 +44,13 @@ using namespace plugin;
 const char* const TEXTURES_FOLDER_NAME = "textures/";
 
 struct Gui : public GuiI {
-    const unsigned int width;
-    const unsigned int height;
     RenderTarget* rt;
-    Background *root;
+    WidgetI *root;
     MyVector<Plugin*> plugins;
 
-    explicit Gui(unsigned int w, unsigned int h, RenderTarget* rt_);
+    explicit Gui(RenderTarget* rt_);
 
-    ~Gui();
+    ~Gui() = default;
 
     virtual WidgetI* getRoot() const override;
     virtual void createWidgetI(PluginWidgetI* widget) override;
@@ -75,6 +73,7 @@ class MyApp : public App {
     VerticalMenu* tools_vm;
     VerticalMenu* filters_vm;
     TwoColMenu* tools_tcm;
+    Background* bg;
 
     public:
 

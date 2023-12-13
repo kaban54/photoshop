@@ -1,25 +1,14 @@
 #include "app.h"
 
-Gui::Gui(unsigned int w, unsigned int h, RenderTarget* rt_):
-    width (w),
-    height (h),
-    rt (rt_)
-    {
-        root = new Background(w, h);
-        root -> SetRenderTarget(rt);
-    }
-
-Gui::~Gui() {
-    delete root;
-}
-
+Gui::Gui(RenderTarget* rt_):
+    rt (rt_) {}
 
 WidgetI* Gui::getRoot() const {
     return root;
 }
 
 void Gui::createWidgetI(PluginWidgetI* widget) {
-    // widget -> host = new Widget;
+    widget -> host = new ExternWidget(widget);
 }
 
 Plugin* Gui::queryPlugin(uint64_t id) {
@@ -39,13 +28,15 @@ Texture* Gui::loadTextureFromFile(const char *filename) {
 }
 
 MyApp::MyApp(unsigned int w, unsigned int h, EventManagerI* event_man, RenderTarget* rt_) {
-    mygui = new Gui(w, h, rt_);
+    mygui = new Gui(rt_);
     gui = mygui;
+    bg = new Background(w, h);
+    bg -> SetRenderTarget(rt_);
     event_manager = event_man;
     tool_manager = new ToolManager;
     image_manager = new ImageManager;
     filter_manager = new FilterManager (image_manager);
-    event_manager -> registerObject (dynamic_cast<EventProcessableI*>(gui -> getRoot()));
+    event_manager -> registerObject (dynamic_cast<EventProcessableI*>(bg));
 }
 
 MyApp::~MyApp() {
@@ -53,6 +44,7 @@ MyApp::~MyApp() {
     delete tool_manager;
     delete filter_manager;
     delete image_manager;
+    delete bg;
     
     for (size_t i = 0; i < tools   .GetSize(); i++) delete tools   [i];
     for (size_t i = 0; i < filters .GetSize(); i++) delete filters [i];
@@ -62,7 +54,7 @@ MyApp::~MyApp() {
 
 void MyApp::SetupWidgets() {
     Window *mainwin = new Window (50, 50, 1920, 1080);
-    mainwin->SetName ("Test");
+    mainwin -> SetName ("Test");
 
     Brush* brush = new Brush(25);
     textures.PushBack(gui -> loadTextureFromFile("brush_icon.png"));
@@ -128,7 +120,8 @@ void MyApp::SetupWidgets() {
     mainwin -> registerSubWidget (file_vm);
     mainwin -> registerSubWidget (new MenuBtn (5, 35, 200, 80, "File", 30, file_vm));
 
-    gui -> getRoot() -> registerSubWidget(mainwin);
+    bg -> registerSubWidget(mainwin);
+    mygui -> root = mainwin;
 }
 
 void MyApp::AddPlugin(Plugin* plug) {
