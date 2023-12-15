@@ -371,14 +371,18 @@ void ExternWidget::RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) {
 }
 
 bool ExternWidget::onMousePress(MouseContext context) {
+    if (GetSubwidgets() -> onMousePress(context)) return true;
+    if (!MouseOnWidget(context.position)) return false;
     if (plug_wid -> onMousePress(context)) {
-        UpdateAllRegsets();
+        Show();
         return true;
     }
     return false;
 }
 
 bool ExternWidget::onMouseRelease(MouseContext context) {
+    if (GetSubwidgets() -> onMouseRelease(context)) return true;
+    // if (!MouseOnWidget(context.position)) return false;
     if (plug_wid -> onMouseRelease(context)) {
         UpdateAllRegsets();
         return true;
@@ -387,6 +391,8 @@ bool ExternWidget::onMouseRelease(MouseContext context) {
 }
 
 bool ExternWidget::onMouseMove(MouseContext context) {
+    if (GetSubwidgets() -> onMouseMove(context)) return true;
+    if (!MouseOnWidget(context.position)) return false;
     if (plug_wid -> onMouseMove(context)) {
         UpdateAllRegsets();
         return true;
@@ -395,6 +401,7 @@ bool ExternWidget::onMouseMove(MouseContext context) {
 }
 
 bool ExternWidget::onKeyboardPress(KeyboardContext context) {
+    if (GetSubwidgets() -> onKeyboardPress(context)) return true;
     if (plug_wid -> onKeyboardPress(context)) {
         UpdateAllRegsets();
         return true;
@@ -403,6 +410,7 @@ bool ExternWidget::onKeyboardPress(KeyboardContext context) {
 }
 
 bool ExternWidget::onKeyboardRelease(KeyboardContext context) {
+    if (GetSubwidgets() -> onKeyboardRelease(context)) return true;
     if (plug_wid -> onKeyboardRelease(context)) {
         UpdateAllRegsets();
         return true;
