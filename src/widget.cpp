@@ -392,7 +392,7 @@ bool ExternWidget::onMouseRelease(MouseContext context) {
 
 bool ExternWidget::onMouseMove(MouseContext context) {
     if (GetSubwidgets() -> onMouseMove(context)) return true;
-    if (!MouseOnWidget(context.position)) return false;
+    // if (!MouseOnWidget(context.position)) return false;
     if (plug_wid -> onMouseMove(context)) {
         UpdateAllRegsets();
         return true;

@@ -1,29 +1,12 @@
 #include "curves.h"
 
-
-
-CurvesFilterWindow::CurvesFilterWindow(GuiI* gui) {
-    gui -> createWidgetI(this);
-    host -> setSize(Vec2(WIDTH, HEIGHT));
-    host -> setPos(Vec2(100, 100));
-    gui -> getRoot() -> registerSubWidget(host);
-}
-
-bool CurvesFilterWindow::onMousePress(MouseContext context) {
-    host -> setAvailable(false);
-    return true;
-}
-
-void CurvesFilterWindow::render(RenderTargetI* rt) {
-    rt -> drawRect(host -> getPos(), host -> getSize(), Color(0, 255, 255));
-}
-
 CurvesFilter::CurvesFilter(GuiI* gui_):
     gui (gui_)
     {}
 
 void CurvesFilter::apply (RenderTargetI *data) {
-    new CurvesFilterWindow(gui);
+    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(400, 400));
+    gui -> getRoot() -> registerSubWidget(win -> host);
 }
 
 Array<const char *> CurvesFilter::getParamNames() const {

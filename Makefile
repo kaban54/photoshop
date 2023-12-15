@@ -29,9 +29,9 @@ spline_tool: obj/texture.o obj/vec2.o obj/catmullrom.o src/spline_tool.cpp
 	g++ -c -o obj/spline_tool.o src/spline_tool.cpp $(CFLAGS)
 	gcc -shared -o plugins/spline_tool.so obj/texture.o obj/vec2.o obj/catmullrom.o obj/spline_tool.o $(LDFLAGS)
 
-curves: obj/texture.o obj/vec2.o obj/catmullrom.o src/curves.cpp
+curves: obj/texture.o obj/vec2.o obj/catmullrom.o obj/pluginwidget.o src/curves.cpp
 	g++ -c -o obj/curves.o src/curves.cpp $(CFLAGS)
-	gcc -shared -o plugins/curves.so obj/texture.o obj/vec2.o obj/catmullrom.o obj/curves.o $(LDFLAGS)
+	gcc -shared -o plugins/curves.so obj/texture.o obj/vec2.o obj/catmullrom.o obj/pluginwidget.o obj/curves.o $(LDFLAGS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
