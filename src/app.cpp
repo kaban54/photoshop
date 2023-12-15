@@ -67,7 +67,7 @@ void MyApp::SetupWidgets() {
     tools_vm = new VerticalMenu (405, 115);
 
     tools_tcm = new TwoColMenu (5, 140, 70, 70);
-    tools_tcm -> setAvailable (true);
+    tools_tcm -> SetVisible(true);
     mainwin -> registerSubWidget (tools_tcm);
     tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
     tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
@@ -83,7 +83,7 @@ void MyApp::SetupWidgets() {
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 255, 255)));
 
     TwoColMenu* cols_tcm = new TwoColMenu (5, 610, 70, 70);
-    cols_tcm -> setAvailable (true);
+    cols_tcm -> SetVisible (true);
     mainwin -> registerSubWidget (cols_tcm);
     cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(255, 0, 0)));
     cols_tcm -> AddButton (new ColorBtn (0, 0, 70, 70, tool_manager, Color(0, 255, 0)));

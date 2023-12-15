@@ -12,7 +12,7 @@ MWController::MWController (EventManagerI* event_man, WidgetI* parent, Vec2 mwpo
     }
 
 MWController::~MWController() {
-    mw -> need_to_close = true;
+    mw -> setAvailable(false);
 }
 
 void MWController::OkBtnPress() {

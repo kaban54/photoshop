@@ -16,7 +16,6 @@ class Window : public Widget {
     std::string name;
 
     public:
-    bool need_to_close;
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
 

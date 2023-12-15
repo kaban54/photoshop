@@ -9,8 +9,7 @@ const Color Background::BG_COLOR = Color (192, 192, 192);
 Window::Window (double x, double y, double w, double h, bool close_btn):
     Widget (x, y, w, h),
     is_moving (false),
-    name (""),
-    need_to_close (false)
+    name ("")
     {
         if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, BAR_HEIGHT, this));
     }
@@ -46,7 +45,7 @@ bool Window::onMousePress (MouseContext context) {
         Show();
     }
     GetSubwidgets() -> onMousePress(context);
-    if (need_to_close) Close();
+    if (!getAvailable()) Close();
     return false;
 }
 
@@ -155,7 +154,7 @@ ModalWindow::~ModalWindow() {
 }
 
 void window_close_btn_action (BtnArgs* btn_args) {
-    ((WindowCloseBtnArgs*) btn_args) -> win -> need_to_close = true;
+    ((WindowCloseBtnArgs*) btn_args) -> win -> setAvailable(false);
 }
 
 WindowCloseBtn::WindowCloseBtn (double x, double y, double w, double h, Window* win_):

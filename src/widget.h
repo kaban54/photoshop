@@ -91,6 +91,7 @@ class Widget : public WidgetI, public EventProcessableI {
     Widget* parent;
     RenderTarget* rt;
     bool visible;
+    bool avalible;
 
     public:
 
@@ -114,8 +115,11 @@ class Widget : public WidgetI, public EventProcessableI {
 
     virtual void move(Vec2 shift);
 
-    virtual bool getAvailable() const override {return visible;}
-    virtual void setAvailable(bool vis_) override;
+    virtual bool getAvailable() const override {return avalible;}
+    virtual void setAvailable(bool avalible_) override;
+
+    bool GetVisible() {return visible;}
+    void SetVisible(bool vis);
 
     void Move_noupdate(Vec2 shift);
 
@@ -144,6 +148,8 @@ class Widget : public WidgetI, public EventProcessableI {
     virtual uint8_t getPriority() const override {return 0;}
 
     virtual bool IsExtern() const {return false;}
+
+    virtual bool onClock (uint64_t delta) override;
 };
 
 class TxtWidget : public Widget{
@@ -163,7 +169,6 @@ class TxtWidget : public Widget{
     virtual bool onMouseMove    (MouseContext context) override {return false;}
     virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
     virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
-    virtual bool onClock (uint64_t delta) override {return false;}
 };
 
 
@@ -173,6 +178,8 @@ class ExternWidget : public Widget {
     public:
 
     explicit ExternWidget(PluginWidgetI* plug_wid);
+
+    ~ExternWidget() {delete plug_wid;}
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 

@@ -7,7 +7,7 @@ class Menu : public Widget {
     public:
 
     explicit Menu () {
-        setAvailable(false);
+        SetVisible(false);
     }
 
     virtual bool onMousePress   (MouseContext context) override;
@@ -15,7 +15,6 @@ class Menu : public Widget {
     virtual bool onMouseMove    (MouseContext context) override;
     virtual bool onKeyboardPress   (KeyboardContext context) override {return false;}
     virtual bool onKeyboardRelease (KeyboardContext context) override {return false;}
-    virtual bool onClock (uint64_t delta) override {return false;}
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override {};
 
