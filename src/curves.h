@@ -51,6 +51,22 @@ void get_values (uint8_t values[256], Vec2 p0, Vec2 p1, Vec2 p2         );
 void get_values (uint8_t values[256], Vec2 p0, Vec2 p1                  );
 
 
+struct CurvesApplyBtnArgs : public BtnArgs {
+    RenderTargetI* data;
+    CurveWid* r_curve;
+    CurveWid* g_curve;
+    CurveWid* b_curve;
+    PluginWindow* win;
+};
+
+class CurvesApplyBtn : public PluginTxtButton {
+    CurvesApplyBtnArgs args;
+    public:
+
+    CurvesApplyBtn(GuiI* gui, Vec2 pos, Vec2 size, CurvesApplyBtnArgs args_);
+};
+
+
 class CurvesFilter : public FilterI {
     GuiI* gui;
     public:

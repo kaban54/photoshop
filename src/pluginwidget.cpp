@@ -20,6 +20,7 @@ PluginTxtButton::PluginTxtButton(GuiI* gui, Vec2 pos, Vec2 size, BtnFunc* action
     PluginWidget(gui, pos, size),
     action (action_),
     action_args (action_args_),
+    state (BTN_NORMAL),
     txt (str),
     char_size (char_size_)
     {}
@@ -31,10 +32,6 @@ void PluginTxtButton::SetText (const char *str, uint16_t char_size_) {
 
 bool PluginTxtButton::onMousePress(MouseContext context) {
     if (state == BTN_DISABLED) return false;
-
-    Vec2 pos  = host -> getPos();
-    Vec2 size = host -> getSize();
-
     if (MouseOnWidget(context.position)) {
         state = BTN_PRESSED;
         action(action_args);

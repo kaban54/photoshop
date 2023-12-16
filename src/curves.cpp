@@ -239,15 +239,64 @@ void get_values (uint8_t values[256], Vec2 p0, Vec2 p1) {
 }
 
 
+void curves_apply_action (BtnArgs* args) {
+    RenderTargetI* data = ((CurvesApplyBtnArgs*) args) -> data;
+    CurveWid* r_curve = ((CurvesApplyBtnArgs*) args) -> r_curve;
+    CurveWid* g_curve = ((CurvesApplyBtnArgs*) args) -> g_curve;
+    CurveWid* b_curve = ((CurvesApplyBtnArgs*) args) -> b_curve;
+    PluginWindow* win = ((CurvesApplyBtnArgs*) args) -> win;
+
+    uint8_t rval[256], gval[256], bval[256];
+    r_curve -> GetValues(rval);
+    g_curve -> GetValues(gval);
+    b_curve -> GetValues(bval); 
+
+    Texture* img = data -> getTexture();
+    Color* pixels = img -> pixels;
+    unsigned int w = img -> width;
+    unsigned int h = img -> height;
+
+    for (unsigned int x = 0; x < w; x++) {
+        for (unsigned int y = 0; y < h; y++) {
+            Color* pix = pixels + y * w + x;
+            *pix = Color(rval[pix -> r], gval[pix -> g], bval[pix -> b]);
+        }
+    }
+    data -> drawTexture(Vec2(0, 0), Vec2(w, h), img);
+    data -> display();
+    delete img;
+    win -> host -> setAvailable(false);
+}
+
+CurvesApplyBtn::CurvesApplyBtn(GuiI* gui, Vec2 pos, Vec2 size, CurvesApplyBtnArgs args_):
+    PluginTxtButton (gui, pos, size, curves_apply_action, &args, "Apply"),
+    args (args_)
+    {
+        SetTxtPos(Vec2(10, 20));
+    }
+
+
 CurvesFilter::CurvesFilter(GuiI* gui_):
     gui (gui_)
     {}
 
 void CurvesFilter::apply (RenderTargetI *data) {
-    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(400, 400));
-    CurveWid* curve = new CurveWid(gui, Vec2(100, 100), Vec2(200, 200));
-    curve -> SetColor (Color(255, 0, 0));
-    win -> host -> registerSubWidget(curve -> host);
+    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(1000, 400));
+    CurvesApplyBtnArgs args;
+    args.data = data;
+    args.win = win;
+    args.r_curve = new CurveWid(gui, Vec2(100, 100), Vec2(200, 200));
+    args.g_curve = new CurveWid(gui, Vec2(400, 100), Vec2(200, 200));
+    args.b_curve = new CurveWid(gui, Vec2(700, 100), Vec2(200, 200));
+    args.r_curve -> SetColor (Color(255, 0, 0));
+    args.g_curve -> SetColor (Color(0, 255, 0));
+    args.b_curve -> SetColor (Color(0, 0, 255));
+    win -> host -> registerSubWidget(args.r_curve -> host);
+    win -> host -> registerSubWidget(args.g_curve -> host);
+    win -> host -> registerSubWidget(args.b_curve -> host);
+    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(30, 30), Vec2(100, 50), args);
+    win -> host -> registerSubWidget(btn -> host);
+    
     gui -> getRoot() -> registerSubWidget(win -> host);
 }
 
