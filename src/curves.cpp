@@ -14,7 +14,6 @@ CurveWid::CurveWid (GuiI* gui, Vec2 pos_, Vec2 size_):
         points.PushBack(Vec2(size.x, 0));
     }
 
-
 void CurveWid::render (RenderTargetI* rt) {
     Vec2 pos = host -> getPos() + Vec2(POINT_RADIUS, POINT_RADIUS);
     rt -> drawRect(host -> getPos() , host -> getSize(), Color(0, 0, 0));
@@ -41,7 +40,6 @@ void CurveWid::render (RenderTargetI* rt) {
                           2 * Vec2(POINT_RADIUS, POINT_RADIUS), color);
     }
 }
-
 
 bool CurveWid::onMousePress(MouseContext context) {
     Vec2 mpos = context.position - host -> getPos() - Vec2(POINT_RADIUS, POINT_RADIUS);
@@ -130,7 +128,6 @@ void CurveWid::GetValues(uint8_t values[256]) {
 Vec2 Get256Coords(Vec2 point, Vec2 size) {
     return Vec2 (int(point.x * 255 / size.x), (size.y - point.y) * 255 / size.y);
 }
-
 
 void get_values (uint8_t values[256], Vec2 p0, Vec2 p1, Vec2 p2, Vec2 p3) {
     assert(   0 <= p0.x);
