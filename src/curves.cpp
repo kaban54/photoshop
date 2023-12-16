@@ -272,7 +272,7 @@ CurvesApplyBtn::CurvesApplyBtn(GuiI* gui, Vec2 pos, Vec2 size, CurvesApplyBtnArg
     PluginTxtButton (gui, pos, size, curves_apply_action, &args, "Apply"),
     args (args_)
     {
-        SetTxtPos(Vec2(10, 20));
+        SetTxtPos(Vec2(10, 10));
     }
 
 
@@ -285,7 +285,7 @@ CloseBtn::CloseBtn(GuiI* gui, Vec2 pos, Vec2 size, PluginWindow* win):
     PluginTxtButton (gui, pos, size, close_action, &args, "Close")
     {
         args.win = win;
-        // SetTxtPos();
+        SetTxtPos(Vec2(10, 10));
     }
 
 
@@ -294,22 +294,24 @@ CurvesFilter::CurvesFilter(GuiI* gui_):
     {}
 
 void CurvesFilter::apply (RenderTargetI *data) {
-    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(1350, 555));
+    PluginWindow* win = new PluginWindow(gui, Vec2(50, 50), Vec2(1350, 555));
     CurvesApplyBtnArgs args;
     args.data = data;
     args.win = win;
-    args.r_curve = new CurveWid(gui, Vec2( 25, 55), Vec2(400, 400));
-    args.g_curve = new CurveWid(gui, Vec2(475, 55), Vec2(400, 400));
-    args.b_curve = new CurveWid(gui, Vec2(925, 55), Vec2(400, 400));
+    Vec2 size = win -> host -> getSize();
+    double curve_width = std::min((size.x - 150) / 3, size.y - 155);
+    args.r_curve = new CurveWid(gui, Vec2(25, 55)                   , Vec2(curve_width, curve_width));
+    args.g_curve = new CurveWid(gui, Vec2( 75 + curve_width    , 55), Vec2(curve_width, curve_width));
+    args.b_curve = new CurveWid(gui, Vec2(125 + curve_width * 2, 55), Vec2(curve_width, curve_width));
     args.r_curve -> SetColor (Color(255, 0, 0));
     args.g_curve -> SetColor (Color(0, 255, 0));
     args.b_curve -> SetColor (Color(0, 0, 255));
     win -> host -> registerSubWidget(args.r_curve -> host);
     win -> host -> registerSubWidget(args.g_curve -> host);
     win -> host -> registerSubWidget(args.b_curve -> host);
-    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(500, 480), Vec2(150, 50), args);
+    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(size.x / 2 - 175, size.y - 75), Vec2(150, 50), args);
     win -> host -> registerSubWidget(btn -> host);
-    CloseBtn* close_btn = new CloseBtn(gui, Vec2(700, 480), Vec2(150, 50), win);
+    CloseBtn* close_btn = new CloseBtn(gui, Vec2(size.x / 2 + 25, size.y - 75), Vec2(150, 50), win);
     win -> host -> registerSubWidget(close_btn -> host);
 
     gui -> getRoot() -> registerSubWidget(win -> host);

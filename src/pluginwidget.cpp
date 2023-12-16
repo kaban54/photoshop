@@ -133,4 +133,5 @@ bool PluginWindow::onMouseMove(MouseContext context) {
 void PluginWindow::render(RenderTargetI* rt) {
     rt -> drawRect(host -> getPos(), host -> getSize(), BAR_COLOR);
     rt -> drawRect(host -> getPos() + Vec2(2, BAR_HEIGHT), host -> getSize() - Vec2(4, BAR_HEIGHT + 2), BG_COLOR);
+    rt -> drawText(host -> getPos(), "JASJHKDJK", 40, Color(255, 0, 0));
 }
