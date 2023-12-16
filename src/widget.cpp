@@ -419,6 +419,7 @@ bool ExternWidget::onKeyboardRelease(KeyboardContext context) {
 }
 
 bool ExternWidget::onClock(uint64_t delta) {
+    GetSubwidgets() -> onClock(delta);
     if (getAvailable()) {
         bool ret = plug_wid -> onClock(delta);
         RenderInRegset(*GetRendertarget(), GetRegset());

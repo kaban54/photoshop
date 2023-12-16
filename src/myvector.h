@@ -68,6 +68,8 @@ class MyVector {
 
     void Insert (size_t index, const T& val);
 
+    void Remove (size_t index);
+
     void Clear();
 
     private:
@@ -153,6 +155,15 @@ void MyVector<T>::Insert (size_t index, const T& val) {
     }
     data[index] = val;
     size++;
+}
+
+template <typename T>
+void MyVector<T>::Remove(size_t index) {
+    assert(index < size);
+    for (size_t i = index + 1; i < size; i++) {
+        data[i - 1] = data[i];
+    }
+    --size;
 }
 
 template <typename T>
