@@ -66,6 +66,16 @@ class CurvesApplyBtn : public PluginTxtButton {
     CurvesApplyBtn(GuiI* gui, Vec2 pos, Vec2 size, CurvesApplyBtnArgs args_);
 };
 
+struct CloseBtnArgs : public BtnArgs {
+    PluginWindow* win;
+};
+
+class CloseBtn : public PluginTxtButton {
+    CloseBtnArgs args;
+    public:
+
+    CloseBtn(GuiI* gui, Vec2 pos, Vec2 size, PluginWindow* win);
+};
 
 class CurvesFilter : public FilterI {
     GuiI* gui;

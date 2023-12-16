@@ -276,6 +276,19 @@ CurvesApplyBtn::CurvesApplyBtn(GuiI* gui, Vec2 pos, Vec2 size, CurvesApplyBtnArg
     }
 
 
+void close_action (BtnArgs* args) {
+    PluginWindow* win = ((CloseBtnArgs*) args) -> win;
+    win -> host -> setAvailable(false);
+}
+
+CloseBtn::CloseBtn(GuiI* gui, Vec2 pos, Vec2 size, PluginWindow* win):
+    PluginTxtButton (gui, pos, size, close_action, &args, "Close")
+    {
+        args.win = win;
+        // SetTxtPos();
+    }
+
+
 CurvesFilter::CurvesFilter(GuiI* gui_):
     gui (gui_)
     {}
@@ -296,7 +309,9 @@ void CurvesFilter::apply (RenderTargetI *data) {
     win -> host -> registerSubWidget(args.b_curve -> host);
     CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(30, 30), Vec2(100, 50), args);
     win -> host -> registerSubWidget(btn -> host);
-    
+    CloseBtn* close_btn = new CloseBtn(gui, Vec2(150, 30), Vec2(100, 50), win);
+    win -> host -> registerSubWidget(close_btn -> host);
+
     gui -> getRoot() -> registerSubWidget(win -> host);
 }
 
