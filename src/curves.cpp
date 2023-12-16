@@ -294,22 +294,22 @@ CurvesFilter::CurvesFilter(GuiI* gui_):
     {}
 
 void CurvesFilter::apply (RenderTargetI *data) {
-    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(1000, 400));
+    PluginWindow* win = new PluginWindow(gui, Vec2(100, 100), Vec2(1350, 555));
     CurvesApplyBtnArgs args;
     args.data = data;
     args.win = win;
-    args.r_curve = new CurveWid(gui, Vec2(100, 100), Vec2(200, 200));
-    args.g_curve = new CurveWid(gui, Vec2(400, 100), Vec2(200, 200));
-    args.b_curve = new CurveWid(gui, Vec2(700, 100), Vec2(200, 200));
+    args.r_curve = new CurveWid(gui, Vec2( 25, 55), Vec2(400, 400));
+    args.g_curve = new CurveWid(gui, Vec2(475, 55), Vec2(400, 400));
+    args.b_curve = new CurveWid(gui, Vec2(925, 55), Vec2(400, 400));
     args.r_curve -> SetColor (Color(255, 0, 0));
     args.g_curve -> SetColor (Color(0, 255, 0));
     args.b_curve -> SetColor (Color(0, 0, 255));
     win -> host -> registerSubWidget(args.r_curve -> host);
     win -> host -> registerSubWidget(args.g_curve -> host);
     win -> host -> registerSubWidget(args.b_curve -> host);
-    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(30, 30), Vec2(100, 50), args);
+    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(500, 480), Vec2(150, 50), args);
     win -> host -> registerSubWidget(btn -> host);
-    CloseBtn* close_btn = new CloseBtn(gui, Vec2(150, 30), Vec2(100, 50), win);
+    CloseBtn* close_btn = new CloseBtn(gui, Vec2(700, 480), Vec2(150, 50), win);
     win -> host -> registerSubWidget(close_btn -> host);
 
     gui -> getRoot() -> registerSubWidget(win -> host);
