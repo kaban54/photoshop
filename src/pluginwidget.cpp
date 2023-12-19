@@ -65,26 +65,26 @@ void PluginTxtButton::render(RenderTargetI* rt) {
 
 void DrawButton (RenderTargetI* rt, Vec2 pos, Vec2 size, ButtonState state) {
     if (state == BTN_NORMAL) {
-        rt -> drawRect(pos                                , size,                 Color(128, 128, 128));
-        rt -> drawRect(pos                                , Vec2(size.x - 4, 8) , Color(192, 192, 192));
-        rt -> drawRect(pos + Vec2(0, 8)                   , Vec2(8, size.y - 12), Color(192, 192, 192));
-        rt -> drawRect(Vec2(pos.x + 4, pos.y + size.y - 8), Vec2(size.x - 4, 8) , Color(64, 64, 64));
-        rt -> drawRect(Vec2(pos.x + size.x - 8, pos.y + 4), Vec2(8, size.y - 12), Color(64, 64, 64));
-        rt -> drawRect(Vec2(pos.x + 4, pos.y + size.y - 8), Vec2(4, 4)          , Color (128, 128, 128));
-        rt -> drawRect(Vec2(pos.x + size.x - 8, pos.y + 4), Vec2(4, 4)          , Color (128, 128, 128));
+        rt -> drawRect(pos                                , size,                Color(128, 128, 128));
+        rt -> drawRect(pos                                , Vec2(size.x - 2, 4), Color(192, 192, 192));
+        rt -> drawRect(pos + Vec2(0, 4)                   , Vec2(4, size.y - 6), Color(192, 192, 192));
+        rt -> drawRect(Vec2(pos.x + 2, pos.y + size.y - 4), Vec2(size.x - 2, 4), Color(64, 64, 64));
+        rt -> drawRect(Vec2(pos.x + size.x - 4, pos.y + 2), Vec2(4, size.y - 6), Color(64, 64, 64));
+        rt -> drawRect(Vec2(pos.x + 2, pos.y + size.y - 4), Vec2(2, 2)         , Color (128, 128, 128));
+        rt -> drawRect(Vec2(pos.x + size.x - 4, pos.y + 2), Vec2(2, 2)         , Color (128, 128, 128));
     }
     else if (state == BTN_FOCUSED) {
-        rt -> drawRect(pos                                , size,                 Color(160, 160, 160));
-        rt -> drawRect(pos                                , Vec2(size.x - 4, 8) , Color(224, 224, 224));
-        rt -> drawRect(pos + Vec2(0, 8)                   , Vec2(8, size.y - 12), Color(224, 224, 224));
-        rt -> drawRect(Vec2(pos.x + 4, pos.y + size.y - 8), Vec2(size.x - 4, 8) , Color(96, 96, 96));
-        rt -> drawRect(Vec2(pos.x + size.x - 8, pos.y + 4), Vec2(8, size.y - 12), Color(96, 96, 96));
-        rt -> drawRect(Vec2(pos.x + 4, pos.y + size.y - 8), Vec2(4, 4)          , Color (160, 160, 160));
-        rt -> drawRect(Vec2(pos.x + size.x - 8, pos.y + 4), Vec2(4, 4)          , Color (160, 160, 160));
+        rt -> drawRect(pos                                , size,                Color(160, 160, 160));
+        rt -> drawRect(pos                                , Vec2(size.x - 2, 4), Color(224, 224, 224));
+        rt -> drawRect(pos + Vec2(0, 4)                   , Vec2(4, size.y - 6), Color(224, 224, 224));
+        rt -> drawRect(Vec2(pos.x + 2, pos.y + size.y - 4), Vec2(size.x - 2, 4), Color(96, 96, 96));
+        rt -> drawRect(Vec2(pos.x + size.x - 4, pos.y + 2), Vec2(4, size.y - 6), Color(96, 96, 96));
+        rt -> drawRect(Vec2(pos.x + 2, pos.y + size.y - 4), Vec2(2, 2)         , Color (160, 160, 160));
+        rt -> drawRect(Vec2(pos.x + size.x - 4, pos.y + 2), Vec2(2, 2)         , Color (160, 160, 160));
     }
     else if (state == BTN_PRESSED) {
         rt -> drawRect (pos, size, Color(64, 64, 64));
-        rt -> drawRect (pos + Vec2(4, 4), size - Vec2(8, 8), Color (128, 128, 128));
+        rt -> drawRect (pos + Vec2(2, 2), size - Vec2(4, 4), Color (128, 128, 128));
     }
 }
 
@@ -133,5 +133,5 @@ bool PluginWindow::onMouseMove(MouseContext context) {
 void PluginWindow::render(RenderTargetI* rt) {
     rt -> drawRect(host -> getPos(), host -> getSize(), BAR_COLOR);
     rt -> drawRect(host -> getPos() + Vec2(2, BAR_HEIGHT), host -> getSize() - Vec2(4, BAR_HEIGHT + 2), BG_COLOR);
-    rt -> drawText(host -> getPos(), "JASJHKDJK", 40, Color(255, 0, 0));
+    // rt -> drawText(host -> getPos(), "JASJHKDJK", 40, Color(255, 0, 0));
 }

@@ -31,7 +31,7 @@ void Widget::registerSubWidget(WidgetI* wid_i) {
     wid -> SetRenderTarget(rt);
     wid -> setParent(this);
     subwidgets.AddWidget(wid);
-    wid -> move(getPos());
+    if (!IsExtern()) wid -> move(getPos());
 }
 
 void Widget::unregisterSubWidget(WidgetI* wid) {

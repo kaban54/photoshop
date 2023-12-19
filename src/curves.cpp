@@ -299,19 +299,20 @@ void CurvesFilter::apply (RenderTargetI *data) {
     args.data = data;
     args.win = win;
     Vec2 size = win -> host -> getSize();
+    Vec2 pos = win -> host -> getPos();
     double curve_width = std::min((size.x - 150) / 3, size.y - 155);
-    args.r_curve = new CurveWid(gui, Vec2(25, 55)                   , Vec2(curve_width, curve_width));
-    args.g_curve = new CurveWid(gui, Vec2( 75 + curve_width    , 55), Vec2(curve_width, curve_width));
-    args.b_curve = new CurveWid(gui, Vec2(125 + curve_width * 2, 55), Vec2(curve_width, curve_width));
+    args.r_curve = new CurveWid(gui, pos + Vec2(25, 55)                   , Vec2(curve_width, curve_width));
+    args.g_curve = new CurveWid(gui, pos + Vec2( 75 + curve_width    , 55), Vec2(curve_width, curve_width));
+    args.b_curve = new CurveWid(gui, pos + Vec2(125 + curve_width * 2, 55), Vec2(curve_width, curve_width));
     args.r_curve -> SetColor (Color(255, 0, 0));
     args.g_curve -> SetColor (Color(0, 255, 0));
     args.b_curve -> SetColor (Color(0, 0, 255));
     win -> host -> registerSubWidget(args.r_curve -> host);
     win -> host -> registerSubWidget(args.g_curve -> host);
     win -> host -> registerSubWidget(args.b_curve -> host);
-    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, Vec2(size.x / 2 - 175, size.y - 75), Vec2(150, 50), args);
+    CurvesApplyBtn* btn = new CurvesApplyBtn(gui, pos + Vec2(size.x / 2 - 175, size.y - 75), Vec2(150, 50), args);
     win -> host -> registerSubWidget(btn -> host);
-    CloseBtn* close_btn = new CloseBtn(gui, Vec2(size.x / 2 + 25, size.y - 75), Vec2(150, 50), win);
+    CloseBtn* close_btn = new CloseBtn(gui, pos + Vec2(size.x / 2 + 25, size.y - 75), Vec2(150, 50), win);
     win -> host -> registerSubWidget(close_btn -> host);
 
     gui -> getRoot() -> registerSubWidget(win -> host);

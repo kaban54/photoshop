@@ -142,5 +142,8 @@ void MyApp::AddPlugin(Plugin* plug) {
         FilterI* filter = dynamic_cast<FilterI*>(plug -> getInterface());
         filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, plug -> name, 30, filter_manager,
                                                 filter, event_manager, gui -> getRoot()));
+        // if (strcmp(plug -> name, "SegCurve") == 0) {
+        //     plug -> selectPlugin();
+        // }
     }
 }
