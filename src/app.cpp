@@ -72,6 +72,7 @@ void MyApp::SetupWidgets() {
     tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, "brush", 30, tool_manager, tools[0]));
     tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tools[0] -> getIcon(), tool_manager, tools[0]));
 
+
     VerticalMenu* cols_vm = new VerticalMenu (405, 195);
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(255, 0, 0)));
     cols_vm -> AddButton (new ColorBtn (0, 0, 200, 80, tool_manager, Color(0, 255, 0)));
@@ -137,6 +138,7 @@ void MyApp::AddPlugin(Plugin* plug) {
         ToolI* tool = dynamic_cast<ToolI*>(plug -> getInterface());
         tools_vm -> AddButton (new ToolTxtBtn (0, 0, 200, 80, plug -> name, 30, tool_manager, tool));
         tools_tcm -> AddButton (new ToolImgBtn(0, 0, 70, 70, tool -> getIcon(), tool_manager, tool));
+
     }
     else if (plug -> type == InterfaceType::Filter) {
         FilterI* filter = dynamic_cast<FilterI*>(plug -> getInterface());
