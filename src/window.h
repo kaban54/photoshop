@@ -4,21 +4,25 @@
 #include "widget.h"
 #include "buttons.h"
 
-const Color WINDOW_BG_COLOR = Color (128, 128, 128);
-const Color BG_COLOR = Color (192, 192, 192);
 
 class Window : public Widget {
+
+    static const Color BG_COLOR;
+    static const Color BAR_COLOR;
+    static const double BAR_HEIGHT;
+
     Vec2 hold_pos;
     bool is_moving;
+    std::string name;
 
     public:
-    bool need_to_close;
 
     explicit Window (double x, double y, double w, double h, bool close_btn = true);
 
-    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
+    void SetName(const char* name_) {name.assign(name_);}
+    const char* GetName() {return name.c_str();}
 
-    virtual void render(RenderTargetI* rt) override;
+    virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;
@@ -32,13 +36,14 @@ class Window : public Widget {
 
 
 class Background : public Widget {
+    
+    static const Color BG_COLOR;
+
     public:
 
     explicit Background (double w_, double h_);
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
-
-    virtual void render(RenderTargetI* rt) override;
 
     virtual bool onMousePress   (MouseContext context) override;
     virtual bool onMouseRelease (MouseContext context) override;

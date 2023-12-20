@@ -1,18 +1,13 @@
 #include "widget.h"
 
-WidgetShell::WidgetShell() {};
-
-WidgetShell::WidgetShell(WidgetI* wid):
-        external (wid),
-        internal ((wid != nullptr && !wid -> isExtern()) ? dynamic_cast<Widget*>(wid) : nullptr) {}
-
 Widget::Widget():
     bounds (),
     subwidgets (),
     regset (),
     parent (nullptr),
     rt (nullptr),
-    visible (true)
+    visible (true),
+    avalible (true)
     {}
 
 Widget::Widget (double x, double y, double w, double h):
@@ -21,52 +16,67 @@ Widget::Widget (double x, double y, double w, double h):
     regset (),
     parent (nullptr),
     rt (nullptr),
-    visible (true)
+    visible (true),
+    avalible (true)
     {}
 
 Widget::~Widget() {
-    if (parent.external != nullptr) {
-        parent.external -> unregisterSubWidget(this);
-    }
-    if (parent.internal != nullptr) {
-        parent.internal -> UpdateAllRegsets();
+    if (parent != nullptr) {
+        parent -> unregisterSubWidget(this);
     }
 }
 
-void Widget::registerSubWidget(WidgetI* wid) {
-    wid -> move(getPos());
+void Widget::registerSubWidget(WidgetI* wid_i) {
+    Widget* wid = dynamic_cast<Widget*>(wid_i);
+    wid -> SetRenderTarget(rt);
     wid -> setParent(this);
-    subwidgets.AddWidget (wid);
-    if (!wid -> isExtern()) dynamic_cast<Widget*>(wid) -> SetRenderTarget(rt);
-    UpdateAllRegsets();
+    subwidgets.AddWidget(wid);
+    if (!IsExtern()) wid -> move(getPos());
 }
 
 void Widget::unregisterSubWidget(WidgetI* wid) {
-    subwidgets.RemoveWidget(wid);
+    subwidgets.RemoveWidget(dynamic_cast<Widget*>(wid));
+    UpdateAllRegsets();
 }
 
 void Widget::setSize(Vec2 new_size) {
     bounds.w = new_size.x;
     bounds.h = new_size.y;
+    regset.regions.Clear();
+    UpdateAllRegsets();
 }
 
 void Widget::setPos(Vec2 new_pos) {
     bounds.x = new_pos.x;
     bounds.y = new_pos.y;
+    regset.regions.Clear();
+    UpdateAllRegsets();
 }
 
 void Widget::setParent(WidgetI *root) {
-    parent = WidgetShell(root);
-}
-
-WidgetI* Widget::getParent() {
-    return parent.external;
+    parent = dynamic_cast<Widget*>(root);
 }
 
 void Widget::move(Vec2 shift) {
+    Move_noupdate(shift);
+    UpdateAllRegsets();
+}
+
+void Widget::Move_noupdate(Vec2 shift) {
     bounds.Move(shift);
     regset.Move(shift);
-    subwidgets.Move(shift);
+    subwidgets.Move_noupdate(shift);
+    if (rt != nullptr) RenderInRegset(*rt, &regset);
+}
+
+void Widget::setAvailable(bool avalible_) {
+    avalible = avalible_;
+    // UpdateAllRegsets();
+}
+
+void Widget::SetVisible(bool vis) {
+    visible = vis;
+    UpdateAllRegsets();
 }
 
 void Widget::SetRenderTarget (RenderTarget *rt_) {
@@ -80,17 +90,19 @@ void Widget::RenderSubWidgets (RenderTarget& rt) const {
 
 void Widget::UpdateAllRegsets() {
     if (rt == nullptr) return;
-    Widget* w_ptr = this;
-    while (w_ptr -> parent.internal != nullptr) {w_ptr = w_ptr -> parent.internal;}
-    RegionSet regs;
-    GetMaxRegset(&regs);
-    UpdateRegset(regs);
+    if (parent != nullptr) parent -> UpdateAllRegsets();
+    else {
+        RegionSet regs;
+        GetMaxRegset(&regs);
+        UpdateRegset(regs);
+    }
 }
 
 void Widget::Show() {
-    if (parent.internal != nullptr) {
-        parent.internal -> subwidgets.MoveToTail(this);
-        parent.internal -> Show();
+    if (rt == nullptr) return;
+    if (parent != nullptr) {
+        parent -> subwidgets.MoveToTail(this);
+        parent -> Show();
     }
     else {
         RegionSet regs;
@@ -101,7 +113,7 @@ void Widget::Show() {
 
 void Widget::GetMaxRegset (RegionSet* dst) const {
     assert(dst != nullptr);
-    if (!visible) return;
+    if (!visible || !avalible) return;
     dst -> AddRegion (bounds);
     subwidgets.GetMaxRegset (dst);
 }
@@ -115,16 +127,17 @@ bool Widget::MouseOnSubwidgets(const Vec2& mousepos) const {
 }
 
 void Widget::UpdateRegset(const RegionSet& regs) {
+    if (!avalible) return;
     RegionSet newregs;
     if (visible) {
         RegionSet to_draw;
         to_draw += regs;
 
-        ListNode<WidgetShell>* node = subwidgets.widgets.GetHead();
+        ListNode<Widget*>* node = subwidgets.widgets.GetHead();
         while (node != subwidgets.widgets.EndOfList()) {
-            if (node -> val.internal != nullptr) {
+            if (node -> val != nullptr) {
                 RegionSet child_max_regset;
-                node -> val.internal -> GetMaxRegset(&child_max_regset);
+                node -> val -> GetMaxRegset(&child_max_regset);
                 to_draw -= child_max_regset;
             }
             node = node -> next;
@@ -133,13 +146,7 @@ void Widget::UpdateRegset(const RegionSet& regs) {
         newregs += to_draw;
         to_draw -= regset;
 
-        #ifndef REGDEBUG
         if (to_draw.regions.GetSize() > 0) RenderInRegset(*rt, &to_draw);
-        #else
-        Render (*rt, &newregs);
-        // rt -> DrawRegset (regset, Color (0, 0, 255, 128));
-        rt -> DrawRegset (to_draw, Color (255, 0, 0, 128), true);
-        #endif
     }
     regset.regions.Clear();
     regset += newregs;
@@ -148,27 +155,33 @@ void Widget::UpdateRegset(const RegionSet& regs) {
     else         subwidgets.UpdateRegset(newregs);
 }
 
+bool Widget::onClock(uint64_t delta) {
+    if (!avalible) delete this;
+    return false;
+}
 
 WidgetManager::WidgetManager ():
     widgets ()
     {}
 
 WidgetManager::~WidgetManager() {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> setParent (nullptr);
-        delete (node -> val.external);
+        node -> val -> setParent (nullptr);
+        delete (node -> val);
         widgets.Iterate(node);
     }
 }
 
-inline void WidgetManager::AddWidget (WidgetI* wid) {
-    widgets.InsertTail(WidgetShell(wid));
+inline void WidgetManager::AddWidget (Widget* wid) {
+    // if (wid -> IsExtern()) extern_widgets.InsertTail(wid);
+    widgets.InsertTail(wid);
 }
 
-inline void WidgetManager::RemoveWidget (WidgetI* wid) {
-    widgets.Remove(widgets.GetNode(WidgetShell(wid)));
+inline void WidgetManager::RemoveWidget (Widget* wid) {
+    // if (wid -> IsExtern()) extern_widgets.Remove(widgets.GetNode(wid));
+    widgets.Remove(widgets.GetNode(wid));
 }
 
 size_t WidgetManager::GetSize() const {
@@ -176,117 +189,115 @@ size_t WidgetManager::GetSize() const {
 }
 
 void WidgetManager::Render (RenderTarget& rt) const {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.internal != nullptr) {
-            Widget* wid = node -> val.internal;
-            if (wid -> getAvailable()) {
-                wid -> RenderInRegset(rt, wid -> GetRegset());
-                wid -> RenderSubWidgets(rt);
-            }
-            else node -> val.external -> render(&rt);
+        Widget* wid = node -> val;
+        if (wid -> getAvailable() && wid -> GetVisible()) {
+            wid -> RenderInRegset(rt, wid -> GetRegset());
+            wid -> RenderSubWidgets(rt);
         }
         widgets.Iterate(node);
     }
 }
 
-void WidgetManager::Move (const Vec2& vec) {
-    ListNode<WidgetShell>* node = nullptr;
+void WidgetManager::Move_noupdate (const Vec2& vec) {
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> move(vec);
+        node -> val -> Move_noupdate(vec);
         widgets.Iterate(node);
     }
 }
 
 void WidgetManager::SetRenderTarget (RenderTarget *rt_) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.internal != nullptr) node -> val.internal -> SetRenderTarget(rt_);
+        node -> val -> SetRenderTarget(rt_);
         widgets.Iterate(node);
     }
 }
 
 bool WidgetManager::MouseOnWidgets (const Vec2& mousepos) const {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.internal != nullptr &&
-            node -> val.internal -> MouseOnWidget (mousepos)) return true;
+        if (node -> val -> MouseOnWidget (mousepos)) return true;
         widgets.Iterate(node);
     }
     return false;
 }
 
 bool WidgetManager::onMousePress(MouseContext context) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        ListNode<WidgetShell>* nextnode = node;
+        ListNode<Widget*>* nextnode = node;
         widgets.Iterate (nextnode);
-        node -> val.external -> onMousePress(context);
+        if (node -> val -> onMousePress(context)) return true;
         node = nextnode;
     }
     return false;
 }
 
 bool WidgetManager::onMouseRelease (MouseContext context) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> onMouseRelease(context);
+        if (node -> val -> onMouseRelease(context)) return true;
         widgets.Iterate(node);
     }
     return false;
 }
 
 bool WidgetManager::onMouseMove (MouseContext context) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> onMouseMove(context);
+        if (node -> val -> onMouseMove(context)) return true;
         widgets.Iterate(node);
     }
     return false;
 }
 
 bool WidgetManager::onKeyboardPress (KeyboardContext context) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> onKeyboardPress(context);
+        if (node -> val -> onKeyboardPress(context)) return true;
         widgets.Iterate(node);
     }
     return false;
 }
 
 bool WidgetManager::onKeyboardRelease (KeyboardContext context) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> onKeyboardRelease(context);
+        if (node -> val -> onKeyboardRelease(context)) return true;
         widgets.Iterate(node);
     }
     return false;
 }
 
 bool WidgetManager::onClock (uint64_t delta) {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        node -> val.external -> onClock(delta);
-        widgets.Iterate(node);
+        ListNode<Widget*>* next = node;
+        widgets.Iterate(next);
+        node -> val -> onClock(delta);
+        node = next;
     }
     return false;
 }
 
-void WidgetManager::MoveToTail (WidgetI* wid) {
-    ListNode<WidgetShell>* node = nullptr;
+void WidgetManager::MoveToTail (Widget* wid) {
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.external == wid) {
+        if (node -> val == wid) {
             node -> next -> prev = node -> prev;
             node -> prev -> next = node -> next;
             node -> prev = widgets.GetTail();
@@ -300,37 +311,36 @@ void WidgetManager::MoveToTail (WidgetI* wid) {
 }
 
 void WidgetManager::UpdateRegset(const RegionSet& parent_regs) {    
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.internal != nullptr)
-        {
-            RegionSet regs;
-            node -> val.internal -> GetMaxRegset(&regs);
-            regs ^= parent_regs;
+        RegionSet regs;
+        node -> val -> GetMaxRegset(&regs);
+        // regs += extern_regs;
+        regs ^= parent_regs;
 
-            ListNode<WidgetShell>* node2 = node;
+        // if (node -> val -> IsExtern()) extern_regs += regs;
+
+        ListNode<Widget*>* node2 = node;
+        widgets.Iterate(node2);
+        while (node2 != nullptr) {
+            RegionSet to_sub;
+            node2 -> val -> GetMaxRegset(&to_sub);
+            regs -= to_sub;
             widgets.Iterate(node2);
-            while (node2 != nullptr) {
-                if (node2 -> val.internal) {
-                    RegionSet to_sub;
-                    node2 -> val.internal -> GetMaxRegset(&to_sub);
-                    regs -= to_sub;
-                }
-                widgets.Iterate(node2);
-            }
-
-            node -> val.internal -> UpdateRegset(regs);
         }
+
+        // node -> val -> RenderInRegset (*(node -> val -> GetRendertarget()), &extern_regs);
+        node -> val -> UpdateRegset(regs);
         widgets.Iterate(node);
     }
 }
 
 void WidgetManager::GetMaxRegset (RegionSet* dst) const {
-    ListNode<WidgetShell>* node = nullptr;
+    ListNode<Widget*>* node = nullptr;
     widgets.Iterate(node);
     while (node != nullptr) {
-        if (node -> val.internal != nullptr) node -> val.internal -> GetMaxRegset(dst);
+        node -> val -> GetMaxRegset(dst);
         widgets.Iterate(node);
     }
 }
@@ -345,11 +355,83 @@ TxtWidget::TxtWidget (double x, double y, double w, double h, const char* txt_, 
     bg_col (bg_col_)
     {}
 
-void TxtWidget::render (RenderTargetI* rt) {
-    rt -> drawText (getPos(), txt, char_size, Color(0, 0, 0));
-}
-
 void TxtWidget::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs(Rect(getPos(), getPos() + getSize()), bg_col, to_draw);
     rt.DrawText_rs(getPos(), txt, char_size, fill_col, to_draw);
+}
+
+
+ExternWidget::ExternWidget(PluginWidgetI* plug_wid_):
+    plug_wid (plug_wid_) {}
+
+void ExternWidget::RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) {
+    RenderTarget tmp(rt.GetSize().x, rt.GetSize().y);
+    plug_wid -> render(&tmp);
+    rt.DrawRenderTarget_rs(tmp, Vec2(0, 0), to_draw);
+    // rt.drawText(getPos(), "TEST", 50, Color(255, 0, 0));
+}
+
+bool ExternWidget::onMousePress(MouseContext context) {
+    if (GetSubwidgets() -> onMousePress(context)) return true;
+    if (!MouseOnWidget(context.position)) return false;
+    if (plug_wid -> onMousePress(context)) {
+        Show();
+        return true;
+    }
+    return false;
+}
+
+bool ExternWidget::onMouseRelease(MouseContext context) {
+    if (GetSubwidgets() -> onMouseRelease(context)) return true;
+    // if (!MouseOnWidget(context.position)) return false;
+    if (plug_wid -> onMouseRelease(context)) {
+        UpdateAllRegsets();
+        return true;
+    }
+    return false;
+}
+
+bool ExternWidget::onMouseMove(MouseContext context) {
+    if (GetSubwidgets() -> onMouseMove(context)) return true;
+    // if (!MouseOnWidget(context.position)) return false;
+    if (plug_wid -> onMouseMove(context)) {
+        UpdateAllRegsets();
+        return true;
+    }
+    return false;
+}
+
+bool ExternWidget::onKeyboardPress(KeyboardContext context) {
+    if (GetSubwidgets() -> onKeyboardPress(context)) return true;
+    if (plug_wid -> onKeyboardPress(context)) {
+        UpdateAllRegsets();
+        return true;
+    }
+    return false;
+}
+
+bool ExternWidget::onKeyboardRelease(KeyboardContext context) {
+    if (GetSubwidgets() -> onKeyboardRelease(context)) return true;
+    if (plug_wid -> onKeyboardRelease(context)) {
+        UpdateAllRegsets();
+        return true;
+    }
+    return false;
+}
+
+bool ExternWidget::onClock(uint64_t delta) {
+    if (getAvailable()) {
+        GetSubwidgets() -> onClock(delta);
+        bool ret = plug_wid -> onClock(delta);
+        RenderInRegset(*GetRendertarget(), GetRegset());
+        return ret;
+    }
+    else {
+        delete this;
+        return false;
+    }
+}
+
+uint8_t ExternWidget::getPriority() const {
+    return plug_wid -> getPriority();
 }

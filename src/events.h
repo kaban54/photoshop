@@ -10,7 +10,8 @@
 namespace plugin {
     enum class MouseButton {
         Left,
-        Right
+        Right,
+        Unknown
     };
 
     struct MouseContext {
@@ -142,26 +143,36 @@ namespace plugin {
         MouseRelease,
         MouseMove,
         KeyPress,
-        KeyRelease, 
-        Clock,
-
-        NumOfEvents
-    };
+        KeyRelease,
+	    Clock,
+	    NumOfEvents
+    };  
 
     struct EventProcessableI {
-        virtual uint8_t getPriority() const = 0;
+        // MouseContext хранит в себе координаты относительно позиции RT из GuiI::getRenderTarget.
+        // Мотивация: если RT это не весь экран, а RT в каком-то окне (как идейно и планировалось), то, 
+        // строго говоря, плагин не знает где в реальном мире находится RT (его могли перетаскивать и проч)
+        // и не может пересчитать их в локальные.
+
+	    // true = перехватил, false = надо продолжать
         virtual bool onMouseMove(MouseContext context) = 0;
         virtual bool onMouseRelease(MouseContext context) = 0;
         virtual bool onMousePress(MouseContext context) = 0;
         virtual bool onKeyboardPress(KeyboardContext context) = 0;
         virtual bool onKeyboardRelease(KeyboardContext context) = 0;
         virtual bool onClock(uint64_t delta) = 0;
+
+	    virtual uint8_t getPriority() const = 0;
+
+        virtual ~EventProcessableI() = default;
     };
 
     struct EventManagerI {
         virtual void registerObject(EventProcessableI *object)   = 0;
         virtual void setPriority(EventType, uint8_t priority)    = 0;
         virtual void unregisterObject(EventProcessableI *object) = 0;
+
+        virtual ~EventManagerI() = default;
     };
 }
 

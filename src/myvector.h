@@ -33,7 +33,7 @@ class MyVector {
         return capacity;
     }
 
-    T* GetData() {
+    T* GetData() const {
         return data;
     }
 
@@ -67,6 +67,8 @@ class MyVector {
     void PopBack();
 
     void Insert (size_t index, const T& val);
+
+    void Remove (size_t index);
 
     void Clear();
 
@@ -156,6 +158,15 @@ void MyVector<T>::Insert (size_t index, const T& val) {
 }
 
 template <typename T>
+void MyVector<T>::Remove(size_t index) {
+    assert(index < size);
+    for (size_t i = index + 1; i < size; i++) {
+        data[i - 1] = data[i];
+    }
+    --size;
+}
+
+template <typename T>
 void MyVector<T>::Clear() {
     size = 0;
 }
@@ -174,13 +185,41 @@ namespace plugin {
         uint64_t size;
         T* data;
 
-        explicit Array (uint64_t size_, T* data_):
-            size (size_),
-            data (data_) {}
+        Array(uint64_t _size, const T* _data): size(_size), data(new T[_size]) {
+            std::copy(_data, _data + _size, data);
+        }
 
-        explicit Array (MyVector<T>& myvec):
+        Array(const Array<T>& other): Array(other.size, other.data) {}
+        
+        Array& operator=(const Array<T>& other) {
+            size = other.size;
+            delete data;
+            data = new T[other.size];
+            std::copy(other.data, other.data + other.size, data);
+	        return *this;
+        }
+
+        Array(Array<T>&& other) {
+            std::swap(size, other.size);
+            std::swap(data, other.data);
+        }
+
+        Array& operator=(Array<T>&& other) {
+            std::swap(size, other.size);
+            std::swap(data, other.data);
+	        return *this;
+        }
+
+        explicit Array (const MyVector<T>& myvec):
             size (myvec.GetSize()),
-            data (myvec.GetData()) {}
+            data (new T[size])
+            {
+                for (size_t i = 0; i < size; i++) data[i] = myvec[i];
+            }
+
+        ~Array() {
+            delete[] data;
+        }
     };
 }
 

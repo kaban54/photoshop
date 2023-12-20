@@ -8,25 +8,14 @@
 
 namespace plugin {
     struct ToolI: public Interface {
-        virtual const Texture *getIcon() = 0;
+        virtual const Texture *getIcon() const = 0;
 
         virtual void paintOnPress   (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
         virtual void paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
         virtual void paintOnMove    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
         virtual void disable        (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) = 0;
-    };
 
-    struct ToolManagerI {
-        virtual void setColor(Color color) = 0;
-        virtual void setTool(ToolI *tool) = 0;
-
-        virtual ToolI *getTool() = 0;
-        virtual Color  getColor() = 0;
-
-        virtual void paintOnMove    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void paintOnPress   (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-        virtual void disableTool    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
+        virtual ~ToolI() = default;
     };
 }
 
@@ -42,10 +31,10 @@ struct Tool : public ToolI {
 
     void SetIcon(Texture* icon_);
 
-    virtual const Texture *getIcon() override;
+    virtual const Texture *getIcon() const override;
 };
 
-class ToolManager : public ToolManagerI{
+class ToolManager {
     ToolI* tool;
     Color col;
 
@@ -53,16 +42,16 @@ class ToolManager : public ToolManagerI{
 
     explicit ToolManager() {}
 
-    virtual void setColor(Color color) override;
-    virtual void setTool(ToolI *tool_) override;
+    void setColor(Color color);
+    void setTool(ToolI *tool_);
 
-    virtual ToolI *getTool() override;
-    virtual Color  getColor() override;
+    ToolI *getTool();
+    Color getColor();
 
-    virtual void paintOnMove    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) override;
-    virtual void paintOnPress   (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) override;
-    virtual void paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) override;
-    virtual void disableTool    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context) override;
+    void paintOnMove    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context);
+    void paintOnPress   (RenderTargetI *data, RenderTargetI *tmp, MouseContext context);
+    void paintOnRelease (RenderTargetI *data, RenderTargetI *tmp, MouseContext context);
+    void disableTool    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context);
 };
 
 class Brush : public Tool {
@@ -80,16 +69,16 @@ class Brush : public Tool {
     virtual void paintOnMove    (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) override;
     virtual void disable        (RenderTargetI *data, RenderTargetI *tmp, MouseContext context, Color color) override;
 
-    virtual Array<const char *> getParamNames() override;
-    virtual Array<double> getParams() override;
+    virtual Array<const char *> getParamNames() const override;
+    virtual Array<double> getParams() const override;
     virtual void setParams(Array<double> new_params) override;
 };
 
 
 struct ToolBtnArgs : public BtnArgs {
-    ToolManagerI* tool_man;
+    ToolManager* tool_man;
     ToolI* tool;
-    explicit ToolBtnArgs (ToolManagerI* tool_man_, ToolI* tool_):
+    explicit ToolBtnArgs (ToolManager* tool_man_, ToolI* tool_):
         tool_man (tool_man_),
         tool (tool_) {}
 };
@@ -100,7 +89,7 @@ class ToolTxtBtn : public TxtButton {
     public:
 
     explicit ToolTxtBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                      ToolManagerI* tm, ToolI* tool_);
+                      ToolManager* tm, ToolI* tool_);
 };
 
 class ToolImgBtn : public ImgButton {
@@ -109,14 +98,14 @@ class ToolImgBtn : public ImgButton {
     public:
 
     explicit ToolImgBtn (double x, double y, double w, double h, const Texture* texture,
-                      ToolManagerI* tm, ToolI* tool_);
+                      ToolManager* tm, ToolI* tool_);
 };
 
 
 struct ColorBtnArgs : public BtnArgs {
-    ToolManagerI* tool_man;
+    ToolManager* tool_man;
     Color col;
-    explicit ColorBtnArgs (ToolManagerI* tool_man_, Color col_):
+    explicit ColorBtnArgs (ToolManager* tool_man_, Color col_):
         tool_man (tool_man_),
         col (col_) {}
 };
@@ -126,7 +115,7 @@ class ColorBtn : public Button {
 
     public:
 
-    explicit ColorBtn (double x, double y, double w, double h, ToolManagerI* tm, const Color& col);
+    explicit ColorBtn (double x, double y, double w, double h, ToolManager* tm, const Color& col);
 
     virtual void RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) override;
 };

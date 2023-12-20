@@ -18,9 +18,9 @@ struct EditBox : public Widget {
 
     explicit EditBox (double x, double y, double w, double h, size_t char_size_);
 
-    ~EditBox() {};
+    ~EditBox() = default;
 
-    virtual void render(RenderTargetI* rt) override;
+    void SetText(const char* str);
 
     virtual void RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) override;
 

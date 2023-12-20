@@ -11,19 +11,27 @@
 namespace plugin {
     struct RenderTargetI {
         virtual void setPixel(Vec2 pos, Color color) = 0;
-        virtual void drawLine(Vec2 pos, Vec2 point1, Color color) = 0;
+        virtual void drawLine(Vec2 point1, Vec2 point2, Color color) = 0;
         virtual void drawRect(Vec2 pos, Vec2 size, Color color) = 0;
         virtual void drawEllipse(Vec2 pos, Vec2 size, Color color) = 0;
         virtual void drawTexture(Vec2 pos, Vec2 size, const Texture *texture) = 0;
         virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) = 0;
 
-        virtual Texture *getTexture() = 0;
+        // Возвращает аллоцированную структуру типа Texture* 
+        virtual Texture *getTexture() const = 0;
+        virtual void setTexture(Texture *) = 0;
 
         /// как в RenderTexture::display
         virtual void display() = 0;
 
         /// clear
         virtual void clear() = 0;
+        virtual void clear(Color color) = 0;
+    };
+
+    struct RenderableI {
+        virtual void render(RenderTargetI* texture) = 0;
+        virtual ~RenderableI() = default;
     };
 }
 
@@ -59,11 +67,15 @@ class RenderTarget : public RenderTargetI {
 
     virtual void drawText(Vec2 pos, const char *content, uint16_t char_size, Color color) override;
 
-    virtual Texture *getTexture() override;
+    virtual Texture *getTexture() const override;
+
+    virtual void setTexture(Texture *) override;
 
     virtual void display() override;
 
     virtual void clear() override;
+
+    virtual void clear(Color color) override;
 
     void Fill(Color col);
 

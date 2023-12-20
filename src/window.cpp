@@ -1,36 +1,43 @@
 #include "window.h"
 
+const Color Window::BG_COLOR  = Color (128, 128, 128);
+const Color Window::BAR_COLOR = Color (0, 0, 0);
+const double Window::BAR_HEIGHT = 30;
+
+const Color Background::BG_COLOR = Color (192, 192, 192);
+
 Window::Window (double x, double y, double w, double h, bool close_btn):
     Widget (x, y, w, h),
     is_moving (false),
-    need_to_close (false)
+    name ("")
     {
-        if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, 20, this));
+        if (close_btn) registerSubWidget (new WindowCloseBtn (w - 30, 0, 30, BAR_HEIGHT, this));
     }
 
 void Window::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     Rect rect = GetBounds();
-    rt.DrawRect_rs (rect, Color(0, 0, 0), to_draw);
+    rt.DrawRect_rs (rect, BAR_COLOR, to_draw);
     rect.x += 2;
-    rect.y += 20;
+    rect.y += BAR_HEIGHT;
     rect.w -= 4;
-    rect.h -= 22;
-    rt.DrawRect_rs (rect, WINDOW_BG_COLOR, to_draw);
+    rect.h -= BAR_HEIGHT + 2;
+    rt.DrawRect_rs (rect, BG_COLOR, to_draw);
+
+    if (name[0] != '\0') {
+        Vec2 txt_size = rt.GetTxtSize (name.c_str(), 25, name.size());
+        Vec2 txt_pos (getPos().x + (getSize().x - txt_size.x ) / 2, getPos().y + 2);
+        rt.DrawText_rs(txt_pos, name.c_str(), 25, Color(255, 255, 255), to_draw);
+    }
 
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(255, 0, 0, 128));
     #endif
 }
 
-void Window::render(RenderTargetI* rt) {
-    rt -> drawRect (getPos(), getSize(), Color(0, 0, 0));
-    rt -> drawRect (getPos() + Vec2(2, 20), getSize() + Vec2(4, 22), WINDOW_BG_COLOR);
-}
-
 bool Window::onMousePress (MouseContext context) {
     if (!getAvailable()) return false;
     if (MouseOnWidget(context.position)) {
-        if (Rect(getPos().x, getPos().y, getSize().x, 20).Contains(context.position) &&
+        if (Rect(getPos().x, getPos().y, getSize().x, BAR_HEIGHT).Contains(context.position) &&
             context.button == MouseButton::Left) {
                 is_moving = true;
                 hold_pos = context.position;
@@ -38,7 +45,7 @@ bool Window::onMousePress (MouseContext context) {
         Show();
     }
     GetSubwidgets() -> onMousePress(context);
-    if (need_to_close) Close();
+    if (!getAvailable()) Close();
     return false;
 }
 
@@ -58,9 +65,6 @@ bool Window::onMouseMove (MouseContext context) {
         Vec2 mousepos = context.position;
         if (mousepos.x != hold_pos.x || mousepos.y != hold_pos.y) {
             move (mousepos - hold_pos);
-            Show();
-            RenderInRegset(*GetRendertarget(), GetRegset());
-            RenderSubWidgets(*GetRendertarget());
             hold_pos = mousepos;
         }
     }
@@ -95,10 +99,6 @@ void Background::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 0, 255, 128));
     #endif
-}
-
-void Background::render(RenderTargetI* rt) {
-    rt -> drawRect(getPos(), getSize(), BG_COLOR);
 }
 
 bool Background::onMousePress (MouseContext context) {
@@ -154,7 +154,7 @@ ModalWindow::~ModalWindow() {
 }
 
 void window_close_btn_action (BtnArgs* btn_args) {
-    ((WindowCloseBtnArgs*) btn_args) -> win -> need_to_close = true;
+    ((WindowCloseBtnArgs*) btn_args) -> win -> setAvailable(false);
 }
 
 WindowCloseBtn::WindowCloseBtn (double x, double y, double w, double h, Window* win_):

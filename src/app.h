@@ -7,6 +7,7 @@
 #include "filter.h"
 #include "menu.h"
 #include "canvas.h"
+#include "files.h"
 
 
 namespace plugin {
@@ -16,47 +17,54 @@ namespace plugin {
         const char *name;
         InterfaceType type;
 
-        virtual Interface *getInterface() = 0;
+        virtual Interface *getInterface() const = 0;
+
+        // плагин выбрали (недо apply)
+        virtual void selectPlugin() = 0;
+
         virtual ~Plugin() = default;
     };
 
     struct GuiI {
-        virtual Vec2 getSize() = 0;
-        virtual RenderTargetI* getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) = 0;
-        virtual void createParamWindow(Array<const char *> param_names, Interface* self) = 0;
-        virtual WidgetI* getRoot() = 0;
+        virtual WidgetI* getRoot() const = 0;
+        virtual void createWidgetI(PluginWidgetI* widget) = 0;
+        virtual Plugin *queryPlugin(uint64_t id) = 0;
+        virtual Texture *loadTextureFromFile(const char *filename) = 0;
+        virtual ~GuiI() = default;
     };
 
     struct App {
         GuiI *gui;
-        EventManagerI *event_manager; 
-        ToolManagerI *tool_manager;
-        FilterManagerI *filter_manager;
+        EventManagerI *event_manager;
     };
 }
 
 using namespace plugin;
 
+const char* const TEXTURES_FOLDER_NAME = "textures/";
+
 struct Gui : public GuiI {
-    const unsigned int width;
-    const unsigned int height;
     RenderTarget* rt;
-    Background *root;
+    WidgetI *root;
+    MyVector<Plugin*> plugins;
 
-    explicit Gui(unsigned int w, unsigned int h, RenderTarget* rt_);
+    explicit Gui(RenderTarget* rt_);
 
-    ~Gui();
+    ~Gui() = default;
 
-    virtual Vec2 getSize() override;
-
-    virtual RenderTargetI* getRenderTarget(Vec2 size, Vec2 pos, Plugin *self) override;
-
-    virtual void createParamWindow(Array<const char *> param_names, Interface * self) override;
-
-    virtual WidgetI* getRoot() override;
+    virtual WidgetI* getRoot() const override;
+    virtual void createWidgetI(PluginWidgetI* widget) override;
+    virtual Plugin *queryPlugin(uint64_t id) override;
+    virtual Texture *loadTextureFromFile(const char *filename) override;
 };
 
 class MyApp : public App {
+    Gui* mygui;
+
+    ToolManager* tool_manager;
+    FilterManager* filter_manager;
+    ImageManager* image_manager;
+
     MyVector<ToolI*> tools;
     MyVector<FilterI*> filters;
     MyVector<Plugin*> plugins;
@@ -65,6 +73,9 @@ class MyApp : public App {
     VerticalMenu* tools_vm;
     VerticalMenu* filters_vm;
     TwoColMenu* tools_tcm;
+
+    Background* bg;
+
 
     public:
 
@@ -77,8 +88,6 @@ class MyApp : public App {
     void AddPlugin(Plugin* plug);
 };
 
-
-plugin::Texture* LoadFromFile(const char* filename);
 
 extern "C" plugin::Plugin* getInstance(plugin::App *app);
 

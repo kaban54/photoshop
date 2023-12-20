@@ -48,10 +48,6 @@ void Button::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     DrawButton (rt, GetBounds(), state, to_draw);
 }
 
-void Button::render(RenderTargetI*) {
-    
-}
-
 
 ImgButton::ImgButton (double x, double y, double w, double h, BtnFunc* action_, BtnArgs* action_args_, const Texture* texture_):
     Button (x, y, w, h, action_, action_args_),
@@ -97,24 +93,24 @@ void TxtButton::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
 void DrawButton (RenderTarget& rt, const Rect& rect, ButtonState state, const RegionSet* to_draw) {
     if (state == BTN_NORMAL) {
         rt.DrawRect_rs (rect, Color(128, 128, 128), to_draw);
-        rt.DrawRect_rs (Rect (rect.x, rect.y, rect.w - 4, 8)     , Color (192, 192, 192), to_draw);
-        rt.DrawRect_rs (Rect (rect.x, rect.y + 8, 8, rect.h - 12), Color (192, 192, 192), to_draw);
-        rt.DrawRect_rs (Rect (rect.x + 4, rect.Bot() - 8, rect.w - 4, 8)   , Color (64, 64, 64), to_draw);
-        rt.DrawRect_rs (Rect (rect.Right() - 8, rect.y + 4, 8, rect.h - 12), Color (64, 64, 64), to_draw);
-        rt.DrawRect_rs (Rect (rect.x + 4, rect.Bot() - 8, 4, 4)  , Color (128, 128, 128), to_draw);
-        rt.DrawRect_rs (Rect (rect.Right() - 8, rect.y + 4, 4, 4), Color (128, 128, 128), to_draw);
+        rt.DrawRect_rs (Rect (rect.x, rect.y, rect.w - 2, 4)     , Color (192, 192, 192), to_draw);
+        rt.DrawRect_rs (Rect (rect.x, rect.y + 4, 4, rect.h - 6), Color (192, 192, 192), to_draw);
+        rt.DrawRect_rs (Rect (rect.x + 2, rect.Bot() - 4, rect.w - 2, 4)   , Color (64, 64, 64), to_draw);
+        rt.DrawRect_rs (Rect (rect.Right() - 4, rect.y + 2, 4, rect.h - 6), Color (64, 64, 64), to_draw);
+        rt.DrawRect_rs (Rect (rect.x + 2, rect.Bot() - 4, 2, 2)  , Color (128, 128, 128), to_draw);
+        rt.DrawRect_rs (Rect (rect.Right() - 4, rect.y + 2, 2, 2), Color (128, 128, 128), to_draw);
     }
     else if (state == BTN_FOCUSED) {
         rt.DrawRect_rs (rect, Color(160, 160, 160), to_draw);
-        rt.DrawRect_rs (Rect (rect.x, rect.y, rect.w - 4, 8)     , Color (224, 224, 224), to_draw);
-        rt.DrawRect_rs (Rect (rect.x, rect.y + 8, 8, rect.h - 12), Color (224, 224, 224), to_draw);
-        rt.DrawRect_rs (Rect (rect.x + 4, rect.Bot() - 8, rect.w - 4, 8)   , Color (96, 96, 96), to_draw);
-        rt.DrawRect_rs (Rect (rect.Right() - 8, rect.y + 4, 8, rect.h - 12), Color (96, 96, 96), to_draw);
-        rt.DrawRect_rs (Rect (rect.x + 4, rect.Bot() - 8, 4, 4)  , Color (160, 160, 160), to_draw);
-        rt.DrawRect_rs (Rect (rect.Right() - 8, rect.y + 4, 4, 4), Color (160, 160, 160), to_draw);
+        rt.DrawRect_rs (Rect (rect.x, rect.y, rect.w - 2, 4)     , Color (224, 224, 224), to_draw);
+        rt.DrawRect_rs (Rect (rect.x, rect.y + 4, 4, rect.h - 6), Color (224, 224, 224), to_draw);
+        rt.DrawRect_rs (Rect (rect.x + 2, rect.Bot() - 4, rect.w - 2, 4)   , Color (96, 96, 96), to_draw);
+        rt.DrawRect_rs (Rect (rect.Right() - 4, rect.y + 2, 4, rect.h - 6), Color (96, 96, 96), to_draw);
+        rt.DrawRect_rs (Rect (rect.x + 2, rect.Bot() - 4, 2, 2)  , Color (160, 160, 160), to_draw);
+        rt.DrawRect_rs (Rect (rect.Right() - 4, rect.y + 2, 2, 2), Color (160, 160, 160), to_draw);
     }
     else if (state == BTN_PRESSED) {
         rt.DrawRect_rs (rect, Color (64, 64, 64), to_draw);
-        rt.DrawRect_rs (Rect (rect.x + 4, rect.y + 4, rect.w - 8, rect.h - 8), Color (128, 128, 128), to_draw);
+        rt.DrawRect_rs (Rect (rect.x + 2, rect.y + 2, rect.w - 4, rect.h - 4), Color (128, 128, 128), to_draw);
     }
 }

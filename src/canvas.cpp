@@ -1,10 +1,10 @@
 #include "canvas.h"
 
-Canvas::Canvas(double x, double y, double w, double h, ToolManagerI* tm, FilterManagerI* fm):
+Canvas::Canvas(double x, double y, double w, double h, ToolManager* tm, CanvasWindow* win_):
     Widget (x, y, w, h), 
     drawing (false),
     tool_man (tm),
-    filter_man (fm),
+    win (win_),
     data (w, h),
     tmp (w, h)
     {
@@ -14,8 +14,8 @@ Canvas::Canvas(double x, double y, double w, double h, ToolManagerI* tm, FilterM
 
 bool Canvas::onMousePress (MouseContext context) {
     if (MouseOnWidget(context.position)) {
+        if (win != nullptr) win -> SetActive();
         Show();
-        filter_man -> setRenderTarget(&data);
         drawing = true;
         tool_man -> paintOnPress (&data, &tmp, MouseContext(context.position - getPos(), context.button));
         RenderInRegset (*GetRendertarget(), GetRegset());
@@ -52,15 +52,6 @@ bool Canvas::onClock (uint64_t delta) {
     return false;
 }
 
-void Canvas::render(RenderTargetI* rt) {
-    Texture* data_texture = data.getTexture();
-    Texture*  tmp_texture =  tmp.getTexture();
-    rt -> drawTexture(getPos(), getSize(), data_texture);
-    rt -> drawTexture(getPos(), getSize(),  tmp_texture);
-    delete data_texture;
-    delete  tmp_texture;
-}
-
 void Canvas::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRenderTarget_rs(data, getPos(), to_draw);
     rt.DrawRenderTarget_rs(tmp , getPos(), to_draw);
@@ -68,4 +59,56 @@ void Canvas::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     #ifdef REGDEBUG
     rt.DrawRegset(*to_draw, Color(0, 255, 255, 128));
     #endif
+}
+
+
+CanvasWindow::CanvasWindow(double x, double y, double w, double h,
+                           ImageManager* image_man_, ToolManager* tool_man):
+    Window (x, y, w, h),
+    image_man (image_man_),
+    canvas (new Canvas(5, 35, w - 10, h - 40, tool_man, this))
+    {
+        registerSubWidget(canvas);
+        image_man -> AddWindow(this);
+    }
+
+void CanvasWindow::SetActive() {
+    image_man -> SetActive(this);
+}
+
+void CanvasWindow::Close() {
+    image_man -> RemoveWindow(this);
+    delete this;
+}
+
+
+ImageManager::ImageManager():
+    windows() {}
+
+void ImageManager::AddWindow(CanvasWindow* win) {
+    if (windows.GetNode(win) == nullptr) {
+        windows.InsertHead(win);
+    }
+}
+
+void ImageManager::RemoveWindow(CanvasWindow* win) {
+    ListNode<CanvasWindow*>* node = windows.GetNode(win);
+    if (node != nullptr) windows.Remove(node);
+}
+
+CanvasWindow* ImageManager::GetActive() const {
+    if (windows.GetSize() == 0) return nullptr;
+    else return windows.GetTail() -> val;
+}
+
+void ImageManager::SetActive(CanvasWindow* win) {
+    ListNode<CanvasWindow*>* node = windows.GetNode(win);
+    if (node != nullptr) {
+        node -> next -> prev = node -> prev;
+        node -> prev -> next = node -> next;
+        node -> prev = windows.GetTail();
+        node -> next = windows.EndOfList();
+        node -> next -> prev = node;
+        node -> prev -> next = node;
+    }
 }

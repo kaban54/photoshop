@@ -77,9 +77,13 @@ void RenderTarget::drawText(Vec2 pos, const char *content, uint16_t char_size, C
     screen.display();
 }
 
-Texture* RenderTarget::getTexture() {
+Texture* RenderTarget::getTexture() const {
     sf::Image sfimg = screen.getTexture().copyToImage();
     return new Texture(sfimg.getSize().x, sfimg.getSize().y, (Color *)sfimg.getPixelsPtr());
+}
+
+void RenderTarget::setTexture(Texture *texture) {
+    drawTexture(Vec2(0, 0), Vec2(screen.getSize().x, screen.getSize().y), texture);
 }
 
 void RenderTarget::display() {
@@ -88,7 +92,12 @@ void RenderTarget::display() {
 }
 
 void RenderTarget::clear() {
-    screen.clear();
+    screen.clear(sf::Color(0, 0, 0, 0));
+    screen.display();
+}
+
+void RenderTarget::clear(Color color) {
+    screen.clear(sf::Color(color.r, color.g, color.b, color.a));
     screen.display();
 }
 

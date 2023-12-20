@@ -28,13 +28,13 @@ MenuBtn::MenuBtn (double x, double y, double w, double h, const char *str, uint1
     {}
 
 bool MenuBtn::onMousePress (MouseContext context) {
-    if (!getAvailable()) return false;
+    if (!getAvailable() || !GetVisible()) return false;
     if (state == BTN_DISABLED) return false;
 
     if (MouseOnWidget (context.position) && state != BTN_PRESSED) {
         state = BTN_PRESSED;
         RenderInRegset (*GetRendertarget(), GetRegset());
-        menu -> setAvailable(true);
+        menu -> SetVisible(true);
         menu -> Show();
     }
     return false;
@@ -43,7 +43,7 @@ bool MenuBtn::onMousePress (MouseContext context) {
 bool MenuBtn::onMouseRelease (MouseContext context) {return false;}
 
 bool MenuBtn::onMouseMove (MouseContext context) {
-    if (!getAvailable()) return false;
+    if (!getAvailable() || !GetVisible()) return false;
     if (state == BTN_DISABLED) return false;
 
     GetSubwidgets() -> onMouseMove(context);
@@ -62,7 +62,7 @@ bool MenuBtn::onMouseMove (MouseContext context) {
     else if (state == BTN_PRESSED) {
         if (menu -> MouseOnWidget(context.position)) return false;
         else {
-            menu -> setAvailable(false);
+            menu -> SetVisible(false);
             state = BTN_NORMAL;
             RenderInRegset (*GetRendertarget(), GetRegset());
             menu -> Show();

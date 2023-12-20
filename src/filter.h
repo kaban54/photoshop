@@ -2,22 +2,16 @@
 #define FILTER_H
 
 #include "rendertarget.h"
-#include "buttons.h"
-#include "window.h"
+#include "controller.h"
 #include "editbox.h"
 #include "interface.h"
+#include "canvas.h"
 
 
 namespace plugin {
     struct FilterI: public Interface {
         virtual void apply(RenderTargetI *data) = 0;
         virtual ~FilterI() = default;
-    };
-
-    struct FilterManagerI {
-        virtual void setRenderTarget(RenderTargetI *target) = 0;
-        virtual void setFilter(FilterI *filter) = 0;
-        virtual void applyFilter() = 0;
     };
 }
 
@@ -26,16 +20,14 @@ using namespace plugin;
 class InvFilter : public FilterI {
     static const size_t NUM_OF_PARAMS = 0;
 
-    double params[1];
-
     public:
 
-    explicit InvFilter();
+    explicit InvFilter() {}
 
     virtual void apply(RenderTargetI *data) override;
 
-    virtual Array<const char *> getParamNames() override;
-    virtual Array<double> getParams() override;
+    virtual Array<const char *> getParamNames() const override;
+    virtual Array<double> getParams() const override;
     virtual void setParams(Array<double> new_params) override;
 };
 
@@ -52,62 +44,48 @@ class ClearFilter : public FilterI {
 
     virtual void apply(RenderTargetI *data) override;
     
-    virtual Array<const char *> getParamNames() override;
-    virtual Array<double> getParams() override;
+    virtual Array<const char *> getParamNames() const override;
+    virtual Array<double> getParams() const override;
     virtual void setParams(Array<double> new_params) override;
 };
 
 
-class FilterManager : public FilterManagerI {
+class FilterManager {
     FilterI* filter;
-    RenderTargetI* rt;
+    ImageManager* image_manager;
 
     public:
 
-    explicit FilterManager();
+    explicit FilterManager(ImageManager* img_man);
 
-    virtual void setRenderTarget(RenderTargetI *target) override;
-    virtual void setFilter(FilterI *filter) override;
-    virtual void applyFilter() override;
+    void setFilter(FilterI *filter);
+    void applyFilter();
 };
 
 
-class SetFilterController;
 
-class SetFilterOkBtn : public TxtButton {
-    SetFilterController* sfc;
-
-    public:
-
-    SetFilterOkBtn (double x, double y, double w, double h, SetFilterController* sfc_);
-
-    virtual bool onMousePress (MouseContext context) override;
-};
-
-class SetFilterController {
-    FilterManagerI* filter_man;
+class SetFilterController : public MWController{
+    FilterManager* filter_man;
     FilterI* filter;
-    EventManagerI* ev_man;
-    WidgetI* parent_wid;
-    ModalWindow* mw;
     std::vector<FloatNumEditBox*> editboxes;
     size_t num_of_params;
 
     public:
 
-    explicit SetFilterController (FilterManagerI* fm, FilterI* filt, EventManagerI* ev_man_, WidgetI* parent_wid_);
+    explicit SetFilterController (FilterManager* fm, FilterI* filt, size_t num_of_params_,
+                                  EventManagerI* ev_man_, WidgetI* parent_wid_);
 
-    ~SetFilterController();
+    virtual ~SetFilterController() = default;
 
-    void OkBtnPress();
+    virtual void OkBtnPress() override;
 };
 
 struct FilterBtnArgs : public BtnArgs {
-    FilterManagerI* filter_man;
+    FilterManager* filter_man;
     FilterI* filter;
     EventManagerI* ev_man;
     WidgetI* parent_wid;
-    explicit FilterBtnArgs (FilterManagerI* filter_man_, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
+    explicit FilterBtnArgs (FilterManager* filter_man_, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_):
         filter_man (filter_man_),
         filter (filter_),
         ev_man (ev_man_),
@@ -120,7 +98,7 @@ class FilterBtn : public TxtButton {
     public:
 
     explicit FilterBtn (double x, double y, double w, double h, const char *str, uint16_t char_size_,
-                        FilterManagerI* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_);
+                        FilterManager* fm, FilterI* filter_, EventManagerI* ev_man_, WidgetI* parent_wid_);
 };
 
 #endif
