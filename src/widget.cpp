@@ -368,6 +368,7 @@ void ExternWidget::RenderInRegset(RenderTarget& rt, const RegionSet* to_draw) {
     RenderTarget tmp(rt.GetSize().x, rt.GetSize().y);
     plug_wid -> render(&tmp);
     rt.DrawRenderTarget_rs(tmp, Vec2(0, 0), to_draw);
+    // rt.drawText(getPos(), "TEST", 50, Color(255, 0, 0));
 }
 
 bool ExternWidget::onMousePress(MouseContext context) {

@@ -125,23 +125,38 @@ class ToolAdapter : public plugin::ToolI {
 
 class TMAdapter : public pluginv1::ToolManagerI {
     ToolManager* tm;
+    ToolAdapter* tool_adapter;
 
     public:
     explicit TMAdapter(ToolManager* tm_): tm(tm_) {}
 
-    virtual void setColor(pluginv1::Color color) = 0;
-    virtual void setTool(pluginv1::ToolI *tool) = 0;
+    ~TMAdapter() {
+        if (tool_adapter != nullptr) delete tool_adapter;
+    }
+
+    virtual void setColor(pluginv1::Color color) override {
+        tm -> setColor(plugin::Color(color.r, color.g, color.b, color.a));
+    }
+
+    virtual void setTool(pluginv1::ToolI *tool) override {
+        if (tool_adapter != nullptr) delete tool_adapter;
+        tool_adapter = new ToolAdapter(tool);
+        tm -> setTool(tool_adapter);
+    }
 
     virtual pluginv1::ToolI *getTool() override {
         std::cerr << "Error: Unable to convert Toolv2 to Toolv1\n";
         return nullptr;
     }
-    virtual pluginv1::Color getColor() = 0;
+    virtual pluginv1::Color getColor() override {
+        plugin::Color col = tm -> getColor();
+        return pluginv1::Color(col.r, col.g, col.b, col.a);
+    }
 
-    virtual void paintOnMove(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-    virtual void paintOnPress(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-    virtual void paintOnRelease(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
-    virtual void disableTool(RenderTargetI *data, RenderTargetI *tmp, MouseContext context) = 0;
+    virtual void paintOnMove   (pluginv1::RenderTargetI *data, pluginv1::RenderTargetI *tmp, pluginv1::MouseContext context) override {std::cerr << "Error: not ready yet :(\n";}
+    virtual void paintOnPress  (pluginv1::RenderTargetI *data, pluginv1::RenderTargetI *tmp, pluginv1::MouseContext context) override {std::cerr << "Error: not ready yet :(\n";}
+    virtual void paintOnRelease(pluginv1::RenderTargetI *data, pluginv1::RenderTargetI *tmp, pluginv1::MouseContext context) override {std::cerr << "Error: not ready yet :(\n";}
+    virtual void disableTool   (pluginv1::RenderTargetI *data, pluginv1::RenderTargetI *tmp, pluginv1::MouseContext context) override {std::cerr << "Error: not ready yet :(\n";}
 };
 
 

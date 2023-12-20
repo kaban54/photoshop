@@ -136,7 +136,7 @@ void SetFilterController::OkBtnPress() {
 
 
 void filter_btn_action (BtnArgs* filter_btn_args) {
-    FilterManager* filter_man = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
+    FilterManager* filter_man  = ((FilterBtnArgs*)filter_btn_args) -> filter_man;
     FilterI*        filter     = ((FilterBtnArgs*)filter_btn_args) -> filter;
     EventManagerI*  ev_man     = ((FilterBtnArgs*)filter_btn_args) -> ev_man;
     WidgetI*        parent_wid = ((FilterBtnArgs*)filter_btn_args) -> parent_wid;
@@ -144,6 +144,7 @@ void filter_btn_action (BtnArgs* filter_btn_args) {
     if (filter -> getParamNames().size != 0)
         new SetFilterController (filter_man, filter, filter -> getParamNames().size,ev_man, parent_wid);
     else {
+        std::cerr << "1\n";
         filter_man -> setFilter (filter);
         filter_man -> applyFilter();
     }

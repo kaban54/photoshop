@@ -60,7 +60,8 @@ bool PluginTxtButton::onMouseMove(MouseContext context) {
 
 void PluginTxtButton::render(RenderTargetI* rt) {
     DrawButton (rt, host -> getPos(), host -> getSize(), state);
-    rt -> drawText(host -> getPos() + txt_pos, txt, char_size, Color(0, 0, 0));
+    rt -> drawText(host -> getPos(), txt, char_size, Color(0, 0, 0, 255));
+    rt -> display();
 }
 
 void DrawButton (RenderTargetI* rt, Vec2 pos, Vec2 size, ButtonState state) {
