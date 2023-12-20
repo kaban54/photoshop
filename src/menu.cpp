@@ -74,7 +74,8 @@ bool MenuBtn::onMouseMove (MouseContext context) {
 
 VerticalMenu::VerticalMenu (double x, double y):
     pos (Vec2(x, y)),
-    nextbtn_y (y)
+    nextbtn_y (y),
+    basenextbtn_y (y)
     {}
 
 void VerticalMenu::AddButton (Button* btn) {
@@ -83,6 +84,10 @@ void VerticalMenu::AddButton (Button* btn) {
     registerSubWidget (btn);
 }
 
+void VerticalMenu::Reset() {
+    GetSubwidgets() -> widgets.Clear();
+    nextbtn_y = basenextbtn_y;
+}
 
 TwoColMenu::TwoColMenu (double x, double y, double w, double h):
     pos (x, y),
