@@ -265,7 +265,8 @@ void RenderTarget::DrawLine_rs (Vec2 p1, Vec2 p2, double thikness, Color col, co
             sf::Vertex (sf::Vector2f (p1.x, p1.y), color),
             sf::Vertex (sf::Vector2f (p2.x, p2.y), color)
         };
-        tmp.screen.draw (line, 2, sf::Lines);
+        if (to_draw != nullptr) tmp.screen.draw (line, 2, sf::Lines);
+        else                        screen.draw (line, 2, sf::Lines);
     }
     else {
         Vec2 dir = p2 - p1;
@@ -279,8 +280,14 @@ void RenderTarget::DrawLine_rs (Vec2 p1, Vec2 p2, double thikness, Color col, co
         polygon.setPoint (1, sf::Vector2f(p1.x - normal.x, p1.y - normal.y));
         polygon.setPoint (2, sf::Vector2f(p2.x - normal.x, p2.y - normal.y));
         polygon.setPoint (3, sf::Vector2f(p2.x + normal.x, p2.y + normal.y));
-        tmp.screen.draw(polygon);
+        if (to_draw != nullptr) tmp.screen.draw(polygon);
+        else                        screen.draw(polygon);
     }
-    tmp.screen.display();
-    DrawRenderTarget_rs(tmp, Vec2(0, 0), to_draw);
+    if (to_draw != nullptr) {
+        tmp.screen.display();
+        DrawRenderTarget_rs(tmp, Vec2(0, 0), to_draw);
+    }
+    else {
+        screen.display();
+    }
 }

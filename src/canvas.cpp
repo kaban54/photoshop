@@ -83,17 +83,47 @@ void CanvasWindow::Close() {
 
 
 ImageManager::ImageManager():
-    windows() {}
+    windows(),
+    window_menu (nullptr) {}
+
+void ImageManager::SetWindowMenu(VerticalMenu* wm) {
+    window_menu = wm;
+    if (wm == nullptr) return;
+    if (windows.GetSize() > 0) {
+        ListNode<CanvasWindow*>* node = nullptr;
+        windows.Iterate(node);
+        while (node != nullptr) {
+            node -> val -> SetShowBtn(new WindowShowBtn(0, 0, 300, 80, node -> val));
+            window_menu -> AddButton(node -> val -> GetShowBtn());
+            windows.Iterate(node);
+        }
+    }
+}
 
 void ImageManager::AddWindow(CanvasWindow* win) {
     if (windows.GetNode(win) == nullptr) {
         windows.InsertHead(win);
+        if (window_menu != nullptr) {
+            win -> SetShowBtn(new WindowShowBtn(0, 0, 300, 80, win));
+            window_menu -> AddButton(win -> GetShowBtn());
+        }
     }
 }
 
 void ImageManager::RemoveWindow(CanvasWindow* win) {
-    ListNode<CanvasWindow*>* node = windows.GetNode(win);
-    if (node != nullptr) windows.Remove(node);
+    ListNode<CanvasWindow*>* win_node = windows.GetNode(win);
+    if (win_node != nullptr) windows.Remove(win_node);
+
+    window_menu -> Reset();
+    if (windows.GetSize() > 0) {
+        ListNode<CanvasWindow*>* node = nullptr;
+        windows.Iterate(node);
+        while (node != nullptr) {
+            node -> val -> SetShowBtn(new WindowShowBtn(0, 0, 300, 80, node -> val));
+            window_menu -> AddButton(node -> val -> GetShowBtn());
+            windows.Iterate(node);
+        }
+    }
 }
 
 CanvasWindow* ImageManager::GetActive() const {
@@ -112,3 +142,14 @@ void ImageManager::SetActive(CanvasWindow* win) {
         node -> prev -> next = node;
     }
 }
+
+void window_show_btn_action (BtnArgs* btn_args) {
+    WindowShowBtnArgs* args = (WindowShowBtnArgs*) btn_args;
+    if (args -> win) args -> win -> Show();
+    if (args -> btn) args -> btn -> Show();
+}
+
+WindowShowBtn::WindowShowBtn (double x, double y, double w, double h, Window* win_):
+    TxtButton (x, y, w, h, window_show_btn_action, &wshow_btn_args, win_ -> GetName()),
+    wshow_btn_args (win_, this)
+    {}

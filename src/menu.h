@@ -37,12 +37,15 @@ class MenuBtn : public TxtButton {
 class VerticalMenu : public Menu {
     Vec2 pos;
     double nextbtn_y;
+    double basenextbtn_y;
 
     public:
 
     explicit VerticalMenu (double x, double y);
 
     void AddButton (Button* btn);
+
+    void Reset();
 };
 
 class TwoColMenu : public Menu {

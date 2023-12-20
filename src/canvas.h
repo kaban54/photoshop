@@ -4,6 +4,7 @@
 #include "widget.h"
 #include "tool.h"
 #include "window.h"
+#include "menu.h"
 
 class CanvasWindow;
 
@@ -33,10 +34,13 @@ class Canvas : public Widget {
 
 class ImageManager {
     MyList<CanvasWindow*> windows;
+    VerticalMenu* window_menu;
 
     public:
 
     explicit ImageManager();
+
+    void SetWindowMenu(VerticalMenu* wm);    
 
     void AddWindow(CanvasWindow* win);
 
@@ -52,6 +56,7 @@ class ImageManager {
 class CanvasWindow : public Window {
     ImageManager* image_man;
     Canvas* canvas;
+    Button* showbtn;
 
     public:
 
@@ -60,9 +65,29 @@ class CanvasWindow : public Window {
 
     Canvas* GetCanvas() {return canvas;}
 
+    void    SetShowBtn(Button* btn_) {showbtn = btn_;}
+    Button* GetShowBtn() {return showbtn;}
+
     void SetActive();
 
     virtual void Close() override;
+};
+
+
+struct WindowShowBtnArgs : public BtnArgs {
+    Window* win;
+    Button* btn;
+    explicit WindowShowBtnArgs (Window* win_, Button* btn_):
+        win (win_),
+        btn (btn_) {}
+};
+
+class WindowShowBtn : public TxtButton {
+    WindowShowBtnArgs wshow_btn_args;
+
+    public:
+
+    explicit WindowShowBtn (double x, double y, double w, double h, Window* win_);
 };
 
 #endif
