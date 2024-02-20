@@ -2,6 +2,7 @@
 #define PLUGINWIDGET_H
 
 #include "standart2.h"
+#include <string>
 
 using namespace plugin;
 
@@ -63,11 +64,15 @@ class PluginWindow : public PluginWidget {
 
     Vec2 hold_pos;
     bool is_moving;
+    std::string name;
 
     public:
 
     explicit PluginWindow (GuiI* gui, Vec2 pos, Vec2 size);
-    
+
+    void SetName(const char* name_) {name.assign(name_);}
+    const char* GetName() {return name.c_str();}
+
     virtual bool onMousePress     (MouseContext    context) override;
     virtual bool onMouseRelease   (MouseContext    context) override;
     virtual bool onMouseMove      (MouseContext    context) override;
