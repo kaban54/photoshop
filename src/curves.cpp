@@ -295,6 +295,7 @@ CurvesFilter::CurvesFilter(GuiI* gui_):
 
 void CurvesFilter::apply (RenderTargetI *data) {
     PluginWindow* win = new PluginWindow(gui, Vec2(50, 50), Vec2(1350, 555));
+    win -> SetName("Curves Filter");
     CurvesApplyBtnArgs args;
     args.data = data;
     args.win = win;

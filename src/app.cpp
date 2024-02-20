@@ -111,7 +111,13 @@ void MyApp::SetupWidgets() {
     filters_vm -> AddButton (new FilterBtn (0, 0, 300, 80, "clear", 30,
                                             filter_manager, filters[1], event_manager, mainwin));
     mainwin -> registerSubWidget (filters_vm);
-    mainwin -> registerSubWidget (new MenuBtn (405, 35, 300, 80, "Filters", 30, filters_vm));
+    mainwin -> registerSubWidget (new MenuBtn (405, 35, 200, 80, "Filters", 30, filters_vm));
+
+
+    vm = new VerticalMenu(605, 115);
+    image_manager -> SetWindowMenu(vm);
+    mainwin -> registerSubWidget(vm);
+    mainwin -> registerSubWidget(new MenuBtn (605, 35, 200, 80, "Windows", 30, vm));
 
     CanvasWindow* cw = new CanvasWindow (150 , 140, 870, 930, image_manager, tool_manager);
     cw -> SetName("untitled1.png");

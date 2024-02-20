@@ -164,4 +164,6 @@ WindowCloseBtn::WindowCloseBtn (double x, double y, double w, double h, Window* 
 
 void WindowCloseBtn::RenderInRegset (RenderTarget& rt, const RegionSet* to_draw) {
     rt.DrawRect_rs (GetBounds(), Color(255, 0, 0), to_draw);
+    rt.DrawLine_rs (getPos() + Vec2(5, 5), getPos() + getSize() - Vec2(5, 5), 4, Color(255, 255, 255), to_draw);
+    rt.DrawLine_rs (getPos() + Vec2(getSize().x - 5, 5), getPos() + Vec2(5, getSize().y - 5), 4, Color(255, 255, 255), to_draw);
 }
