@@ -9,6 +9,9 @@
 ![](./images/example.png)
 
 ## Запуск
+
+Перед сборкой нужно установить [SFML](https://www.sfml-dev.org/download.php)
+
 ```
 make prepare
 make app
